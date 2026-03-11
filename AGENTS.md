@@ -1,8 +1,8 @@
-# AI-Sync Agent Instructions
+Sync Agent Instructions
 
-## Skills
+## 技能
 
-本项目包含以下可调用技能（Skills）。
+本项目包含以下可调用技能。
 
 现阶段这些 Skill 一律按**主动触发**处理，不采用被动触发。
 
@@ -14,17 +14,17 @@
 
 一旦确认触发，**必须读取对应 SKILL.md 全文**，严格按其 Workflow 执行。
 
-| Skill | 入口文件 | 触发场景 |
+| 技能 | 入口文件 | 触发场景 |
 |-------|---------|---------|
-| ai-sync-pipeline | `skills/ai-sync-pipeline/SKILL.md` | 用户说"继续"推进流水线，或说动词（修/重构/优化/测试）+ 目标触发运维 |
-| playbook-author | `skills/ai-sync-playbook-author/SKILL.md` | 用户要求编写或修订 PLAYBOOK |
-| skill-compiler | `skills/ai-sync-skill-compiler/SKILL.md` | 用户要求编写或修订 SKILL.md |
-| clothing-image-commercializer | `skills/clothing-image-commercializer/SKILL.md` | 用户要求处理服装图片 |
-| obsidian-markdown | `skills/obsidian-markdown/SKILL.md` | 用户处理 Obsidian Markdown、wikilink、callout、embed、frontmatter 或笔记结构 |
-| obsidian-bases | `skills/obsidian-bases/SKILL.md` | 用户处理 `.base` 文件、表格视图、卡片视图、筛选或公式 |
-| json-canvas | `skills/json-canvas/SKILL.md` | 用户处理 `.canvas` 文件、思维导图、流程图或 Obsidian Canvas |
-| obsidian-cli | `skills/obsidian-cli/SKILL.md` | 用户要通过命令行操作 Obsidian vault，或调试插件、主题 |
-| defuddle | `skills/defuddle/SKILL.md` | 用户给网页 URL，希望提取干净正文再阅读、分析或整理 |
+| 流水线指挥中心 | `技能/流水线指挥中心/SKILL.md` | 用户说"继续"推进流水线，或说动词（修/重构/优化/测试）+ 目标触发运维 |
+| PLAYBOOK编写师 | `技能/PLAYBOOK编写师/SKILL.md` | 用户要求编写或修订 PLAYBOOK |
+| Skill编译器 | `技能/Skill编译器/SKILL.md` | 用户要求编写或修订 SKILL.md |
+| 服装图片商品化 | `技能/服装图片商品化/SKILL.md` | 用户要求处理服装图片 |
+| Obsidian-Markdown编辑 | `技能/Obsidian-Markdown编辑/SKILL.md` | 用户处理 Obsidian Markdown、wikilink、callout、embed、frontmatter 或笔记结构 |
+| Obsidian-Bases编辑 | `技能/Obsidian-Bases编辑/SKILL.md` | 用户处理 `.base` 文件、表格视图、卡片视图、筛选或公式 |
+| JSON-Canvas编辑 | `技能/JSON-Canvas编辑/SKILL.md` | 用户处理 `.canvas` 文件、思维导图、流程图或 Obsidian Canvas |
+| Obsidian命令行 | `技能/Obsidian命令行/SKILL.md` | 用户要通过命令行操作 Obsidian vault，或调试插件、主题 |
+| 网页正文提取 | `技能/网页正文提取/SKILL.md` | 用户给网页 URL，希望提取干净正文再阅读、分析或整理 |
 
 ### Skill 调用规则
 
@@ -39,35 +39,35 @@
 ai-sync/
 ├── README.md                # 仓库级说明
 ├── AGENTS.md                # Skill 索引与触发规则
-├── rules/                   # 全局规则
+├── 规则/                   # 全局规则
 │   └── *.md
-├── skills/                  # 所有 Skill 定义，保持扁平
-│   └── <skill-name>/
+├── 技能/                  # 所有 Skill 定义，保持扁平
+│   └── <技能目录名>/
 │       ├── SKILL.md
-│       ├── references/
-│       ├── scripts/
-│       └── assets/
+│       ├── 参考资料/
+│       ├── 脚本/
+│       └── 资源/
 └── <repo-level-docs>.md     # 少量仓库级文档
 ```
 
 <!-- ai-sync-skills -->
-## Skills
+## 技能
 
 执行任务前先判断用户是否在**主动触发**某个 Skill。
 
 主动触发成立后，**必须读取对应 SKILL.md 全文**，严格按其 Workflow 执行。
 
-| Skill | 入口 | 说明 |
+| 技能 | 入口 | 说明 |
 |-------|------|------|
-| ai-sync-pipeline | `skills/ai-sync-pipeline/SKILL.md` | 流水线指挥中心。支持两种模式：① 流水线推进（扫描进度 → 路由到下一阶段）；② 运维操作（troubleshoot/refactor/optimize/test，可指定节点作用域）。用户只需记住这一个入口。 |
-| ai-sync-playbook-author | `skills/ai-sync-playbook-author/SKILL.md` | 通过结构化提问，从客户口述中提炼出一份完整的 PLAYBOOK。不预设 PLAYBOOK 的主题或结构，运行时动态发现并适配。 |
-| ai-sync-skill-compiler | `skills/ai-sync-skill-compiler/SKILL.md` | SKILL 编写专家。以 PLAYBOOK 为参考书，通过结构化提问 + 三审互撕，新建或修订完全合规的 SKILL.md。 |
-| clothing-image-commercializer | `skills/clothing-image-commercializer/SKILL.md` | 全自动批量处理服装平铺照片，输出电商级纯白底商品图。读取输入文件夹中的随手拍服装照片，经去背景、清晰化、校色、姿态整理、居中构图、缩放后输出到目标文件夹。 |
-| obsidian-markdown | `skills/obsidian-markdown/SKILL.md` | 创建和编辑 Obsidian Flavored Markdown，支持 wikilink、embed、callout、frontmatter、tags 等 Obsidian 扩展语法。 |
-| obsidian-bases | `skills/obsidian-bases/SKILL.md` | 创建和编辑 Obsidian Bases（`.base`），支持视图、过滤器、公式和汇总。 |
-| json-canvas | `skills/json-canvas/SKILL.md` | 创建和编辑 JSON Canvas（`.canvas`），支持节点、连线、分组和布局。 |
-| obsidian-cli | `skills/obsidian-cli/SKILL.md` | 通过 Obsidian CLI 与 vault 交互，也支持插件和主题开发调试。 |
-| defuddle | `skills/defuddle/SKILL.md` | 用 Defuddle CLI 从网页提取干净的 Markdown 正文，减少 token 消耗。 |
+| 流水线指挥中心 | `技能/流水线指挥中心/SKILL.md` | 流水线指挥中心。支持两种模式：① 流水线推进（扫描进度 → 路由到下一阶段）；② 运维操作（故障诊修师 / 代码重构师 / 性能优化师 / 质量测试师，可指定节点作用域）。用户只需记住这一个入口。 |
+| PLAYBOOK编写师 | `技能/PLAYBOOK编写师/SKILL.md` | 通过结构化提问，从客户口述中提炼出一份完整的 PLAYBOOK。不预设 PLAYBOOK 的主题或结构，运行时动态发现并适配。 |
+| Skill编译器 | `技能/Skill编译器/SKILL.md` | SKILL 编写专家。以 PLAYBOOK 为参考书，通过结构化提问 + 三审互撕，新建或修订完全合规的 SKILL.md。 |
+| 服装图片商品化 | `技能/服装图片商品化/SKILL.md` | 全自动批量处理服装平铺照片，输出电商级纯白底商品图。读取输入文件夹中的随手拍服装照片，经去背景、清晰化、校色、姿态整理、居中构图、缩放后输出到目标文件夹。 |
+| Obsidian-Markdown编辑 | `技能/Obsidian-Markdown编辑/SKILL.md` | 创建和编辑 Obsidian Flavored Markdown，支持 wikilink、embed、callout、frontmatter、tags 等 Obsidian 扩展语法。 |
+| Obsidian-Bases编辑 | `技能/Obsidian-Bases编辑/SKILL.md` | 创建和编辑 Obsidian Bases（`.base`），支持视图、过滤器、公式和汇总。 |
+| JSON-Canvas编辑 | `技能/JSON-Canvas编辑/SKILL.md` | 创建和编辑 JSON Canvas（`.canvas`），支持节点、连线、分组和布局。 |
+| Obsidian命令行 | `技能/Obsidian命令行/SKILL.md` | 通过 Obsidian CLI 与 vault 交互，也支持插件和主题开发调试。 |
+| 网页正文提取 | `技能/网页正文提取/SKILL.md` | 用 Defuddle CLI 从网页提取干净的 Markdown 正文，减少 token 消耗。 |
 
 ### 调用规则
 1. **默认不被动触发**：不因模糊相关、语义相似或“看起来能用”而自动启用 Skill。
@@ -82,7 +82,7 @@ ai-sync/
 
 以下全局规则适用于本项目所有操作，**必须在每次任务开始前阅读并遵守**。
 
-- `rules/通用文档写作规则.md` — 通用文档写作规则
+- `规则/通用文档写作规则.md` — 通用文档写作规则
 
-请先读取 `rules/` 目录下的所有 .md 文件，理解并遵守其中的规则。
+请先读取 `规则/` 目录下的所有 .md 文件，理解并遵守其中的规则。
 <!-- ai-sync-rules -->
