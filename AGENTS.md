@@ -25,6 +25,7 @@ Sync Agent Instructions
 | JSON-Canvas编辑 | `技能/JSON-Canvas编辑/SKILL.md` | 用户处理 `.canvas` 文件、思维导图、流程图或 Obsidian Canvas |
 | Obsidian命令行 | `技能/Obsidian命令行/SKILL.md` | 用户要通过命令行操作 Obsidian vault，或调试插件、主题 |
 | 网页正文提取 | `技能/网页正文提取/SKILL.md` | 用户给网页 URL，希望提取干净正文再阅读、分析或整理 |
+| 通用任务引擎 | `技能/通用任务引擎/SKILL.md` | 任务不映射到任何现有专项 Skill，且需要多步骤规划执行时触发 |
 
 ### Skill 调用规则
 
@@ -68,6 +69,7 @@ ai-sync/
 | JSON-Canvas编辑 | `技能/JSON-Canvas编辑/SKILL.md` | 创建和编辑 JSON Canvas（`.canvas`），支持节点、连线、分组和布局。 |
 | Obsidian命令行 | `技能/Obsidian命令行/SKILL.md` | 通过 Obsidian CLI 与 vault 交互，也支持插件和主题开发调试。 |
 | 网页正文提取 | `技能/网页正文提取/SKILL.md` | 用 Defuddle CLI 从网页提取干净的 Markdown 正文，减少 token 消耗。 |
+| 通用任务引擎 | `技能/通用任务引擎/SKILL.md` | 通用任务执行引擎。输入任意任务 → 理解 → 规划 → 分派 → 执行 → 汇总 → 检查 → 循环至完成。适用于不依赖特定领域 Skill 的开放式任务。 |
 
 ### 调用规则
 1. **默认不被动触发**：不因模糊相关、语义相似或“看起来能用”而自动启用 Skill。
