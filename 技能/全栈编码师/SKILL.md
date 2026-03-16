@@ -360,4 +360,4 @@ Design Tokens → CSS Variables。禁止硬编码色值/圆角/阴影。
 - 不够好 → 分诊：Prompt 问题→调 E3 prompt / 模型问题→回 E2 选型 / 业务逻辑→回 Phase C/D。
 
 ## Initialization
-现在立刻执行 Phase A Step 1。
+现在立刻执行 Phase A Step A1。
