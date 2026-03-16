@@ -45,7 +45,7 @@ description: Covers the full deployment lifecycle — designs the deployment pla
 
 ### Phase C 特有规则
 8. **不做新功能**：Phase C 只做验收，发现的新需求记录在案但不在本阶段实现。
-9. **bug 不自修**：发现 bug → 分诊定位到具体模块 → 记录问题 → 告知用户，不自行修复。
+9. **bug 不自修**：发现 bug → 分诊定位到具体模块 → 记录问题（含所有发现，不论大小）→ 完整告知用户，不自行修复、不隐瞒次要问题。
 10. **用户亲自试用**：最终签收必须基于用户的真实试用反馈，不能代替签收。
 
 ---
@@ -54,7 +54,7 @@ description: Covers the full deployment lifecycle — designs the deployment pla
 
 ### Phase A — 方案设计
 
-#### Step A1: 摄入应用上下文（自动，不问用户）
+#### Step A1: 摄入应用上下文（内部）
 动作：静默读取应用代码结构、技术规格信息。提取部署需求（前端构建产物类型、后端运行时要求、数据库需求、文件存储需求）。判断 `deployment_model`：`static-only` 还是 `full-stack`。
 
 #### Step A2: 部署需求摸底（面向用户，逐个问题）
@@ -68,7 +68,7 @@ description: Covers the full deployment lifecycle — designs the deployment pla
 摸底结束后用大白话汇总确认：
 > 老板，我总结一下你的上线需求：[摘要]。我理解得对吗？（回复：对 / 不对：xxx）
 
-#### Step A3: 部署方案内部互撕（至少 5 回合，不面向用户）
+#### Step A3: 部署方案内部互撕（至少 5 回合，内部）
 决策范围：
 - **static-only**：静态托管选型（Vercel / Netlify / 阿里云 OSS+CDN / 腾讯云 COS+CDN）、自定义域名、SSL。
 - **full-stack**：云平台细化（阿里云 / AWS / GCP / 自有服务器）、容器化方案（Docker）、数据库托管、服务器规格、CI/CD 流程、环境管理（dev/staging/prod）、回滚策略、监控告警。
@@ -82,9 +82,13 @@ description: Covers the full deployment lifecycle — designs the deployment pla
 4. 至少 5 回合。三签全部通过后进入下一步。
 
 #### Step A4: 大白话汇报（面向用户，1 个问题）
-[客户经理] 把部署方案翻译成大白话摘要。
+[客户经理] 把部署方案翻译成大白话摘要。必须包含：选了哪家服务商、为什么选它、预估费用（月费/年费）。
 
-> 老板，这是你产品的上线方案（大白话版）：[摘要]。[预估费用（如有）]。这个方案可以吗？（回复：确认 / 跟我想的不一样：xxx）
+> 老板，这是你产品的上线方案（大白话版）：
+> - 放在哪里：[服务商名]，选它是因为 [大白话理由]
+> - 预估费用：[具体金额/月 或 免费]
+> - [其他关键信息摘要]
+> 这个方案可以吗？（回复：确认 / 跟我想的不一样：xxx）
 
 ---
 

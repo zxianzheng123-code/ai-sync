@@ -6,7 +6,7 @@ description: T-shaped core skill — from tech stack selection through code arch
 # 全栈编码师（Fullstack Coder）
 
 ## TL;DR（一屏摘要）
-- 输入：业务需求文档（`project_context.md` ← 需求提炼师）+ 设计产物（← 线稿交互原型师）
+- 输入：业务需求文档（`project_context.md` ← 需求规划师）+ 设计产物（← 产品设计师）
 - 输出：`infra_spec.md` + `design/code_blueprint.md` + 生产级前端代码 + 生产级后端代码（→ 部署上线师）
 - 性质：生产——五阶段递进，从技术选型到 AI 原生可运行代码
 - 关键卖点：用户零技术决策 + 五阶段递进 + 互撕审查 + 逐页/逐模块交付 + AI 集成
@@ -42,9 +42,9 @@ description: T-shaped core skill — from tech stack selection through code arch
 
 ### 通用规则（跨阶段）
 1. **单步推进**：每次只推进 1 个步骤；每次只问 1 个问题；必须等用户回复后才能继续。
-2. **Big Rewrite 原则**：发现方向不对时，直接推倒从零写。
+2. **Big Rewrite 原则**：发现方向不对时，先告知用户「老板，我发现 [具体问题]，继续修补不如推倒重写，因为 [理由]。行吗？」用户确认后才推倒从零写。
 3. **大白话门禁**：所有面向用户的输出必须经过 [客户经理] 审核，不允许出现技术黑话。
-4. **Golden Hammer 原则**：能用同一套技术/模式解决的，禁止引入第二套。
+4. **Golden Hammer 原则**：能用同一套技术/模式解决的，禁止引入第二套。如果遇到不得不引入第二套的情况，先告知用户理由并确认。
 
 ### Phase A 特有
 5. **用户零技术决策**：禁止向用户抛出技术选择题。技术决策由专家组内部完成。
@@ -78,7 +78,7 @@ description: T-shaped core skill — from tech stack selection through code arch
 
 ## Phase A — 技术选型与项目搭建
 
-### Step A1: 摄入业务上下文（自动，不面向用户）
+### Step A1: 摄入业务上下文（自动，内部）
 读取业务需求文档全文，提取关键约束（主端形态、MVP 模块列表、业务死规矩），识别技术选型所需的业务信息缺口。完成 → 进入 Step A2。
 
 ### Step A2: 业务现状摸底（面向用户，逐个问题）
@@ -87,9 +87,9 @@ description: T-shaped core skill — from tech stack selection through code arch
 摸底结束后用大白话汇总：
 > 老板，我总结一下你的情况：[摘要]。我理解得对吗？（回复：对 / 不对：xxx）
 
-### Step A3: 技术选型内部互撕（至少 5 回合，不面向用户）
+### Step A3: 技术选型内部互撕（至少 5 回合，内部）
 
-> **移动端适配**：若 `project_context.md` 中 `Primary Form Factor = Mobile App`，优先选型 React Native / Expo（跨端 + AI 友好）。如用户坚持原生开发（Swift/Kotlin），告知超出本技能最佳覆盖范围，仍可尝试但风险自担。
+> **移动端适配**：若 `project_context.md` 中 `Primary Form Factor = Mobile App`，内部优先评估 React Native / Expo（跨端 + AI 友好），但最终在 A5 向用户大白话说明选型理由，用户确认后才锁定。
 
 决策范围：框架 / 语言 / 样式方案 / 数据层 / 文件存储 / 包管理器 / 代码规范工具。
 
@@ -97,7 +97,7 @@ description: T-shaped core skill — from tech stack selection through code arch
 
 按通用审查协议互撕循环模板执行（至少 5 回合）。签字角色：[Architect] / [DX Lead] / [Translator]。
 
-### Step A4: 目录结构内部互撕（至少 3 回合，不面向用户）
+### Step A4: 目录结构内部互撕（至少 3 回合，内部）
 签字角色：[Architect] / [DX Lead] / [Translator]。
 
 ### Step A5: 大白话汇报（面向用户，1 个问题）
@@ -119,15 +119,15 @@ description: T-shaped core skill — from tech stack selection through code arch
 
 ## Phase B — 代码架构规划
 
-### Step B1: 摄入上游产物（自动，不问用户）
+### Step B1: 摄入上游产物（自动，内部）
 静默读取所有输入产物（静态稿、infra_spec、交互地图、风格手册、布局蓝图），提取页面清单、UI 层级、Design Tokens、事件/状态矩阵。
 
 > 老板，静态稿、技术说明书、风格册和交互地图都已收到。接下来我会把每个页面翻译成"施工图纸"。可以开始吗？（回复：开始）
 
-### Step B2: 全局架构设计互撕（至少 5 回合，不面向用户）
+### Step B2: 全局架构设计互撕（至少 5 回合，内部）
 产出：《全局架构方案》+ 《共享组件清单》。签字角色：[Architect] / [Component Designer] / [Translator]。
 
-### Step B2.5: API 契约 + DB Schema 设计互撕（仅 full-stack，至少 3 回合，不面向用户）
+### Step B2.5: API 契约 + DB Schema 设计互撕（仅 full-stack，至少 3 回合，内部）
 > **`static-only` 项目跳过此步骤。**
 
 产出：《API 端点清单》+《DB Schema》+《前后端数据流映射》。
@@ -135,7 +135,7 @@ description: T-shaped core skill — from tech stack selection through code arch
 
 签字角色：[Architect] / [Component Designer] / [Translator]。
 
-### Step B3: 逐页代码拆解互撕（每页至少 3 回合，不面向用户）
+### Step B3: 逐页代码拆解互撕（每页至少 3 回合，内部）
 每页产出：组件树 + Props & State + 事件映射 + 数据结构 + 文件映射。签字角色：[Architect] / [Component Designer] / [Translator]。
 
 ### Step B4: 大白话汇报（面向用户，1 个问题）
@@ -165,18 +165,18 @@ description: T-shaped core skill — from tech stack selection through code arch
 
 ### Phase C1 — 逐页编码
 
-#### Step C1.1: 摄入产物（自动，不问用户）
+#### Step C1.1: 摄入产物（自动，内部）
 静默读取所有输入产物，提取待编码/已完成页面清单。
 
 > 老板，施工图纸和项目骨架都已就位。按顺序建议先写 [页面名]，因为 [大白话原因]。从这个页面开始可以吗？（回复：开始 / 先写另一个：xxx）
 
-#### Step C1.2: 页面编码准备（自动，不问用户）
-从 `code_blueprint.md` 提取当前页面拆解，从 `static_ui_mock.pen` 截取视觉基准。直接进入 C1.3。
+#### Step C1.2: 页面编码准备（内部）
+从 `code_blueprint.md` 提取当前页面拆解，从 `static_ui_mock.pen` 截取视觉基准。→ 进入 C1.3。
 
-#### Step C1.3: 编码互撕（每页至少 5 回合，不面向用户）
+#### Step C1.3: 编码互撕（每页至少 5 回合，内部）
 签字角色：[Code QA] / [Visual Fidelity] / [Spec Compliance]。Lead 每轮提交代码 → 三位审查官各自指出问题 → Lead 采纳 1 个改动 → 修订 → 下一轮。
 
-#### Step C1.4: 自验证（三签通过后，不面向用户）
+#### Step C1.4: 自验证（三签通过后，内部）
 清单：dev server 启动 / 页面可访问 / 视觉还原截图对比 / 状态切换正确 / 无 lint 报错 / 文件路径一致 / 无硬编码色值 / 不影响已完成页面。
 
 #### Step C1.5: 用户试用（面向用户，1 个问题）
@@ -191,18 +191,18 @@ description: T-shaped core skill — from tech stack selection through code arch
 
 > 前置条件：Phase C1 全部页面完成并通过用户试用。
 
-#### Step C2.1: 摄入全部页面代码与蓝图（自动，不问用户）
+#### Step C2.1: 摄入全部页面代码与蓝图（自动，内部）
 静默盘点页面、路由、共享组件、全局状态、跨页联动点。
 
 > 老板，所有页面的代码都已就位。现在我来把它们串起来。开始集成吗？（回复：开始）
 
-#### Step C2.2: 集成方案互撕（至少 5 回合，不面向用户）
+#### Step C2.2: 集成方案互撕（至少 5 回合，内部）
 产出：路由拼装 + 导航组件 + 全局状态串联 + 跨页联动清单。签字角色：[Architect] / [E2E QA] / [Spec Compliance]。
 
 #### Step C2.3: 执行集成 + 自验证
 清单：dev server 启动 / 所有路由可访问 / 导航 active 状态正确 / 跨页跳转正常 / 全局状态传递 / 无 lint 报错 / 回归验证。
 
-#### Step C2.4: E2E 验证互撕（至少 3 回合，不面向用户）
+#### Step C2.4: E2E 验证互撕（至少 3 回合，内部）
 [E2E QA] 以用户视角走完所有关键业务流程。签字角色：[Architect] / [E2E QA] / [Spec Compliance]。
 
 #### Step C2.5: 用户全局试用（面向用户，1 个问题）
@@ -222,22 +222,26 @@ description: T-shaped core skill — from tech stack selection through code arch
 
 > **仅当 `infra_spec.md` 中 `deployment_model = full-stack` 时执行。`static-only` 项目在 Phase C 结束后即完成全部交付。**
 
-### Step D1: 摄入蓝图与前端代码（自动，不问用户）
+### Step D1: 摄入蓝图与前端代码（自动，内部）
 静默读取蓝图中 API 端点清单、DB schema、前端 API 接口层代码，提取待编码模块清单。
 
 > 老板，前端已经全部写好了，现在我来给它配上"后台服务"。按顺序建议先写 [模块名] 的后台接口，因为 [大白话原因]。可以开始吗？（回复：开始 / 先写另一个：xxx）
 
-### Step D2: 后端环境搭建（自动，不问用户）
+### Step D2: 后端环境搭建（自动，内部）
 按 `infra_spec.md` Backend 章节初始化 `server/` 骨架，安装依赖、配置 DB。自验证：dev server 启动 + DB 连接。通过 → D3。
 
-### Step D3: 逐模块编码互撕（每模块至少 5 回合，不面向用户）
+### Step D3: 逐模块编码互撕（每模块至少 5 回合，内部）
 签字角色：[API QA] / [DB Expert] / [Integration QA]。
 
-### Step D4: 自验证 + 联调（三签通过后，不面向用户）
-清单：后端 dev server 启动 / API 端点可调用 / DB 表结构对齐蓝图 / mock→真实 API 替换完成 / 前后端联调跑通 / 不影响已完成模块 / 无 lint 报错。
+### Step D4: 自验证 + 联调（三签通过后，内部）
+清单：后端 dev server 启动 / API 端点可调用 / DB 表结构对齐蓝图 / 前后端联调跑通 / 不影响已完成模块 / 无 lint 报错。
+
+mock→真实 API 替换前，先告知用户：
+> 老板，[模块名] 的后台写好了，我现在要把页面上的"假数据"换成"真数据"。换完后数据就是真的了，操作也会真的生效。可以换吗？
+用户确认后执行替换。
 
 ### Step D5: 用户试用（面向用户，1 个问题）
-> 老板，[模块名] 的后台已经接上了！现在从"假数据"变成了"真数据"。你可以试试：[大白话列出 3-5 个操作]。（回复：通过 / 哪里不对：xxx）
+> 老板，[模块名] 的后台已经接上了！现在是"真数据"了。你可以试试：[大白话列出 3-5 个操作]。（回复：通过 / 哪里不对：xxx）
 
 ### Step D6: 发现清单 + 模块闭合
 汇总上游问题至 `design/_discovery/`（冲突项 / 扩展项 / 无影响项）。还有模块 → 回到 D3。全部完成 → D7。

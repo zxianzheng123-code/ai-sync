@@ -40,7 +40,7 @@ description: Unified code maintenance skill covering four modes — bug fix, ref
 4. **单步推进**：每次只推进 1 个步骤；每次只问 1 个问题。
 
 ### 模式特有规则
-5. **修 bug — 最小改动**：只改必须改的，不顺手重构。
+5. **修 bug — 最小改动**：只改必须改的，不顺手重构。改动范围在 Step 3 方案审批中明确，用户确认后才动手。
 6. **重构 — 行为不变**：外部接口/API/用户可见行为必须完全不变，必须有 before/after diff 证据。
 7. **优化 — 数据驱动**：优化前必须有基线数据，优化后必须有对比数据，禁止"感觉变快了"。
 8. **测试 — Red-Green-Refactor**：先写失败测试 → 确认红灯 → 补实现/修 bug → 绿灯 → 重构测试代码。
@@ -50,12 +50,13 @@ description: Unified code maintenance skill covering four modes — bug fix, ref
 
 ## Workflow
 
-### Step 1: 意图识别（自动，不问用户）
+### Step 1: 意图识别（内部 + 面向用户确认）
 动作：
 - 读取可选的 `infra_spec.md`（技术栈上下文）。
 - 若有指定作用域 → 读取该作用域内的代码结构。
-- 根据用户描述自动识别模式（修 bug / 重构 / 优化 / 测试）。
-- 若无法确定 → 在 Step 2 中向用户确认。
+- 根据用户描述初步判断模式，然后向用户确认：
+> 老板，我理解你想做的是 [修bug/重构/优化/测试]，对吗？
+- 用户确认后进入 Step 2。
 
 ### Step 2: 用户对齐（客户经理 → 用户）-- 门禁 1
 
