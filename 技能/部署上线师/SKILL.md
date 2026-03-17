@@ -6,7 +6,7 @@ description: Covers the full deployment lifecycle — designs the deployment pla
 # 部署上线师（Deploy & Launch）
 
 ## TL;DR
-- 输入：完整应用代码（← 前端编码师 + 后端编码师）+ 代码蓝图（← 代码蓝图师）+ 可选 `infra_spec.md`（← 技术底座搭建师）
+- 输入：完整应用代码（← 全栈编码师）+ `design/code_blueprint.md`（← 全栈编码师 Phase B）+ 可选 `infra_spec.md`（← 全栈编码师 Phase A）
 - 输出：线上可访问的产品 + 部署配置记录（`deploy_config.md`）+ 用户签收确认
 - 性质：生产——执行实际部署操作并完成最终验收
 - 关键卖点：用户零技术决策 + 专家内部互撕选型 + 大白话全程 + 一站式上线签收
@@ -30,7 +30,7 @@ description: Covers the full deployment lifecycle — designs the deployment pla
 ## Strict Rules
 
 > 本技能遵守以下共享协议，不再重复列出其中的规则：
-> - [角色协议](../角色协议.md) — 心智模式、信念系统、习惯回路、角色分层
+> - [角色协议](../角色协议.md) — 身份、底线、角色分层
 > - [成题协议](../成题协议.md) — 题目是否成形、缺口如何补、何时必须先拆解
 > - [判断协议](../判断协议.md) — 单一推荐、风险和不确定项
 > - [工具链协议](../工具链协议.md) — SubAgent分派、进度文件管理、技能调度

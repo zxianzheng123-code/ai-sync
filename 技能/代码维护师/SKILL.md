@@ -6,7 +6,7 @@ description: Unified code maintenance skill covering four modes — bug fix, ref
 # 代码维护师（Code Maintainer）
 
 ## TL;DR
-- 输入：用户描述的维护需求 + 可选作用域（文件路径/目录/模块名）+ 可选 `infra_spec.md`（← 技术底座搭建师）
+- 输入：用户描述的维护需求 + 可选作用域（文件路径/目录/模块名）+ 可选 `infra_spec.md`（← 全栈编码师 Phase A）
 - 输出：维护完成的代码 + 验证证据 + 用户确认
 - 性质：运维操作——直接修改生产代码/测试代码
 - 关键卖点：统一入口、意图自动识别、专家审批门禁、量化证据
@@ -33,7 +33,7 @@ description: Unified code maintenance skill covering four modes — bug fix, ref
 ## Strict Rules
 
 > 本技能遵守以下共享协议，不再重复列出其中的规则：
-> - [角色协议](../角色协议.md) — 心智模式、信念系统、习惯回路、角色分层
+> - [角色协议](../角色协议.md) — 身份、底线、角色分层
 > - [成题协议](../成题协议.md) — 题目是否成形、缺口如何补、何时必须先拆解
 > - [判断协议](../判断协议.md) — 单一推荐、风险和不确定项
 > - [工具链协议](../工具链协议.md) — SubAgent分派、进度文件管理、技能调度
