@@ -16,6 +16,70 @@ green()  { printf '\033[32m%s\033[0m\n' "$1"; }
 yellow() { printf '\033[33m%s\033[0m\n' "$1"; }
 red()    { printf '\033[31m%s\033[0m\n' "$1"; }
 
+is_md_table_row() {
+    case "$1" in
+        '|'*'|') return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+is_md_table_separator() {
+    local compact
+    compact=$(printf '%s\n' "$1" | tr -d '[:space:]|:-')
+    [ -z "$compact" ]
+}
+
+md_table_cell() {
+    local line="$1"
+    local col="$2"
+    printf '%s\n' "$line" | awk -F'|' -v c="$col" '{
+        val = $c
+        gsub(/\r/, "", val)
+        gsub(/^[[:space:]`]+/, "", val)
+        gsub(/[[:space:]`]+$/, "", val)
+        print val
+    }'
+}
+
+is_kebab_case() {
+    printf '%s\n' "$1" | grep -Eq '^[a-z0-9]+(-[a-z0-9]+)*$'
+}
+
+lookup_md_table_cell_by_id() {
+    local file="$1"
+    local target_id="$2"
+    local col="$3"
+    local line row_id
+
+    while IFS= read -r line || [ -n "$line" ]; do
+        if is_md_table_row "$line" && ! is_md_table_separator "$line"; then
+            row_id=$(md_table_cell "$line" 2)
+            if [ "$row_id" = "$target_id" ]; then
+                md_table_cell "$line" "$col"
+                return 0
+            fi
+        fi
+    done < "$file"
+
+    return 1
+}
+
+trim_spaces() {
+    printf '%s\n' "$1" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//'
+}
+
+iterate_semicolon_list() {
+    local list="$1"
+    local item
+    local parts=()
+
+    IFS=';' read -r -a parts <<< "$list"
+    for item in "${parts[@]}"; do
+        item=$(trim_spaces "$item")
+        [ -n "$item" ] && printf '%s\n' "$item"
+    done
+}
+
 # ── 检查 1：技能路径有效性 ──────────────────────────────
 echo ""
 echo "=== 检查 1：技能路径有效性 ==="
@@ -26,7 +90,7 @@ invalid_paths=()
 
 while IFS= read -r line; do
     # 提取 SKILL.md 路径（匹配 `技能/xxx/SKILL.md` 格式）
-    path=$(echo "$line" | grep -oP '`技能/[^`]+/SKILL\.md`' | tr -d '`' || true)
+    path=$(printf '%s\n' "$line" | awk 'match($0, /`技能\/[^`]+\/SKILL\.md`/) { value = substr($0, RSTART + 1, RLENGTH - 2); print value; exit }' || true)
     if [ -n "$path" ]; then
         total_paths=$((total_paths + 1))
         if [ -f "$ROOT/$path" ]; then
@@ -56,14 +120,24 @@ echo "=== 检查 2：暗号唯一性 ==="
 codes=()
 while IFS= read -r line; do
     # 匹配表格行中的暗号列（第3或第4列，格式为 `暗号`）
-    code=$(echo "$line" | grep -oP '(?<=\| )`[^`]+`(?= \|)' | tr -d '`' || true)
+    code=$(printf '%s\n' "$line" | awk -F'|' '{
+        for (i = 2; i < NF; i++) {
+            cell = $i
+            gsub(/^[[:space:]]+|[[:space:]]+$/, "", cell)
+            if (cell ~ /^`[^`]+`$/) {
+                gsub(/`/, "", cell)
+                print cell
+                exit
+            }
+        }
+    }' || true)
     if [ -n "$code" ] && [ "$code" != "暗号" ] && [ "$code" != "暗号（单独触发用）" ]; then
         codes+=("$code")
     fi
 done < "$ROOT/正哥技能召唤书.md"
 
 # 检查重复
-duplicates=$(printf '%s\n' "${codes[@]}" | sort | uniq -d)
+duplicates=$(printf '%s\n' "${codes[@]+"${codes[@]}"}" | sort | uniq -d)
 if [ -z "$duplicates" ]; then
     green "✅ 暗号检查：${#codes[@]} 个暗号，无重复"
     PASS=$((PASS + 1))
@@ -82,7 +156,7 @@ echo "=== 检查 3：CHANGELOG 时效性 ==="
 changelog="$ROOT/技能/CHANGELOG.md"
 if [ -f "$changelog" ]; then
     # 提取最新日期（格式 YYYY-MM-DD 或 YYYY.MM.DD 或 YYYY/MM/DD）
-    latest_date=$(grep -oP '\d{4}[-./]\d{2}[-./]\d{2}' "$changelog" | head -1 || true)
+        latest_date=$(grep -Eo '[0-9]{4}[-./][0-9]{2}[-./][0-9]{2}' "$changelog" | head -1 || true)
     if [ -n "$latest_date" ]; then
         # 统一为 YYYY-MM-DD
         normalized=$(echo "$latest_date" | tr './' '--')
@@ -157,7 +231,7 @@ REQUIRED_PROTOCOLS=(
 
 missing_protocols=()
 for proto in "${REQUIRED_PROTOCOLS[@]}"; do
-    if [ ! -f "$ROOT/技能/协议/$proto" ]; then
+    if [ ! -f "$ROOT/协议/$proto" ]; then
         missing_protocols+=("$proto")
     fi
 done
@@ -231,7 +305,11 @@ for dir in "$ROOT/技能"/*/; do
     else
         # 检查 name 和 description 字段
         # 读取 frontmatter 部分（第一个 --- 到第二个 --- 之间）
-        frontmatter=$(sed -n '1,/^---$/p' "$skill_file" | tail -n +2 | head -n -1)
+        frontmatter=$(awk '
+            NR == 1 && $0 == "---" { in_frontmatter = 1; next }
+            in_frontmatter && $0 == "---" { exit }
+            in_frontmatter { print }
+        ' "$skill_file")
         if ! echo "$frontmatter" | grep -q "^name:"; then
             issues+=("frontmatter缺少name")
         fi
@@ -271,7 +349,7 @@ echo "=== 检查 8：召唤书 ↔ 技能目录双向一致性 ==="
 # 从召唤书提取技能目录名
 book_dirs=()
 while IFS= read -r line; do
-    dir_name=$(echo "$line" | grep -oP '`技能/\K[^/]+(?=/SKILL\.md`)' || true)
+    dir_name=$(printf '%s\n' "$line" | awk 'match($0, /`技能\/[^`]+\/SKILL\.md`/) { value = substr($0, RSTART + 1, RLENGTH - 2); sub(/^技能\//, "", value); sub(/\/SKILL\.md$/, "", value); print value; exit }' || true)
     if [ -n "$dir_name" ]; then
         # 去重
         already=0
@@ -369,7 +447,7 @@ ROLE_FILES=(
 
 missing_role=()
 for rp in "${ROLE_FILES[@]}"; do
-    if [ ! -f "$ROOT/技能/$rp" ]; then
+    if [ ! -f "$ROOT/协议/$rp" ]; then
         missing_role+=("$rp")
     fi
 done
@@ -392,9 +470,9 @@ echo "=== 检查 10：使用指引引用有效性 ==="
 guide_file="$ROOT/使用指引.md"
 if [ -f "$guide_file" ]; then
     guide_fail=0
-    while IFS= read -r line; do
+while IFS= read -r line; do
         # 提取 对外规则库/ 下的路径引用
-        ref_path=$(echo "$line" | grep -oP '对外规则库/[^`\s]+\.md' || true)
+        ref_path=$(printf '%s\n' "$line" | grep -Eo '对外规则库/[^`[:space:]]+\.md' || true)
         if [ -n "$ref_path" ]; then
             if [ ! -f "$ROOT/$ref_path" ]; then
                 guide_fail=$((guide_fail + 1))
@@ -429,8 +507,8 @@ trap 'rm -f "$link_tmp"' EXIT
 
 for md_file in $(find "$ROOT/技能" -name "*.md" -type f 2>/dev/null); do
     md_dir=$(dirname "$md_file")
-    for link_match in $(grep -oP '\[[^\]]*\]\([^)]+\.md\)' "$md_file" 2>/dev/null || true); do
-        link_path=$(echo "$link_match" | grep -oP '(?<=\()\.\.?/[^)]+\.md(?=\))' || true)
+    for link_match in $(grep -Eo '\[[^]]*\]\((\.\./|\.\/)[^)]+\.md\)' "$md_file" 2>/dev/null || true); do
+        link_path=$(printf '%s\n' "$link_match" | awk 'match($0, /\((\.\.\/|\.\/)[^)]+\.md\)/) { value = substr($0, RSTART + 1, RLENGTH - 2); print value; exit }' || true)
         if [ -n "$link_path" ]; then
             link_total=$((link_total + 1))
             resolved=$(cd "$md_dir" && realpath -m "$link_path" 2>/dev/null || echo "$md_dir/$link_path")
@@ -448,6 +526,606 @@ if [ "$link_fail" -eq 0 ]; then
     PASS=$((PASS + 1))
 else
     red "❌ Markdown 链接：${link_fail}/${link_total} 个链接无效（详见上方）"
+    FAIL=$((FAIL + 1))
+fi
+
+# ── 检查 12：MCP 文件树与必需文件存在 ───────────────────
+echo ""
+echo "=== 检查 12：MCP 文件树与必需文件存在 ==="
+
+mcp_required_dirs=(
+    "MCP"
+    "MCP/项目清单"
+    "MCP/配置模板"
+    "MCP/密钥模板"
+)
+
+mcp_required_files=(
+    "MCP/MCP接入总表.md"
+    "MCP/MCP注册表.md"
+    "MCP/CHANGELOG.md"
+    "MCP/项目清单/default.md"
+    "MCP/配置模板/claude.mcp.json.example"
+    "MCP/配置模板/codex.mcp.toml.example"
+    "MCP/密钥模板/mcp-secrets.env.example"
+    "scripts/check_mcp_runtime.sh"
+)
+
+mcp_missing=()
+for dir_path in "${mcp_required_dirs[@]}"; do
+    if [ ! -d "$ROOT/$dir_path" ]; then
+        mcp_missing+=("$dir_path")
+    fi
+done
+
+for file_path in "${mcp_required_files[@]}"; do
+    if [ ! -f "$ROOT/$file_path" ]; then
+        mcp_missing+=("$file_path")
+    fi
+done
+
+if [ ${#mcp_missing[@]} -eq 0 ]; then
+    green "✅ MCP 文件树：目录与必需文件均存在"
+    PASS=$((PASS + 1))
+else
+    red "❌ MCP 文件树：以下目录或文件缺失："
+    for item in "${mcp_missing[@]}"; do
+        red "   - $item"
+    done
+    FAIL=$((FAIL + 1))
+fi
+
+# ── 检查 13：MCP接入总表 -> 项目清单路径有效 ─────────────
+echo ""
+echo "=== 检查 13：MCP接入总表 -> 项目清单路径有效 ==="
+
+mcp_intro="$ROOT/MCP/MCP接入总表.md"
+if [ -f "$mcp_intro" ]; then
+    intro_rows=0
+    intro_fail=0
+    intro_default_found=0
+    intro_seen="|"
+
+    while IFS= read -r line || [ -n "$line" ]; do
+        if is_md_table_row "$line" && ! is_md_table_separator "$line"; then
+            project_id=$(md_table_cell "$line" 2)
+            project_name=$(md_table_cell "$line" 3)
+            list_path=$(md_table_cell "$line" 4)
+            fallback_flag=$(md_table_cell "$line" 5)
+
+            case "$project_id" in
+                project_id|项目id|项目_ID) continue ;;
+            esac
+
+            [ -z "$project_id" ] && continue
+            intro_rows=$((intro_rows + 1))
+
+            if ! is_kebab_case "$project_id" && [ "$project_id" != "default" ]; then
+                intro_fail=$((intro_fail + 1))
+                red "   ❌ 接入总表：project_id 不是 kebab-case → $project_id"
+                continue
+            fi
+
+            if [ -z "$project_name" ]; then
+                intro_fail=$((intro_fail + 1))
+                red "   ❌ 接入总表：$project_id 缺少项目名"
+            fi
+
+            if [ -z "$list_path" ]; then
+                intro_fail=$((intro_fail + 1))
+                red "   ❌ 接入总表：$project_id 缺少清单路径"
+                continue
+            fi
+
+            case "$list_path" in
+                MCP/项目清单/*.md) ;;
+                *)
+                    intro_fail=$((intro_fail + 1))
+                    red "   ❌ 接入总表：$project_id 的清单路径不在 MCP/项目清单/ 下 → $list_path"
+                    continue
+                    ;;
+            esac
+
+            resolved_list_path="$ROOT/$list_path"
+            if [ ! -f "$resolved_list_path" ]; then
+                intro_fail=$((intro_fail + 1))
+                red "   ❌ 接入总表：$project_id 指向的清单不存在 → $list_path"
+            fi
+
+            if [ -z "$fallback_flag" ]; then
+                intro_fail=$((intro_fail + 1))
+                red "   ❌ 接入总表：$project_id 缺少是否默认回退"
+            fi
+
+            case "$intro_seen" in
+                *"|$project_id|"*)
+                    intro_fail=$((intro_fail + 1))
+                    red "   ❌ 接入总表：重复 project_id → $project_id"
+                    ;;
+                *)
+                    intro_seen="$intro_seen$project_id|"
+                    ;;
+            esac
+
+            case "$project_id" in
+                default)
+                    intro_default_found=1
+                    ;;
+            esac
+        fi
+    done < "$mcp_intro"
+
+    if [ "$intro_rows" -eq 0 ]; then
+        intro_fail=$((intro_fail + 1))
+        red "   ❌ 接入总表：未发现有效项目映射行"
+    fi
+
+    if [ "$intro_default_found" -ne 1 ]; then
+        intro_fail=$((intro_fail + 1))
+        red "   ❌ 接入总表：未发现 default 回退行"
+    fi
+
+    if [ "$intro_fail" -eq 0 ]; then
+        green "✅ 接入总表：项目清单路径全部有效"
+        PASS=$((PASS + 1))
+    else
+        FAIL=$((FAIL + 1))
+    fi
+else
+    red "❌ 接入总表文件不存在：$mcp_intro"
+    FAIL=$((FAIL + 1))
+fi
+
+# ── 检查 14：MCP注册表字段完整性与 mcp_id/version/status 约束 ─
+echo ""
+echo "=== 检查 14：MCP注册表字段完整性与 mcp_id/version/status 约束 ==="
+
+mcp_registry="$ROOT/MCP/MCP注册表.md"
+if [ -f "$mcp_registry" ]; then
+    registry_rows=0
+    registry_fail=0
+    registry_seen="|"
+
+    while IFS= read -r line || [ -n "$line" ]; do
+        if is_md_table_row "$line" && ! is_md_table_separator "$line"; then
+            mcp_id=$(md_table_cell "$line" 2)
+            version=$(md_table_cell "$line" 3)
+            status=$(md_table_cell "$line" 4)
+            display_name=$(md_table_cell "$line" 5)
+            purpose=$(md_table_cell "$line" 6)
+            client=$(md_table_cell "$line" 7)
+            connection=$(md_table_cell "$line" 8)
+            template_file=$(md_table_cell "$line" 9)
+            secret_key=$(md_table_cell "$line" 10)
+            check_type=$(md_table_cell "$line" 11)
+            check_target=$(md_table_cell "$line" 12)
+            success_flag=$(md_table_cell "$line" 13)
+            default_enabled=$(md_table_cell "$line" 14)
+            note=$(md_table_cell "$line" 15)
+
+            case "$mcp_id" in
+                mcp_id|MCP_ID|编号) continue ;;
+            esac
+
+            [ -z "$mcp_id" ] && continue
+            registry_rows=$((registry_rows + 1))
+
+            if ! is_kebab_case "$mcp_id"; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：mcp_id 不是 kebab-case → $mcp_id"
+                continue
+            fi
+
+            case "$registry_seen" in
+                *"|$mcp_id|"*)
+                    registry_fail=$((registry_fail + 1))
+                    red "   ❌ 注册表：重复 mcp_id → $mcp_id"
+                    continue
+                    ;;
+                *)
+                    registry_seen="$registry_seen$mcp_id|"
+                    ;;
+            esac
+
+            if [ -z "$version" ]; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：$mcp_id 缺少 version"
+            fi
+
+            if [ -z "$status" ]; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：$mcp_id 缺少 status"
+            fi
+
+            if [ -z "$display_name" ]; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：$mcp_id 缺少显示名"
+            fi
+
+            if [ -z "$purpose" ]; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：$mcp_id 缺少用途"
+            fi
+
+            if [ -z "$client" ]; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：$mcp_id 缺少适用客户端"
+            fi
+
+            if [ -z "$connection" ]; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：$mcp_id 缺少连接方式"
+            fi
+
+            if [ -z "$template_file" ]; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：$mcp_id 缺少模板文件"
+            else
+                template_count=0
+                while IFS= read -r template_ref; do
+                    [ -n "$template_ref" ] || continue
+                    template_count=$((template_count + 1))
+                    case "$template_ref" in
+                        *.example) ;;
+                        *)
+                            registry_fail=$((registry_fail + 1))
+                            red "   ❌ 注册表：$mcp_id 模板文件不是 .example 结尾 → $template_ref"
+                            ;;
+                    esac
+                    if [ ! -f "$ROOT/$template_ref" ]; then
+                        registry_fail=$((registry_fail + 1))
+                        red "   ❌ 注册表：$mcp_id 模板文件不存在 → $template_ref"
+                    fi
+                done < <(iterate_semicolon_list "$template_file")
+
+                if [ "$template_count" -eq 0 ]; then
+                    registry_fail=$((registry_fail + 1))
+                    red "   ❌ 注册表：$mcp_id 模板文件列表为空"
+                fi
+            fi
+
+            if [ -z "$secret_key" ]; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：$mcp_id 缺少密钥键"
+            fi
+
+            if [ -z "$check_type" ]; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：$mcp_id 缺少可用性检查类型"
+            fi
+
+            if [ -z "$check_target" ]; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：$mcp_id 缺少可用性检查目标"
+            fi
+
+            if [ -z "$success_flag" ]; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：$mcp_id 缺少成功标志"
+            fi
+
+            if [ -z "$default_enabled" ]; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：$mcp_id 缺少默认启用标记"
+            fi
+
+            if [ -z "$note" ]; then
+                registry_fail=$((registry_fail + 1))
+                red "   ❌ 注册表：$mcp_id 缺少备注"
+            fi
+        fi
+    done < "$mcp_registry"
+
+    if [ "$registry_rows" -eq 0 ]; then
+        registry_fail=$((registry_fail + 1))
+        red "   ❌ 注册表：未发现有效 MCP 条目"
+    fi
+
+    if [ "$registry_fail" -eq 0 ]; then
+        green "✅ 注册表：字段完整且 mcp_id 唯一"
+        PASS=$((PASS + 1))
+    else
+        FAIL=$((FAIL + 1))
+    fi
+else
+    red "❌ 注册表文件不存在：$mcp_registry"
+    FAIL=$((FAIL + 1))
+fi
+
+# ── 检查 15：项目清单内联摘要 与 注册表一致 ─────────────
+echo ""
+echo "=== 检查 15：项目清单内联摘要 与 注册表一致 ==="
+
+project_manifest_dir="$ROOT/MCP/项目清单"
+if [ -d "$project_manifest_dir" ]; then
+    project_manifest_fail=0
+    project_manifest_count=0
+
+    for project_file in "$project_manifest_dir"/*.md; do
+        [ -e "$project_file" ] || continue
+        project_manifest_count=$((project_manifest_count + 1))
+        project_basename=$(basename "$project_file" .md)
+        current_section=""
+        basic_project_id=""
+        basic_project_name=""
+        basic_path_hint=""
+        basic_source=""
+        enabled_rows=0
+        disabled_rows=0
+
+        while IFS= read -r line || [ -n "$line" ]; do
+            case "$line" in
+                *"基本信息"*) current_section="basic" ;;
+                *"启用表"*) current_section="enabled" ;;
+                *"禁用表"*) current_section="disabled" ;;
+            esac
+
+            if printf '%s\n' "$line" | grep -q 'source=registry'; then
+                basic_source="registry"
+            fi
+
+            if is_md_table_row "$line" && ! is_md_table_separator "$line"; then
+                case "$current_section" in
+                    basic)
+                        key=$(md_table_cell "$line" 2)
+                        value=$(md_table_cell "$line" 3)
+                        case "$key" in
+                            字段|key|值|字段名|项目字段) continue ;;
+                            project_id) basic_project_id="$value" ;;
+                            项目名) basic_project_name="$value" ;;
+                            path_hint) basic_path_hint="$value" ;;
+                            source) basic_source="$value" ;;
+                        esac
+                        ;;
+                    enabled)
+                        mcp_id=$(md_table_cell "$line" 2)
+                        version=$(md_table_cell "$line" 3)
+                        purpose_summary=$(md_table_cell "$line" 4)
+                        template_file=$(md_table_cell "$line" 5)
+                        secret_key=$(md_table_cell "$line" 6)
+                        check_summary=$(md_table_cell "$line" 7)
+
+                        case "$mcp_id" in
+                            mcp_id|编号) continue ;;
+                        esac
+
+                        [ -z "$mcp_id" ] && continue
+                        enabled_rows=$((enabled_rows + 1))
+
+                        registry_version=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 3 || true)
+                        registry_template=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 9 || true)
+                        registry_secret_key=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 10 || true)
+                        registry_check_type=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 11 || true)
+                        registry_check_target=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 12 || true)
+
+                        if [ -z "$purpose_summary" ]; then
+                            project_manifest_fail=$((project_manifest_fail + 1))
+                            red "   ❌ 项目清单：$project_basename 的 $mcp_id 缺少用途摘要"
+                        fi
+
+                        if [ -z "$registry_version" ]; then
+                            project_manifest_fail=$((project_manifest_fail + 1))
+                            red "   ❌ 项目清单：$project_basename 的 $mcp_id 不在注册表中"
+                            continue
+                        fi
+
+                        if [ "$version" != "$registry_version" ]; then
+                            project_manifest_fail=$((project_manifest_fail + 1))
+                            red "   ❌ 项目清单：$project_basename 的 $mcp_id version 与注册表不一致"
+                        fi
+
+                        if [ "$template_file" != "$registry_template" ]; then
+                            project_manifest_fail=$((project_manifest_fail + 1))
+                            red "   ❌ 项目清单：$project_basename 的 $mcp_id 模板文件与注册表不一致"
+                        fi
+
+                        if [ "$secret_key" != "$registry_secret_key" ]; then
+                            project_manifest_fail=$((project_manifest_fail + 1))
+                            red "   ❌ 项目清单：$project_basename 的 $mcp_id 密钥键与注册表不一致"
+                        fi
+
+                        case "$check_summary" in
+                            *"$registry_check_type"*"$registry_check_target"*|*"$registry_check_target"*"$registry_check_type"*)
+                                ;;
+                            *)
+                                project_manifest_fail=$((project_manifest_fail + 1))
+                                red "   ❌ 项目清单：$project_basename 的 $mcp_id 可用性检查未同时包含类型与目标"
+                                ;;
+                        esac
+
+                        if [ -z "$template_file" ]; then
+                            project_manifest_fail=$((project_manifest_fail + 1))
+                            red "   ❌ 项目清单：$project_basename 的 $mcp_id 缺少模板文件"
+                        else
+                            manifest_template_count=0
+                            while IFS= read -r template_ref; do
+                                [ -n "$template_ref" ] || continue
+                                manifest_template_count=$((manifest_template_count + 1))
+                                if [ ! -f "$ROOT/$template_ref" ]; then
+                                    project_manifest_fail=$((project_manifest_fail + 1))
+                                    red "   ❌ 项目清单：$project_basename 的 $mcp_id 模板文件不存在 → $template_ref"
+                                fi
+                            done < <(iterate_semicolon_list "$template_file")
+
+                            if [ "$manifest_template_count" -eq 0 ]; then
+                                project_manifest_fail=$((project_manifest_fail + 1))
+                                red "   ❌ 项目清单：$project_basename 的 $mcp_id 模板文件列表为空"
+                            fi
+                        fi
+
+                        if ! is_kebab_case "$mcp_id"; then
+                            project_manifest_fail=$((project_manifest_fail + 1))
+                            red "   ❌ 项目清单：$project_basename 的 mcp_id 不是 kebab-case → $mcp_id"
+                        fi
+                        ;;
+                    disabled)
+                        mcp_id=$(md_table_cell "$line" 2)
+                        disabled_reason=$(md_table_cell "$line" 3)
+
+                        case "$mcp_id" in
+                            mcp_id|编号) continue ;;
+                        esac
+
+                        [ -z "$mcp_id" ] && continue
+                        disabled_rows=$((disabled_rows + 1))
+
+                        if [ -z "$disabled_reason" ]; then
+                            project_manifest_fail=$((project_manifest_fail + 1))
+                            red "   ❌ 项目清单：$project_basename 的 $mcp_id 缺少禁用原因"
+                        fi
+
+                        if [ -z "$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 2 || true)" ]; then
+                            project_manifest_fail=$((project_manifest_fail + 1))
+                            red "   ❌ 项目清单：$project_basename 的禁用项不在注册表中 → $mcp_id"
+                        fi
+                        ;;
+                esac
+            fi
+        done < "$project_file"
+
+        if [ "$basic_project_id" != "$project_basename" ]; then
+            project_manifest_fail=$((project_manifest_fail + 1))
+            red "   ❌ 项目清单：文件名与 project_id 不一致 → $project_basename"
+        fi
+
+        if [ -z "$basic_project_name" ]; then
+            project_manifest_fail=$((project_manifest_fail + 1))
+            red "   ❌ 项目清单：$project_basename 缺少项目名"
+        fi
+
+        if [ -z "$basic_project_id" ]; then
+            project_manifest_fail=$((project_manifest_fail + 1))
+            red "   ❌ 项目清单：$project_basename 缺少 project_id"
+        elif ! is_kebab_case "$basic_project_id" && [ "$basic_project_id" != "default" ]; then
+            project_manifest_fail=$((project_manifest_fail + 1))
+            red "   ❌ 项目清单：project_id 不是 kebab-case → $basic_project_id"
+        fi
+
+        if [ -z "$basic_path_hint" ]; then
+            project_manifest_fail=$((project_manifest_fail + 1))
+            red "   ❌ 项目清单：$project_basename 缺少 path_hint"
+        fi
+
+        if [ "$basic_source" != "registry" ]; then
+            project_manifest_fail=$((project_manifest_fail + 1))
+            red "   ❌ 项目清单：$project_basename 缺少 source=registry"
+        fi
+
+        if [ "$enabled_rows" -eq 0 ] && [ "$disabled_rows" -eq 0 ]; then
+            project_manifest_fail=$((project_manifest_fail + 1))
+            red "   ❌ 项目清单：$project_basename 没有启用或禁用行"
+        fi
+    done
+
+    if [ "$project_manifest_count" -eq 0 ]; then
+        project_manifest_fail=$((project_manifest_fail + 1))
+        red "   ❌ 项目清单：未发现任何清单文件"
+    fi
+
+    if [ "$project_manifest_fail" -eq 0 ]; then
+        green "✅ 项目清单：内联摘要与注册表一致"
+        PASS=$((PASS + 1))
+    else
+        FAIL=$((FAIL + 1))
+    fi
+else
+    red "❌ 项目清单目录不存在：$project_manifest_dir"
+    FAIL=$((FAIL + 1))
+fi
+
+# ── 检查 16：配置模板 / CHANGELOG / secrets example 合规 ───
+echo ""
+echo "=== 检查 16：配置模板 / CHANGELOG / secrets example 合规 ==="
+
+mcp_template_fail=0
+
+for required in \
+    "$ROOT/MCP/配置模板/claude.mcp.json.example" \
+    "$ROOT/MCP/配置模板/codex.mcp.toml.example" \
+    "$ROOT/MCP/密钥模板/mcp-secrets.env.example" \
+    "$ROOT/MCP/CHANGELOG.md"
+do
+    if [ ! -f "$required" ]; then
+        mcp_template_fail=$((mcp_template_fail + 1))
+        red "   ❌ MCP 合规：文件不存在 → ${required#"$ROOT/"}"
+    fi
+done
+
+if [ -f "$ROOT/MCP/配置模板/claude.mcp.json.example" ]; then
+    if ! grep -q '"mcpServers"' "$ROOT/MCP/配置模板/claude.mcp.json.example"; then
+        mcp_template_fail=$((mcp_template_fail + 1))
+        red "   ❌ MCP 合规：claude.mcp.json.example 缺少 mcpServers"
+    fi
+    if command -v python3 >/dev/null 2>&1; then
+        if ! python3 -m json.tool "$ROOT/MCP/配置模板/claude.mcp.json.example" >/dev/null 2>&1; then
+            mcp_template_fail=$((mcp_template_fail + 1))
+            red "   ❌ MCP 合规：claude.mcp.json.example 不是有效 JSON"
+        fi
+    fi
+fi
+
+if [ -f "$ROOT/MCP/配置模板/codex.mcp.toml.example" ]; then
+    if ! grep -q '^\[mcp_servers\.' "$ROOT/MCP/配置模板/codex.mcp.toml.example"; then
+        mcp_template_fail=$((mcp_template_fail + 1))
+        red "   ❌ MCP 合规：codex.mcp.toml.example 缺少 [mcp_servers.<mcp_id>] 段"
+    fi
+    if command -v python3 >/dev/null 2>&1; then
+        if ! python3 - <<'PY' "$ROOT/MCP/配置模板/codex.mcp.toml.example" >/dev/null 2>&1
+import pathlib
+import sys
+
+try:
+    import tomllib
+except ModuleNotFoundError:
+    sys.exit(0)
+
+path = pathlib.Path(sys.argv[1])
+tomllib.loads(path.read_text(encoding="utf-8"))
+PY
+        then
+            mcp_template_fail=$((mcp_template_fail + 1))
+            red "   ❌ MCP 合规：codex.mcp.toml.example 不是有效 TOML"
+        fi
+    fi
+fi
+
+secret_pattern='(ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9]{20,}|AIza[0-9A-Za-z_-]{20,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,})'
+secret_hits=$(grep -R -n -E "$secret_pattern" "$ROOT/MCP" 2>/dev/null || true)
+if [ -n "$secret_hits" ]; then
+    mcp_template_fail=$((mcp_template_fail + 1))
+    red "   ❌ MCP 合规：发现疑似真实密钥"
+    echo "$secret_hits" | while IFS= read -r hit; do
+        [ -n "$hit" ] && red "      - $hit"
+    done
+fi
+
+if [ -f "$mcp_registry" ] && [ -f "$ROOT/MCP/密钥模板/mcp-secrets.env.example" ]; then
+    while IFS= read -r line || [ -n "$line" ]; do
+        if is_md_table_row "$line" && ! is_md_table_separator "$line"; then
+            mcp_id=$(md_table_cell "$line" 2)
+            secret_key=$(md_table_cell "$line" 10)
+
+            case "$mcp_id" in
+                mcp_id|MCP_ID|编号) continue ;;
+            esac
+
+            [ -z "$mcp_id" ] && continue
+            case "$secret_key" in
+                ""|none) continue ;;
+            esac
+
+            if ! grep -Eq "^${secret_key}=" "$ROOT/MCP/密钥模板/mcp-secrets.env.example"; then
+                mcp_template_fail=$((mcp_template_fail + 1))
+                red "   ❌ MCP 合规：密钥模板缺少 $mcp_id 所需键 → $secret_key"
+            fi
+        fi
+    done < "$mcp_registry"
+fi
+
+if [ "$mcp_template_fail" -eq 0 ]; then
+    green "✅ MCP 合规：模板、CHANGELOG 与密钥示例符合要求"
+    PASS=$((PASS + 1))
+else
     FAIL=$((FAIL + 1))
 fi
 
