@@ -1188,6 +1188,27 @@ const SKILLS = {
     ]
   },
 
+  '产品逻辑师': {
+    group: '造工具', color: 'var(--c-tool)', icon: '&#129513;',
+    trigger: '理清逻辑',
+    desc: '从模块清单推导系统运转逻辑，理清怎么跑通',
+    tldr: '输入：project_context.md → 输出：product_logic.md（场景+联动+触发规则）',
+    protocols: ['R','F','J','D','A','W'],
+    roles: { exec: '设计主笔（产品逻辑师）', audit: '逻辑审查官 + 完整性审查官', comm: '业务翻译官' },
+    steps: [
+      { n: 0, title: '检查上游输入', type: 'internal', desc: '读取 design/project_context.md，提取模块清单。无文件则终止。' },
+      { n: 1, title: '确认模块清单', type: 'user', desc: '列出所有功能模块，确认是否还是你要的。' },
+      { n: 2, title: '找出主场景', type: 'user', desc: '你平时最常做的一件事是什么？从这个场景开始理清整个系统。' },
+      { n: 3, title: '逐步走通主场景', type: 'user', desc: '围绕主场景逐步追问：做完这一步之后呢？在哪个模块操作？出了问题怎么办？' },
+      { n: 4, title: '补充其他场景', type: 'user', desc: '主场景走通后，补充其他常见场景，直到所有模块都已覆盖。' },
+      { n: 5, title: '梳理模块联动关系', type: 'user', desc: '模块A完成某操作→自动触发模块B的某反应。逐条确认。' },
+      { n: 6, title: '梳理触发规则', type: 'user', desc: '哪些事情需要自动提醒或自动触发？逐条确认条件+动作+通知谁。' },
+      { n: 7, title: '三专家终审互撕', type: 'internal', desc: '至少5回合互撕：流程连贯吗？模块全覆盖吗？联动有断头路吗？' },
+      { n: 8, title: '可验证交付校验', type: 'internal', desc: '检查场景闭环、模块覆盖、联动无断点、触发规则明确。' },
+      { n: 9, title: '输出终稿', type: 'user', desc: '交付 product_logic.md：N个场景、M条联动、K条触发规则。' }
+    ]
+  },
+
   '产品设计师': {
     group: '造工具', color: 'var(--c-tool)', icon: '&#127912;',
     trigger: '画原型',
@@ -1265,6 +1286,23 @@ const SKILLS = {
       { n: 6, title: '自验证', type: 'internal', desc: '3人专家互撕审查，逐条校验。' },
       { n: 7, title: '汇报', type: 'user', desc: '展示成果，确认无误。' },
       { n: 8, title: '输出终稿', type: 'user', desc: '交付 SKILL.md 并同步更新召唤书和 CHANGELOG。' }
+    ]
+  },
+
+  '全景图生成师': {
+    group: '造技能', color: 'var(--c-meta)', icon: '&#127758;',
+    trigger: '更新全景图',
+    desc: '扫描仓库现状，重新生成系统全景图 HTML',
+    tldr: '输入：用户说"更新全景图" → 输出：重新生成的系统全景图.html',
+    protocols: ['R','D','A','W'],
+    roles: { exec: '工程主笔（全景图主笔）', audit: '完整性审查官', comm: '技术翻译官' },
+    steps: [
+      { n: 1, title: '扫描仓库现状', type: 'internal', desc: '扫描所有技能、协议、角色文件，提取分组信息。' },
+      { n: 2, title: '提取数据', type: 'internal', desc: '从每个文件提取结构化字段（描述、暗号、协议、角色、步骤）。' },
+      { n: 3, title: '生成 HTML', type: 'internal', desc: '用提取的数据更新 SKILLS/PROTOCOLS/ROLES/GROUPS，保留 CSS 和渲染函数不变。' },
+      { n: 4, title: '校验', type: 'internal', desc: '对比扫描数和生成数，确认一致；检查 GROUPS 引用的技能都存在。' },
+      { n: 5, title: '部署到线上', type: 'internal', desc: '复制到公开站点/index.html，执行 netlify deploy。' },
+      { n: 6, title: '汇报', type: 'user', desc: '告知扫描到多少技能/协议/角色，相比上一版有什么变化。' }
     ]
   },
 
@@ -1354,8 +1392,8 @@ const GROUPS = [
   { id: '答案与判断', color: 'var(--c-judgment)', skills: ['答案澄清师', '调研判断师'] },
   { id: '沉淀能力', color: 'var(--c-method)', skills: ['方法提炼师', '教材编写师'] },
   { id: '自动化能力', color: 'var(--c-automation)', skills: ['循环定时任务总控', '循环任务师', '定时任务师', '组合任务师'] },
-  { id: '造工具', color: 'var(--c-tool)', skills: ['造工具总控', '需求规划师', '产品设计师', '全栈编码师', '部署上线师', '代码维护师'] },
-  { id: '造技能', color: 'var(--c-meta)', skills: ['Skill编译器'] },
+  { id: '造工具', color: 'var(--c-tool)', skills: ['造工具总控', '需求规划师', '产品逻辑师', '产品设计师', '全栈编码师', '部署上线师', '代码维护师'] },
+  { id: '造技能', color: 'var(--c-meta)', skills: ['Skill编译器', '全景图生成师'] },
   { id: '质量保障', color: 'var(--c-quality)', skills: ['测试循环师'] },
   { id: '万能兜底', color: 'var(--c-fallback)', skills: ['通用任务引擎'] }
 ];
