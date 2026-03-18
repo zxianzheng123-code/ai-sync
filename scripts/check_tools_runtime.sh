@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# MCP 运行时可用性检查
-# 用法：bash scripts/check_mcp_runtime.sh <project_id> [--secrets-file PATH]
+# 工具运行时可用性检查（MCP + CLI）
+# 用法：bash scripts/check_tools_runtime.sh <project_id> [--secrets-file PATH]
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-REGISTRY_FILE="$ROOT/MCP/MCP注册表.md"
-PROJECT_DIR="$ROOT/MCP/项目清单"
+REGISTRY_FILE="$ROOT/工具注册表.md"
+PROJECT_DIR="$ROOT/项目工具清单"
 SECRETS_FILE="$HOME/.config/ai-sync/mcp-secrets.env"
 
 PROJECT_ID=""
@@ -16,11 +16,11 @@ OVERALL_FAIL=0
 usage() {
     cat <<'EOF'
 用法：
-  bash scripts/check_mcp_runtime.sh <project_id> [--secrets-file PATH]
+  bash scripts/check_tools_runtime.sh <project_id> [--secrets-file PATH]
 
 示例：
-  bash scripts/check_mcp_runtime.sh default
-  bash scripts/check_mcp_runtime.sh my-project --secrets-file /tmp/mcp.env
+  bash scripts/check_tools_runtime.sh default
+  bash scripts/check_tools_runtime.sh my-project --secrets-file /tmp/mcp.env
 EOF
 }
 
@@ -189,21 +189,29 @@ ENABLED_COUNT=0
 
 while IFS= read -r line || [ -n "$line" ]; do
     case "$line" in
-        *"启用表"*) CURRENT_SECTION="enabled" ;;
+        *"启用 MCP"*) CURRENT_SECTION="enabled_mcp" ;;
+        *"启用 CLI"*) CURRENT_SECTION="enabled_cli" ;;
         *"禁用表"*) CURRENT_SECTION="disabled" ;;
     esac
 
-    if [ "$CURRENT_SECTION" = "enabled" ] && is_md_table_row "$line" && ! is_md_table_separator "$line"; then
+    if [ "$CURRENT_SECTION" = "enabled_mcp" ] && is_md_table_row "$line" && ! is_md_table_separator "$line"; then
         mcp_id=$(md_table_cell "$line" 2)
         case "$mcp_id" in
-            mcp_id|编号|"") continue ;;
+            tool_id|mcp_id|编号|"") continue ;;
         esac
 
         ENABLED_COUNT=$((ENABLED_COUNT + 1))
 
-        secret_key=$(lookup_md_table_cell_by_id "$REGISTRY_FILE" "$mcp_id" 10 || true)
-        check_type=$(lookup_md_table_cell_by_id "$REGISTRY_FILE" "$mcp_id" 11 || true)
-        check_target=$(lookup_md_table_cell_by_id "$REGISTRY_FILE" "$mcp_id" 12 || true)
+        tool_type=$(lookup_md_table_cell_by_id "$REGISTRY_FILE" "$mcp_id" 3 || true)
+        secret_key=$(lookup_md_table_cell_by_id "$REGISTRY_FILE" "$mcp_id" 11 || true)
+        check_type=$(lookup_md_table_cell_by_id "$REGISTRY_FILE" "$mcp_id" 12 || true)
+        check_target=$(lookup_md_table_cell_by_id "$REGISTRY_FILE" "$mcp_id" 13 || true)
+
+        if [ "$tool_type" != "mcp" ]; then
+            OVERALL_FAIL=1
+            result_line "FAIL" "$mcp_id" "注册表中的类型不是 mcp"
+            continue
+        fi
 
         if [ -z "$check_type" ] || [ -z "$check_target" ]; then
             OVERALL_FAIL=1

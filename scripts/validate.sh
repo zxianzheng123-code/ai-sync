@@ -529,26 +529,28 @@ else
     FAIL=$((FAIL + 1))
 fi
 
-# ── 检查 12：MCP 文件树与必需文件存在 ───────────────────
+# ── 检查 12：工具体系文件树与必需文件存在 ───────────────────
 echo ""
-echo "=== 检查 12：MCP 文件树与必需文件存在 ==="
+echo "=== 检查 12：工具体系文件树与必需文件存在 ==="
 
 mcp_required_dirs=(
     "MCP"
-    "MCP/项目清单"
     "MCP/配置模板"
     "MCP/密钥模板"
+    "CLI"
+    "项目工具清单"
 )
 
 mcp_required_files=(
+    "工具注册表.md"
     "MCP/MCP接入总表.md"
-    "MCP/MCP注册表.md"
     "MCP/CHANGELOG.md"
-    "MCP/项目清单/default.md"
+    "CLI/CHANGELOG.md"
+    "项目工具清单/default.md"
     "MCP/配置模板/claude.mcp.json.example"
     "MCP/配置模板/codex.mcp.toml.example"
     "MCP/密钥模板/mcp-secrets.env.example"
-    "scripts/check_mcp_runtime.sh"
+    "scripts/check_tools_runtime.sh"
 )
 
 mcp_missing=()
@@ -565,19 +567,19 @@ for file_path in "${mcp_required_files[@]}"; do
 done
 
 if [ ${#mcp_missing[@]} -eq 0 ]; then
-    green "✅ MCP 文件树：目录与必需文件均存在"
+    green "✅ 工具体系文件树：目录与必需文件均存在"
     PASS=$((PASS + 1))
 else
-    red "❌ MCP 文件树：以下目录或文件缺失："
+    red "❌ 工具体系文件树：以下目录或文件缺失："
     for item in "${mcp_missing[@]}"; do
         red "   - $item"
     done
     FAIL=$((FAIL + 1))
 fi
 
-# ── 检查 13：MCP接入总表 -> 项目清单路径有效 ─────────────
+# ── 检查 13：MCP接入总表 -> 项目工具清单路径有效 ─────────────
 echo ""
-echo "=== 检查 13：MCP接入总表 -> 项目清单路径有效 ==="
+echo "=== 检查 13：MCP接入总表 -> 项目工具清单路径有效 ==="
 
 mcp_intro="$ROOT/MCP/MCP接入总表.md"
 if [ -f "$mcp_intro" ]; then
@@ -618,10 +620,10 @@ if [ -f "$mcp_intro" ]; then
             fi
 
             case "$list_path" in
-                MCP/项目清单/*.md) ;;
+                项目工具清单/*.md) ;;
                 *)
                     intro_fail=$((intro_fail + 1))
-                    red "   ❌ 接入总表：$project_id 的清单路径不在 MCP/项目清单/ 下 → $list_path"
+                    red "   ❌ 接入总表：$project_id 的清单路径不在 项目工具清单/ 下 → $list_path"
                     continue
                     ;;
             esac
@@ -666,7 +668,7 @@ if [ -f "$mcp_intro" ]; then
     fi
 
     if [ "$intro_fail" -eq 0 ]; then
-        green "✅ 接入总表：项目清单路径全部有效"
+        green "✅ 接入总表：项目工具清单路径全部有效"
         PASS=$((PASS + 1))
     else
         FAIL=$((FAIL + 1))
@@ -676,11 +678,11 @@ else
     FAIL=$((FAIL + 1))
 fi
 
-# ── 检查 14：MCP注册表字段完整性与 mcp_id/version/status 约束 ─
+# ── 检查 14：工具注册表字段完整性与 tool_id/类型 约束 ─
 echo ""
-echo "=== 检查 14：MCP注册表字段完整性与 mcp_id/version/status 约束 ==="
+echo "=== 检查 14：工具注册表字段完整性与 tool_id/类型 约束 ==="
 
-mcp_registry="$ROOT/MCP/MCP注册表.md"
+mcp_registry="$ROOT/工具注册表.md"
 if [ -f "$mcp_registry" ]; then
     registry_rows=0
     registry_fail=0
@@ -689,22 +691,15 @@ if [ -f "$mcp_registry" ]; then
     while IFS= read -r line || [ -n "$line" ]; do
         if is_md_table_row "$line" && ! is_md_table_separator "$line"; then
             mcp_id=$(md_table_cell "$line" 2)
-            version=$(md_table_cell "$line" 3)
-            status=$(md_table_cell "$line" 4)
-            display_name=$(md_table_cell "$line" 5)
-            purpose=$(md_table_cell "$line" 6)
-            client=$(md_table_cell "$line" 7)
-            connection=$(md_table_cell "$line" 8)
-            template_file=$(md_table_cell "$line" 9)
-            secret_key=$(md_table_cell "$line" 10)
-            check_type=$(md_table_cell "$line" 11)
-            check_target=$(md_table_cell "$line" 12)
-            success_flag=$(md_table_cell "$line" 13)
-            default_enabled=$(md_table_cell "$line" 14)
-            note=$(md_table_cell "$line" 15)
+            tool_type=$(md_table_cell "$line" 3)
+            version=$(md_table_cell "$line" 4)
+            status=$(md_table_cell "$line" 5)
+            display_name=$(md_table_cell "$line" 6)
+            purpose=$(md_table_cell "$line" 7)
+            client=$(md_table_cell "$line" 8)
 
             case "$mcp_id" in
-                mcp_id|MCP_ID|编号) continue ;;
+                tool_id|mcp_id|MCP_ID|编号) continue ;;
             esac
 
             [ -z "$mcp_id" ] && continue
@@ -712,14 +707,14 @@ if [ -f "$mcp_registry" ]; then
 
             if ! is_kebab_case "$mcp_id"; then
                 registry_fail=$((registry_fail + 1))
-                red "   ❌ 注册表：mcp_id 不是 kebab-case → $mcp_id"
+                red "   ❌ 注册表：tool_id 不是 kebab-case → $mcp_id"
                 continue
             fi
 
             case "$registry_seen" in
                 *"|$mcp_id|"*)
                     registry_fail=$((registry_fail + 1))
-                    red "   ❌ 注册表：重复 mcp_id → $mcp_id"
+                    red "   ❌ 注册表：重复 tool_id → $mcp_id"
                     continue
                     ;;
                 *)
@@ -727,15 +722,14 @@ if [ -f "$mcp_registry" ]; then
                     ;;
             esac
 
-            if [ -z "$version" ]; then
-                registry_fail=$((registry_fail + 1))
-                red "   ❌ 注册表：$mcp_id 缺少 version"
-            fi
-
-            if [ -z "$status" ]; then
-                registry_fail=$((registry_fail + 1))
-                red "   ❌ 注册表：$mcp_id 缺少 status"
-            fi
+            case "$tool_type" in
+                mcp|cli|plugin) ;;
+                *)
+                    registry_fail=$((registry_fail + 1))
+                    red "   ❌ 注册表：$mcp_id 类型无效（须为 mcp/cli/plugin）→ $tool_type"
+                    continue
+                    ;;
+            esac
 
             if [ -z "$display_name" ]; then
                 registry_fail=$((registry_fail + 1))
@@ -752,77 +746,67 @@ if [ -f "$mcp_registry" ]; then
                 red "   ❌ 注册表：$mcp_id 缺少适用客户端"
             fi
 
-            if [ -z "$connection" ]; then
-                registry_fail=$((registry_fail + 1))
-                red "   ❌ 注册表：$mcp_id 缺少连接方式"
-            fi
+            case "$tool_type" in
+                mcp|plugin)
+                    connection=$(md_table_cell "$line" 9)
+                    template_file=$(md_table_cell "$line" 10)
+                    secret_key=$(md_table_cell "$line" 11)
+                    check_type=$(md_table_cell "$line" 12)
+                    check_target=$(md_table_cell "$line" 13)
+                    success_flag=$(md_table_cell "$line" 14)
+                    default_enabled=$(md_table_cell "$line" 15)
+                    note=$(md_table_cell "$line" 16)
 
-            if [ -z "$template_file" ]; then
-                registry_fail=$((registry_fail + 1))
-                red "   ❌ 注册表：$mcp_id 缺少模板文件"
-            else
-                template_count=0
-                while IFS= read -r template_ref; do
-                    [ -n "$template_ref" ] || continue
-                    template_count=$((template_count + 1))
-                    case "$template_ref" in
-                        *.example) ;;
-                        *)
-                            registry_fail=$((registry_fail + 1))
-                            red "   ❌ 注册表：$mcp_id 模板文件不是 .example 结尾 → $template_ref"
-                            ;;
-                    esac
-                    if [ ! -f "$ROOT/$template_ref" ]; then
+                    if [ -z "$version" ]; then
                         registry_fail=$((registry_fail + 1))
-                        red "   ❌ 注册表：$mcp_id 模板文件不存在 → $template_ref"
+                        red "   ❌ 注册表：$mcp_id 缺少 version"
                     fi
-                done < <(iterate_semicolon_list "$template_file")
 
-                if [ "$template_count" -eq 0 ]; then
-                    registry_fail=$((registry_fail + 1))
-                    red "   ❌ 注册表：$mcp_id 模板文件列表为空"
-                fi
-            fi
+                    if [ "$tool_type" = "mcp" ]; then
+                        if [ -n "$template_file" ] && [ "$template_file" != "—" ]; then
+                            while IFS= read -r template_ref; do
+                                [ -n "$template_ref" ] || continue
+                                case "$template_ref" in
+                                    *.example) ;;
+                                    *)
+                                        registry_fail=$((registry_fail + 1))
+                                        red "   ❌ 注册表：$mcp_id 模板文件不是 .example 结尾 → $template_ref"
+                                        ;;
+                                esac
+                                if [ ! -f "$ROOT/$template_ref" ]; then
+                                    registry_fail=$((registry_fail + 1))
+                                    red "   ❌ 注册表：$mcp_id 模板文件不存在 → $template_ref"
+                                fi
+                            done < <(iterate_semicolon_list "$template_file")
+                        fi
+                    fi
+                    ;;
+                cli)
+                    install_cmd=$(md_table_cell "$line" 9)
+                    check_cmd=$(md_table_cell "$line" 10)
+                    default_enabled=$(md_table_cell "$line" 11)
+                    note=$(md_table_cell "$line" 12)
 
-            if [ -z "$secret_key" ]; then
-                registry_fail=$((registry_fail + 1))
-                red "   ❌ 注册表：$mcp_id 缺少密钥键"
-            fi
-
-            if [ -z "$check_type" ]; then
-                registry_fail=$((registry_fail + 1))
-                red "   ❌ 注册表：$mcp_id 缺少可用性检查类型"
-            fi
-
-            if [ -z "$check_target" ]; then
-                registry_fail=$((registry_fail + 1))
-                red "   ❌ 注册表：$mcp_id 缺少可用性检查目标"
-            fi
-
-            if [ -z "$success_flag" ]; then
-                registry_fail=$((registry_fail + 1))
-                red "   ❌ 注册表：$mcp_id 缺少成功标志"
-            fi
-
-            if [ -z "$default_enabled" ]; then
-                registry_fail=$((registry_fail + 1))
-                red "   ❌ 注册表：$mcp_id 缺少默认启用标记"
-            fi
-
-            if [ -z "$note" ]; then
-                registry_fail=$((registry_fail + 1))
-                red "   ❌ 注册表：$mcp_id 缺少备注"
-            fi
+                    if [ -z "$install_cmd" ]; then
+                        registry_fail=$((registry_fail + 1))
+                        red "   ❌ 注册表：$mcp_id 缺少安装命令"
+                    fi
+                    if [ -z "$check_cmd" ]; then
+                        registry_fail=$((registry_fail + 1))
+                        red "   ❌ 注册表：$mcp_id 缺少检查命令"
+                    fi
+                    ;;
+            esac
         fi
     done < "$mcp_registry"
 
     if [ "$registry_rows" -eq 0 ]; then
         registry_fail=$((registry_fail + 1))
-        red "   ❌ 注册表：未发现有效 MCP 条目"
+        red "   ❌ 注册表：未发现有效工具条目"
     fi
 
     if [ "$registry_fail" -eq 0 ]; then
-        green "✅ 注册表：字段完整且 mcp_id 唯一"
+        green "✅ 注册表：字段完整且 tool_id 唯一"
         PASS=$((PASS + 1))
     else
         FAIL=$((FAIL + 1))
@@ -832,11 +816,11 @@ else
     FAIL=$((FAIL + 1))
 fi
 
-# ── 检查 15：项目清单内联摘要 与 注册表一致 ─────────────
+# ── 检查 15：项目工具清单内联摘要 与 注册表一致 ─────────────
 echo ""
-echo "=== 检查 15：项目清单内联摘要 与 注册表一致 ==="
+echo "=== 检查 15：项目工具清单内联摘要 与 注册表一致 ==="
 
-project_manifest_dir="$ROOT/MCP/项目清单"
+project_manifest_dir="$ROOT/项目工具清单"
 if [ -d "$project_manifest_dir" ]; then
     project_manifest_fail=0
     project_manifest_count=0
@@ -856,7 +840,8 @@ if [ -d "$project_manifest_dir" ]; then
         while IFS= read -r line || [ -n "$line" ]; do
             case "$line" in
                 *"基本信息"*) current_section="basic" ;;
-                *"启用表"*) current_section="enabled" ;;
+                *"启用 MCP"*) current_section="enabled_mcp" ;;
+                *"启用 CLI"*) current_section="enabled_cli" ;;
                 *"禁用表"*) current_section="disabled" ;;
             esac
 
@@ -877,7 +862,7 @@ if [ -d "$project_manifest_dir" ]; then
                             source) basic_source="$value" ;;
                         esac
                         ;;
-                    enabled)
+                    enabled_mcp)
                         mcp_id=$(md_table_cell "$line" 2)
                         version=$(md_table_cell "$line" 3)
                         purpose_summary=$(md_table_cell "$line" 4)
@@ -886,42 +871,42 @@ if [ -d "$project_manifest_dir" ]; then
                         check_summary=$(md_table_cell "$line" 7)
 
                         case "$mcp_id" in
-                            mcp_id|编号) continue ;;
+                            tool_id|mcp_id|编号) continue ;;
                         esac
 
                         [ -z "$mcp_id" ] && continue
                         enabled_rows=$((enabled_rows + 1))
 
-                        registry_version=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 3 || true)
-                        registry_template=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 9 || true)
-                        registry_secret_key=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 10 || true)
-                        registry_check_type=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 11 || true)
-                        registry_check_target=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 12 || true)
+                        registry_version=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 4 || true)
+                        registry_template=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 10 || true)
+                        registry_secret_key=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 11 || true)
+                        registry_check_type=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 12 || true)
+                        registry_check_target=$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 13 || true)
 
                         if [ -z "$purpose_summary" ]; then
                             project_manifest_fail=$((project_manifest_fail + 1))
-                            red "   ❌ 项目清单：$project_basename 的 $mcp_id 缺少用途摘要"
+                            red "   ❌ 项目工具清单：$project_basename 的 $mcp_id 缺少用途摘要"
                         fi
 
                         if [ -z "$registry_version" ]; then
                             project_manifest_fail=$((project_manifest_fail + 1))
-                            red "   ❌ 项目清单：$project_basename 的 $mcp_id 不在注册表中"
+                            red "   ❌ 项目工具清单：$project_basename 的 $mcp_id 不在注册表中"
                             continue
                         fi
 
                         if [ "$version" != "$registry_version" ]; then
                             project_manifest_fail=$((project_manifest_fail + 1))
-                            red "   ❌ 项目清单：$project_basename 的 $mcp_id version 与注册表不一致"
+                            red "   ❌ 项目工具清单：$project_basename 的 $mcp_id version 与注册表不一致"
                         fi
 
                         if [ "$template_file" != "$registry_template" ]; then
                             project_manifest_fail=$((project_manifest_fail + 1))
-                            red "   ❌ 项目清单：$project_basename 的 $mcp_id 模板文件与注册表不一致"
+                            red "   ❌ 项目工具清单：$project_basename 的 $mcp_id 模板文件与注册表不一致"
                         fi
 
                         if [ "$secret_key" != "$registry_secret_key" ]; then
                             project_manifest_fail=$((project_manifest_fail + 1))
-                            red "   ❌ 项目清单：$project_basename 的 $mcp_id 密钥键与注册表不一致"
+                            red "   ❌ 项目工具清单：$project_basename 的 $mcp_id 密钥键与注册表不一致"
                         fi
 
                         case "$check_summary" in
@@ -929,13 +914,13 @@ if [ -d "$project_manifest_dir" ]; then
                                 ;;
                             *)
                                 project_manifest_fail=$((project_manifest_fail + 1))
-                                red "   ❌ 项目清单：$project_basename 的 $mcp_id 可用性检查未同时包含类型与目标"
+                                red "   ❌ 项目工具清单：$project_basename 的 $mcp_id 可用性检查未同时包含类型与目标"
                                 ;;
                         esac
 
                         if [ -z "$template_file" ]; then
                             project_manifest_fail=$((project_manifest_fail + 1))
-                            red "   ❌ 项目清单：$project_basename 的 $mcp_id 缺少模板文件"
+                            red "   ❌ 项目工具清单：$project_basename 的 $mcp_id 缺少模板文件"
                         else
                             manifest_template_count=0
                             while IFS= read -r template_ref; do
@@ -943,27 +928,50 @@ if [ -d "$project_manifest_dir" ]; then
                                 manifest_template_count=$((manifest_template_count + 1))
                                 if [ ! -f "$ROOT/$template_ref" ]; then
                                     project_manifest_fail=$((project_manifest_fail + 1))
-                                    red "   ❌ 项目清单：$project_basename 的 $mcp_id 模板文件不存在 → $template_ref"
+                                    red "   ❌ 项目工具清单：$project_basename 的 $mcp_id 模板文件不存在 → $template_ref"
                                 fi
                             done < <(iterate_semicolon_list "$template_file")
 
                             if [ "$manifest_template_count" -eq 0 ]; then
                                 project_manifest_fail=$((project_manifest_fail + 1))
-                                red "   ❌ 项目清单：$project_basename 的 $mcp_id 模板文件列表为空"
+                                red "   ❌ 项目工具清单：$project_basename 的 $mcp_id 模板文件列表为空"
                             fi
                         fi
 
                         if ! is_kebab_case "$mcp_id"; then
                             project_manifest_fail=$((project_manifest_fail + 1))
-                            red "   ❌ 项目清单：$project_basename 的 mcp_id 不是 kebab-case → $mcp_id"
+                            red "   ❌ 项目工具清单：$project_basename 的 mcp_id 不是 kebab-case → $mcp_id"
+                        fi
+                        ;;
+                    enabled_cli)
+                        cli_id=$(md_table_cell "$line" 2)
+                        cli_purpose=$(md_table_cell "$line" 3)
+                        cli_check=$(md_table_cell "$line" 4)
+
+                        case "$cli_id" in
+                            tool_id|编号) continue ;;
+                        esac
+
+                        [ -z "$cli_id" ] && continue
+                        enabled_rows=$((enabled_rows + 1))
+
+                        if ! is_kebab_case "$cli_id"; then
+                            project_manifest_fail=$((project_manifest_fail + 1))
+                            red "   ❌ 项目工具清单：$project_basename 的 CLI tool_id 不是 kebab-case → $cli_id"
+                        fi
+
+                        registry_check=$(lookup_md_table_cell_by_id "$mcp_registry" "$cli_id" 3 || true)
+                        if [ -z "$registry_check" ]; then
+                            project_manifest_fail=$((project_manifest_fail + 1))
+                            red "   ❌ 项目工具清单：$project_basename 的 CLI $cli_id 不在注册表中"
                         fi
                         ;;
                     disabled)
                         mcp_id=$(md_table_cell "$line" 2)
-                        disabled_reason=$(md_table_cell "$line" 3)
+                        disabled_reason=$(md_table_cell "$line" 4)
 
                         case "$mcp_id" in
-                            mcp_id|编号) continue ;;
+                            tool_id|mcp_id|编号) continue ;;
                         esac
 
                         [ -z "$mcp_id" ] && continue
@@ -971,12 +979,12 @@ if [ -d "$project_manifest_dir" ]; then
 
                         if [ -z "$disabled_reason" ]; then
                             project_manifest_fail=$((project_manifest_fail + 1))
-                            red "   ❌ 项目清单：$project_basename 的 $mcp_id 缺少禁用原因"
+                            red "   ❌ 项目工具清单：$project_basename 的 $mcp_id 缺少禁用原因"
                         fi
 
-                        if [ -z "$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 2 || true)" ]; then
+                        if [ -z "$(lookup_md_table_cell_by_id "$mcp_registry" "$mcp_id" 3 || true)" ]; then
                             project_manifest_fail=$((project_manifest_fail + 1))
-                            red "   ❌ 项目清单：$project_basename 的禁用项不在注册表中 → $mcp_id"
+                            red "   ❌ 项目工具清单：$project_basename 的禁用项不在注册表中 → $mcp_id"
                         fi
                         ;;
                 esac
@@ -985,51 +993,51 @@ if [ -d "$project_manifest_dir" ]; then
 
         if [ "$basic_project_id" != "$project_basename" ]; then
             project_manifest_fail=$((project_manifest_fail + 1))
-            red "   ❌ 项目清单：文件名与 project_id 不一致 → $project_basename"
+            red "   ❌ 项目工具清单：文件名与 project_id 不一致 → $project_basename"
         fi
 
         if [ -z "$basic_project_name" ]; then
             project_manifest_fail=$((project_manifest_fail + 1))
-            red "   ❌ 项目清单：$project_basename 缺少项目名"
+            red "   ❌ 项目工具清单：$project_basename 缺少项目名"
         fi
 
         if [ -z "$basic_project_id" ]; then
             project_manifest_fail=$((project_manifest_fail + 1))
-            red "   ❌ 项目清单：$project_basename 缺少 project_id"
+            red "   ❌ 项目工具清单：$project_basename 缺少 project_id"
         elif ! is_kebab_case "$basic_project_id" && [ "$basic_project_id" != "default" ]; then
             project_manifest_fail=$((project_manifest_fail + 1))
-            red "   ❌ 项目清单：project_id 不是 kebab-case → $basic_project_id"
+            red "   ❌ 项目工具清单：project_id 不是 kebab-case → $basic_project_id"
         fi
 
         if [ -z "$basic_path_hint" ]; then
             project_manifest_fail=$((project_manifest_fail + 1))
-            red "   ❌ 项目清单：$project_basename 缺少 path_hint"
+            red "   ❌ 项目工具清单：$project_basename 缺少 path_hint"
         fi
 
         if [ "$basic_source" != "registry" ]; then
             project_manifest_fail=$((project_manifest_fail + 1))
-            red "   ❌ 项目清单：$project_basename 缺少 source=registry"
+            red "   ❌ 项目工具清单：$project_basename 缺少 source=registry"
         fi
 
         if [ "$enabled_rows" -eq 0 ] && [ "$disabled_rows" -eq 0 ]; then
             project_manifest_fail=$((project_manifest_fail + 1))
-            red "   ❌ 项目清单：$project_basename 没有启用或禁用行"
+            red "   ❌ 项目工具清单：$project_basename 没有启用或禁用行"
         fi
     done
 
     if [ "$project_manifest_count" -eq 0 ]; then
         project_manifest_fail=$((project_manifest_fail + 1))
-        red "   ❌ 项目清单：未发现任何清单文件"
+        red "   ❌ 项目工具清单：未发现任何清单文件"
     fi
 
     if [ "$project_manifest_fail" -eq 0 ]; then
-        green "✅ 项目清单：内联摘要与注册表一致"
+        green "✅ 项目工具清单：内联摘要与注册表一致"
         PASS=$((PASS + 1))
     else
         FAIL=$((FAIL + 1))
     fi
 else
-    red "❌ 项目清单目录不存在：$project_manifest_dir"
+    red "❌ 项目工具清单目录不存在：$project_manifest_dir"
     FAIL=$((FAIL + 1))
 fi
 
@@ -1090,7 +1098,7 @@ PY
 fi
 
 secret_pattern='(ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9]{20,}|AIza[0-9A-Za-z_-]{20,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,})'
-secret_hits=$(grep -R -n -E "$secret_pattern" "$ROOT/MCP" 2>/dev/null || true)
+secret_hits=$(grep -R -n -E "$secret_pattern" "$ROOT/MCP" "$ROOT/CLI" "$ROOT/工具注册表.md" "$ROOT/项目工具清单" 2>/dev/null || true)
 if [ -n "$secret_hits" ]; then
     mcp_template_fail=$((mcp_template_fail + 1))
     red "   ❌ MCP 合规：发现疑似真实密钥"
@@ -1103,15 +1111,23 @@ if [ -f "$mcp_registry" ] && [ -f "$ROOT/MCP/密钥模板/mcp-secrets.env.exampl
     while IFS= read -r line || [ -n "$line" ]; do
         if is_md_table_row "$line" && ! is_md_table_separator "$line"; then
             mcp_id=$(md_table_cell "$line" 2)
-            secret_key=$(md_table_cell "$line" 10)
+            tool_type_col=$(md_table_cell "$line" 3)
 
             case "$mcp_id" in
-                mcp_id|MCP_ID|编号) continue ;;
+                tool_id|mcp_id|MCP_ID|编号) continue ;;
             esac
 
             [ -z "$mcp_id" ] && continue
+
+            # 只检查 mcp 类型的密钥键（列 11）；cli 和 plugin 无密钥字段
+            case "$tool_type_col" in
+                mcp) ;;
+                *) continue ;;
+            esac
+
+            secret_key=$(md_table_cell "$line" 11)
             case "$secret_key" in
-                ""|none) continue ;;
+                ""|none|—) continue ;;
             esac
 
             if ! grep -Eq "^${secret_key}=" "$ROOT/MCP/密钥模板/mcp-secrets.env.example"; then
