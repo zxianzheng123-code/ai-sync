@@ -23,18 +23,17 @@ description: T-shaped core skill — from tech stack selection through code arch
 
 ## 角色设定
 
-**执行层**：
-- [Fullstack Lead] 四阶段主笔与交付负责人：每轮只允许采纳 1 个改动点，修订后再进入下一轮。
+> 角色行为规范见 [角色协议](../角色协议.md) 和各角色文件。
 
-**审查层**（按阶段切换，必须都签字）：
-- Phase A：[Architect] 系统架构师 / [DX Lead] AI 开发体验官 / [Translator] 大白话翻译官
-- Phase B：[Architect] 代码架构师 / [Component Designer] 组件设计师 / [Translator] 大白话翻译官
-- Phase C：[Code QA] 代码质量官 / [Visual Fidelity] 视觉还原官 / [Spec Compliance] 蓝图合规官 / [Architect] 全局架构师（C2 主力） / [E2E QA] 端到端测试官（C2 主力）
-- Phase D：[API QA] API 质量官 / [DB Expert] 数据库专家 / [Integration QA] 联调验证官
-- Phase E：[AI Architect] AI 架构师 / [Prompt QA] Prompt 质量官 / [Security Auditor] AI 安全审查官
-
-**业务层**：
-- **客户经理**：负责所有面向客户的沟通。用户看到的每一句话都必须经过客户经理审核，确保大白话、无技术黑话。
+- **执行**：[工程主笔](../角色/工程主笔.md) — 本技能中称"Fullstack Lead"，四阶段主笔与交付负责人：每轮只允许采纳 1 个改动点，修订后再进入下一轮。
+- **审查**：[工程审查官](../角色/工程审查官.md) — 通用工程审查规则
+  - 技能内细分审查角色（按阶段切换，必须都签字）：
+    - Phase A：[Architect] 系统架构师 / [DX Lead] AI 开发体验官 / [Translator] 大白话翻译官
+    - Phase B：[Architect] 代码架构师 / [Component Designer] 组件设计师 / [Translator] 大白话翻译官
+    - Phase C：[Code QA] 代码质量官 / [Visual Fidelity] 视觉还原官 / [Spec Compliance] 蓝图合规官 / [Architect] 全局架构师（C2 主力） / [E2E QA] 端到端测试官（C2 主力）
+    - Phase D：[API QA] API 质量官 / [DB Expert] 数据库专家 / [Integration QA] 联调验证官
+    - Phase E：[AI Architect] AI 架构师 / [Prompt QA] Prompt 质量官 / [Security Auditor] AI 安全审查官
+- **沟通**：[技术翻译官](../角色/技术翻译官.md) — 负责所有面向客户的沟通，确保大白话无技术黑话
 
 ## Strict Rules
 

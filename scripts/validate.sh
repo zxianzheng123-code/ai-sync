@@ -142,11 +142,17 @@ echo "=== 检查 5：协议文件存在性 ==="
 
 REQUIRED_PROTOCOLS=(
     "角色协议.md"
-    "信息-认知协议.md"
-    "决策-计划协议.md"
+    "总转化协议.md"
+    "成题协议.md"
+    "答案协议.md"
+    "证据协议.md"
+    "判断协议.md"
+    "方法协议.md"
+    "教材协议.md"
+    "执行闭环协议.md"
     "工具链协议.md"
-    "执行-产出协议.md"
     "通用审查协议.md"
+    "流程执行协议.md"
 )
 
 missing_protocols=()
@@ -167,18 +173,13 @@ else
     FAIL=$((FAIL + 1))
 fi
 
-# ── 检查 6：SKILL.md 协议引用完整性 ─────────────────────
+# ── 检查 6：SKILL.md 基础协议引用 ─────────────────────
 echo ""
-echo "=== 检查 6：SKILL.md 协议引用完整性 ==="
+echo "=== 检查 6：SKILL.md 基础协议引用 ==="
 
-# 每个 SKILL.md 应引用全部 6 个协议
-PROTOCOL_KEYWORDS=(
+# 每个 SKILL.md 至少应引用角色协议（按需引用其他协议，不再强制全量）
+REQUIRED_KEYWORDS=(
     "角色协议"
-    "信息-认知协议"
-    "决策-计划协议"
-    "工具链协议"
-    "执行-产出协议"
-    "通用审查协议"
 )
 
 ref_fail=0
@@ -190,7 +191,7 @@ for dir in "$ROOT/技能"/*/; do
     dirname=$(basename "$dir")
     ref_total=$((ref_total + 1))
     missing_refs=()
-    for kw in "${PROTOCOL_KEYWORDS[@]}"; do
+    for kw in "${REQUIRED_KEYWORDS[@]}"; do
         if ! grep -q "$kw" "$skill_file"; then
             missing_refs+=("$kw")
         fi
@@ -202,10 +203,10 @@ for dir in "$ROOT/技能"/*/; do
 done
 
 if [ "$ref_fail" -eq 0 ]; then
-    green "✅ 协议引用：${ref_total} 个技能全部引用了 ${#PROTOCOL_KEYWORDS[@]} 个协议"
+    green "✅ 基础协议引用：${ref_total} 个技能全部引用了角色协议"
     PASS=$((PASS + 1))
 else
-    red "❌ 协议引用：${ref_fail}/${ref_total} 个技能缺少协议引用（详见上方）"
+    red "❌ 基础协议引用：${ref_fail}/${ref_total} 个技能缺少基础协议引用（详见上方）"
     FAIL=$((FAIL + 1))
 fi
 
@@ -347,28 +348,37 @@ else
     FAIL=$((FAIL + 1))
 fi
 
-# ── 检查 9：角色协议子文件存在性 ────────────────────────
+# ── 检查 9：角色库文件存在性 ────────────────────────
 echo ""
-echo "=== 检查 9：角色协议子文件存在性 ==="
+echo "=== 检查 9：角色库文件存在性 ==="
 
-ROLE_SUB_PROTOCOLS=(
-    "角色协议-执行层.md"
-    "角色协议-审查层.md"
-    "角色协议-翻译层.md"
+ROLE_FILES=(
+    "角色/写作主笔.md"
+    "角色/设计主笔.md"
+    "角色/工程主笔.md"
+    "角色/路由调度员.md"
+    "角色/完整性审查官.md"
+    "角色/逻辑审查官.md"
+    "角色/事实核查官.md"
+    "角色/反方审查官.md"
+    "角色/可执行性审查官.md"
+    "角色/工程审查官.md"
+    "角色/业务翻译官.md"
+    "角色/技术翻译官.md"
 )
 
 missing_role=()
-for rp in "${ROLE_SUB_PROTOCOLS[@]}"; do
+for rp in "${ROLE_FILES[@]}"; do
     if [ ! -f "$ROOT/技能/$rp" ]; then
         missing_role+=("$rp")
     fi
 done
 
 if [ ${#missing_role[@]} -eq 0 ]; then
-    green "✅ 角色子协议：${#ROLE_SUB_PROTOCOLS[@]} 个子协议文件全部存在"
+    green "✅ 角色库：${#ROLE_FILES[@]} 个角色文件全部存在"
     PASS=$((PASS + 1))
 else
-    red "❌ 角色子协议：以下文件缺失："
+    red "❌ 角色库：以下角色文件缺失："
     for r in "${missing_role[@]}"; do
         red "   - 技能/$r"
     done
