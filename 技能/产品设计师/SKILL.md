@@ -6,7 +6,7 @@ description: End-to-end design skill with optional phases — Phase A (layout + 
 # 产品设计师（Product Designer）
 
 ## TL;DR（一屏摘要）
-- 输入：业务需求文档（`project_context.md` ← 需求规划师，或等效业务描述）、设计意图描述
+- 输入：业务需求文档（`project_context.md` ← 需求规划师，或等效业务描述）+ 系统逻辑文档（`product_logic.md` ← 产品逻辑师）+ 设计意图描述
 - 输出：**按需裁剪**，在 Step 0 分诊中与客户确认执行哪些阶段——
   - Phase A → `design/layout_blueprint.md` + `design/style_guidebook.pen`（布局蓝图 + 风格册）
   - Phase B → `design/static_ui_mock.pen`（高保真静态稿）
@@ -82,10 +82,10 @@ description: End-to-end design skill with optional phases — Phase A (layout + 
 > 以下步骤受[流程执行协议](../../协议/流程执行协议.md)约束：不可跳步、不可合并、每步必须产出步骤标记。
 
 ### Step A1: 读取业务上下文（内部）
-读取业务需求文档，提取模块/动作/规则，缓存为后续步骤输入。→ 进入 A2。
+读取业务需求文档（`project_context.md`）和系统逻辑文档（`product_logic.md`），提取模块/动作/规则/场景/联动关系/触发规则，缓存为后续步骤输入。→ 进入 A2。
 
 ### Step A2: 盘点页面（核心页最优化，至少 5 回合互撕）
-基于业务文档推导核心页面清单，向客户展示：
+基于业务文档和系统逻辑文档推导核心页面清单。页面盘点必须覆盖 `product_logic.md` 中所有场景涉及的模块。向客户展示：
 > 老板，我整理了 [N] 个页面。其中 [X] 和 [Y] 功能比较接近，我建议合成一个页面，这样更简洁。你看看这个页面清单行不行？
 客户确认后，每页写 1 个 CTA。
 三签通过后问客户：

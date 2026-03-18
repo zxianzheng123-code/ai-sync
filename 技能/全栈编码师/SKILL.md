@@ -6,7 +6,7 @@ description: T-shaped core skill — from tech stack selection through code arch
 # 全栈编码师（Fullstack Coder）
 
 ## TL;DR（一屏摘要）
-- 输入：业务需求文档（`project_context.md` ← 需求规划师）+ 设计产物（← 产品设计师）
+- 输入：业务需求文档（`project_context.md` ← 需求规划师）+ 系统逻辑文档（`product_logic.md` ← 产品逻辑师）+ 设计产物（← 产品设计师）
 - 输出：`infra_spec.md` + `design/code_blueprint.md` + 生产级前端代码 + 生产级后端代码（→ 部署上线师）
 - 性质：生产——五阶段递进，从技术选型到 AI 原生可运行代码
 - 关键卖点：用户零技术决策 + 五阶段递进 + 互撕审查 + 逐页/逐模块交付 + AI 集成
@@ -128,12 +128,12 @@ description: T-shaped core skill — from tech stack selection through code arch
 ## Phase B — 代码架构规划
 
 ### Step B1: 摄入上游产物（自动，内部）
-静默读取所有输入产物（静态稿、infra_spec、交互地图、风格手册、布局蓝图），提取页面清单、UI 层级、Design Tokens、事件/状态矩阵。
+静默读取所有输入产物（静态稿、infra_spec、交互地图、风格手册、布局蓝图、系统逻辑文档 `product_logic.md`），提取页面清单、UI 层级、Design Tokens、事件/状态矩阵、场景流程、模块联动关系、触发规则。
 
 > 老板，静态稿、技术说明书、风格册和交互地图都已收到。接下来我会把每个页面翻译成"施工图纸"。可以开始吗？（回复：开始）
 
 ### Step B2: 全局架构设计互撕（至少 5 回合，内部）
-产出：《全局架构方案》+ 《共享组件清单》。签字角色：[Architect] / [Component Designer] / [Translator]。
+产出：《全局架构方案》+ 《共享组件清单》。全局架构必须对齐 `product_logic.md` 中的模块联动关系和触发规则。签字角色：[Architect] / [Component Designer] / [Translator]。
 
 ### Step B2.5: API 契约 + DB Schema 设计互撕（仅 full-stack，至少 3 回合，内部）
 > **`static-only` 项目跳过此步骤。**
