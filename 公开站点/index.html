@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 工具库 - 系统全景图</title>
+<style>
+:root {
+  --c-router: #5C6BC0;
+  --c-decompose: #FFA726;
+  --c-answer: #26A69A;
+  --c-judgment: #42A5F5;
+  --c-method: #66BB6A;
+  --c-textbook: #AB47BC;
+  --c-tool: #EF5350;
+  --c-automation: #26C6DA;
+  --c-meta: #EC407A;
+  --c-quality: #FF7043;
+  --c-fallback: #78909C;
+  --c-protocol: #607D8B;
+  --c-role-exec: #5C6BC0;
+  --c-role-audit: #FF7043;
+  --c-role-comm: #26A69A;
+  --bg: #f5f7fa;
+  --card-bg: #fff;
+  --text: #1a1a2e;
+  --text-secondary: #555;
+  --border: #e0e0e0;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --radius: 10px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  padding-bottom: 60px;
+}
+
+header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #fff;
+  padding: 32px 24px 24px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+header p {
+  font-size: 15px;
+  opacity: 0.8;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 10px 24px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.breadcrumb span {
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.breadcrumb span:hover { color: var(--c-router); }
+.breadcrumb span.active { color: var(--text); font-weight: 600; cursor: default; }
+.breadcrumb .sep { color: #ccc; cursor: default; }
+.breadcrumb .sep:hover { color: #ccc; }
+
+/* Legend */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  padding: 16px 24px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Main container */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+/* Section */
+.section {
+  margin-bottom: 32px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  padding-left: 12px;
+  border-left: 4px solid var(--c-router);
+}
+
+/* Flow diagram - Level 1 */
+.flow-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.flow-node {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 16px 24px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-left: 5px solid var(--node-color, var(--c-router));
+  max-width: 500px;
+  width: 100%;
+}
+
+.flow-node:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.flow-node .node-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--node-color, var(--text));
+}
+
+.flow-node .node-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.flow-node .node-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: var(--node-color, var(--c-router));
+  color: #fff;
+  margin-top: 6px;
+}
+
+/* Arrow connector */
+.arrow-down {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 0;
+  color: #bbb;
+}
+
+.arrow-down .arrow-line {
+  width: 2px;
+  height: 20px;
+  background: #ccc;
+}
+
+.arrow-down .arrow-head {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #ccc;
+}
+
+.arrow-down .arrow-label {
+  font-size: 11px;
+  color: #999;
+  margin: 2px 0;
+}
+
+/* Branch container */
+.branch-container {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.branch-item {
+  flex: 1;
+  min-width: 150px;
+  max-width: 200px;
+}
+
+/* Decision node */
+.decision-node {
+  background: #fff3e0;
+  border: 2px dashed var(--c-decompose);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-decompose);
+}
+
+/* Skill Card */
+.skill-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border-left: 5px solid var(--card-color, var(--c-router));
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+  margin-bottom: 12px;
+}
+
+.skill-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.skill-header {
+  padding: 14px 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  user-select: none;
+}
+
+.skill-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.skill-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--card-color, var(--c-router));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.skill-info { flex: 1; min-width: 0; }
+
+.skill-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.skill-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.skill-trigger {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: var(--card-color, var(--c-router));
+  color: #fff;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.expand-icon {
+  font-size: 18px;
+  color: #999;
+  transition: transform 0.3s;
+  flex-shrink: 0;
+}
+
+.skill-card.expanded .expand-icon {
+  transform: rotate(180deg);
+}
+
+/* Skill detail */
+.skill-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.skill-card.expanded .skill-detail {
+  max-height: 5000px;
+}
+
+.skill-detail-inner {
+  padding: 0 18px 18px;
+  border-top: 1px solid var(--border);
+}
+
+.detail-section {
+  margin-top: 14px;
+}
+
+.detail-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Workflow steps */
+.workflow-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.wf-step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  position: relative;
+}
+
+.wf-step-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 32px;
+}
+
+.wf-step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.wf-step-dot.user { background: var(--card-color, var(--c-router)); }
+.wf-step-dot.internal { background: #78909C; }
+
+.wf-step-connector {
+  width: 2px;
+  flex: 1;
+  min-height: 12px;
+  background: #ddd;
+}
+
+.wf-step:last-child .wf-step-connector { display: none; }
+
+.wf-step-content {
+  flex: 1;
+  padding-bottom: 14px;
+  min-width: 0;
+}
+
+.wf-step-title {
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.wf-step-tag {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.wf-step-tag.user-tag {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.wf-step-tag.internal-tag {
+  background: #eceff1;
+  color: #546e6f;
+}
+
+.wf-step-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+.wf-step-branch {
+  margin-top: 6px;
+  padding: 8px 12px;
+  background: #fafafa;
+  border-radius: 6px;
+  font-size: 12px;
+  border-left: 3px solid var(--card-color, #ccc);
+}
+
+.wf-step-branch .branch-line {
+  margin: 3px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.branch-condition {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.branch-target {
+  color: var(--c-router);
+  font-weight: 500;
+}
+
+/* Protocol & role badges */
+.badge-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  position: relative;
+}
+
+.badge:hover { opacity: 0.8; }
+
+.badge.protocol-badge {
+  background: #eceff1;
+  color: var(--c-protocol);
+  border: 1px solid #cfd8dc;
+}
+
+.badge.role-exec {
+  background: #e8eaf6;
+  color: var(--c-role-exec);
+  border: 1px solid #c5cae9;
+}
+
+.badge.role-audit {
+  background: #fbe9e7;
+  color: var(--c-role-audit);
+  border: 1px solid #ffccbc;
+}
+
+.badge.role-comm {
+  background: #e0f2f1;
+  color: var(--c-role-comm);
+  border: 1px solid #b2dfdb;
+}
+
+/* Tooltip */
+.tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  max-width: 300px;
+  white-space: normal;
+  z-index: 200;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #333;
+}
+
+.badge:hover .tooltip { display: block; }
+
+/* Skill group */
+.skill-group {
+  margin-bottom: 28px;
+}
+
+.skill-group-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skill-group-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Pipeline (for tool chain) */
+.pipeline {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 12px 0;
+  padding: 12px;
+  background: #fafafa;
+  border-radius: var(--radius);
+}
+
+.pipeline-node {
+  background: var(--card-bg);
+  border: 2px solid var(--c-tool);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.pipeline-node:hover {
+  background: #ffebee;
+}
+
+.pipeline-arrow {
+  font-size: 18px;
+  color: var(--c-tool);
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+/* Search */
+.search-box {
+  margin: 0 auto 20px;
+  max-width: 400px;
+  position: relative;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 16px 10px 40px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  background: #fff;
+}
+
+.search-box input:focus { border-color: var(--c-router); }
+
+.search-box .search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  font-size: 16px;
+}
+
+/* Hidden */
+.hidden { display: none !important; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  header { padding: 24px 16px 18px; }
+  header h1 { font-size: 22px; }
+  .flow-node { padding: 12px 16px; }
+  .branch-container { flex-direction: column; align-items: center; }
+  .branch-item { max-width: 100%; }
+  .pipeline { flex-direction: column; gap: 8px; }
+  .pipeline-arrow { transform: rotate(90deg); }
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fadeIn 0.3s ease; }
+
+/* Three iron rules */
+.iron-rules {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+
+.iron-rule {
+  flex: 1;
+  min-width: 200px;
+  padding: 14px 16px;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.iron-rule .rule-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.iron-rule .rule-text {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.iron-rule .rule-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Protocol matrix table */
+.matrix-container {
+  overflow-x: auto;
+  margin-top: 12px;
+}
+
+.matrix-table {
+  border-collapse: collapse;
+  font-size: 12px;
+  width: 100%;
+  min-width: 700px;
+}
+
+.matrix-table th, .matrix-table td {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.matrix-table th {
+  background: #f0f0f0;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.matrix-table th:first-child, .matrix-table td:first-child {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  background: #fff;
+  z-index: 1;
+  font-weight: 600;
+}
+
+.matrix-table th:first-child {
+  background: #f0f0f0;
+  z-index: 2;
+}
+
+.matrix-table .cell-y {
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.matrix-table .cell-n {
+  color: #ccc;
+}
+
+/* Collapsible section */
+.collapsible {
+  margin-top: 12px;
+}
+
+.collapsible-header {
+  cursor: pointer;
+  padding: 10px 14px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+  transition: background 0.2s;
+}
+
+.collapsible-header:hover { background: #eee; }
+
+.collapsible-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.collapsible.open .collapsible-body {
+  max-height: 8000px;
+}
+
+.collapsible.open .collapsible-header .expand-icon {
+  transform: rotate(180deg);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>AI 工具库 · 系统全景图</h1>
+  <p>点击任意节点可钻取查看详细执行流程。从全局流程 → 技能分组 → 单个技能的每一步 → 底层协议和角色。</p>
+</header>
+
+<div class="breadcrumb" id="breadcrumb">
+  <span class="active" onclick="scrollToSection('top')">系统总览</span>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c-router)"></div>路由</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c-decompose)"></div>拆解</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c-answer)"></div>答案</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c-judgment)"></div>判断</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c-method)"></div>方法</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c-textbook)"></div>教材</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c-tool)"></div>工具</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c-automation)"></div>自动化</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c-meta)"></div>造技能</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c-quality)"></div>质量</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c-fallback)"></div>兜底</div>
+</div>
+
+<div class="container" id="top">
+
+  <!-- Search -->
+  <div class="search-box">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="搜索技能、协议或角色..." oninput="filterSkills(this.value)">
+  </div>
+
+  <!-- LEVEL 1: Main Flow -->
+  <div class="section" id="section-flow">
+    <div class="section-title" style="border-left-color:var(--c-router)">Level 1 · 系统总流程</div>
+
+    <div class="flow-main">
+      <div class="flow-node" style="--node-color:var(--c-router); background: linear-gradient(135deg, #e8eaf6, #fff)">
+        <div class="node-title">你说了一句话</div>
+        <div class="node-desc">任何需求、问题、想法</div>
+      </div>
+
+      <div class="arrow-down"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+      <div class="flow-node" style="--node-color:var(--c-router)" onclick="scrollToSection('section-groups')">
+        <div class="node-title">总转化器</div>
+        <div class="node-desc">唯一默认入口 — 先判断方向，再往下走</div>
+        <div class="node-badge">暗号：开始转化</div>
+      </div>
+
+      <div class="arrow-down">
+        <div class="arrow-line"></div>
+        <div class="arrow-label">题目说清楚了吗？</div>
+        <div class="arrow-head"></div>
+      </div>
+
+      <div class="decision-node">
+        没说清 → 问题拆解师（先帮你理清楚）→ 拆完后回来重新判断
+      </div>
+
+      <div class="arrow-down">
+        <div class="arrow-line"></div>
+        <div class="arrow-label">说清了 → 判断你要什么</div>
+        <div class="arrow-head"></div>
+      </div>
+
+      <div class="branch-container">
+        <div class="branch-item">
+          <div class="flow-node" style="--node-color:var(--c-answer)" onclick="scrollToSkill('答案澄清师')">
+            <div class="node-title">答案</div>
+            <div class="node-desc">帮你搞懂一件事</div>
+          </div>
+        </div>
+        <div class="branch-item">
+          <div class="flow-node" style="--node-color:var(--c-judgment)" onclick="scrollToSkill('调研判断师')">
+            <div class="node-title">判断</div>
+            <div class="node-desc">帮你做一个决定</div>
+          </div>
+        </div>
+        <div class="branch-item">
+          <div class="flow-node" style="--node-color:var(--c-method)" onclick="scrollToSkill('方法提炼师')">
+            <div class="node-title">方法</div>
+            <div class="node-desc">帮你固化一套流程</div>
+          </div>
+        </div>
+        <div class="branch-item">
+          <div class="flow-node" style="--node-color:var(--c-textbook)" onclick="scrollToSkill('教材编写师')">
+            <div class="node-title">教材</div>
+            <div class="node-desc">帮你整理成可教的</div>
+          </div>
+        </div>
+        <div class="branch-item">
+          <div class="flow-node" style="--node-color:var(--c-tool)" onclick="scrollToSkill('造工具总控')">
+            <div class="node-title">工具</div>
+            <div class="node-desc">帮你做成能用的系统</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Iron rules -->
+    <div class="iron-rules">
+      <div class="iron-rule">
+        <div class="rule-icon">&#9935;</div>
+        <div class="rule-text">不可跳步</div>
+        <div class="rule-desc">流程里的步骤必须一步一步走</div>
+      </div>
+      <div class="iron-rule">
+        <div class="rule-icon">&#128065;</div>
+        <div class="rule-text">不可黑盒</div>
+        <div class="rule-desc">关键决定先告诉你，你确认了才继续</div>
+      </div>
+      <div class="iron-rule">
+        <div class="rule-icon">&#127919;</div>
+        <div class="rule-text">不可混做</div>
+        <div class="rule-desc">一次只锁定一个目标</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEVEL 2: Skill Groups -->
+  <div class="section" id="section-groups">
+    <div class="section-title">Level 2 · 技能分组</div>
+    <div id="skillGroups"></div>
+  </div>
+
+  <!-- LEVEL 4: Protocol Matrix -->
+  <div class="section" id="section-protocols">
+    <div class="section-title" style="border-left-color:var(--c-protocol)">Level 4 · 协议引用矩阵</div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">每个技能遵守哪些协议。点击协议名查看说明。</p>
+    <div id="protocolMatrix"></div>
+  </div>
+
+  <!-- LEVEL 5: Roles -->
+  <div class="section" id="section-roles">
+    <div class="section-title" style="border-left-color:var(--c-role-exec)">Level 5 · 角色库</div>
+    <div id="rolesList"></div>
+  </div>
+
+</div>
+
+<script>
+// =========================================
+// DATA MODEL
+// =========================================
+
+const SKILLS = {
+  // --- 转化能力 ---
+  '总转化器': {
+    group: '转化能力', color: 'var(--c-router)', icon: '&#128256;',
+    trigger: '开始转化',
+    desc: '默认入口 — 先判断方向，再往下走',
+    tldr: '输入：任何需求 → 输出：方向判断 + 下游路由',
+    protocols: ['R','C','F','D','A','W'],
+    roles: { exec: '路由调度员（转化主笔）', audit: '方向检查 + 清晰度检查（内部）', comm: '业务翻译官' },
+    steps: [
+      { n: 1, title: '接住原始输入', type: 'user', desc: '你把这件事直接说出来就行。我先帮你分方向。' },
+      { n: 2, title: '判断题目是否说清', type: 'internal', desc: '检查输入是否混乱、是否有多个目标混在一起。',
+        branch: [
+          { cond: '输入混乱 / 多目标', target: '→ 问题拆解师' },
+          { cond: '说清了', target: '→ 进入 Step 3' }
+        ]
+      },
+      { n: 3, title: '判断该先拿到哪类成果', type: 'internal', desc: '按总转化协议顺序：解释→答案 / 对比→判断 / 固化→方法 / 教学→教材 / 系统→工具' },
+      { n: 4, title: '向用户确认方向', type: 'user', desc: '我准备先把这件事转成 [成果类型]。这个方向你认同吗？' },
+      { n: 5, title: '执行或路由', type: 'internal', desc: '按确认的方向转给对应技能。',
+        branch: [
+          { cond: '答案', target: '→ 答案澄清师' },
+          { cond: '判断', target: '→ 调研判断师' },
+          { cond: '方法', target: '→ 方法提炼师' },
+          { cond: '教材', target: '→ 教材编写师' },
+          { cond: '工具', target: '→ 造工具总控' }
+        ]
+      },
+      { n: 6, title: '交付口径', type: 'user', desc: '告知你已按什么方向继续，以及为什么选这个方向。' }
+    ]
+  },
+
+  '问题拆解师': {
+    group: '转化能力', color: 'var(--c-decompose)', icon: '&#128270;',
+    trigger: '先拆问题',
+    desc: '题目还乱时，先帮你拆清楚再往下走',
+    tldr: '输入：说不清的混乱想法 → 输出：拆解清单 + 瓶颈 + 推荐终点',
+    protocols: ['R','C','F','D','A','W'],
+    roles: { exec: '写作主笔（拆题主笔）', audit: '完整性审查官 + 逻辑审查官', comm: '业务翻译官' },
+    steps: [
+      { n: 1, title: '获取输入', type: 'user', desc: '你先把这件事说出来就行，理不顺也没关系。' },
+      { n: 2, title: '原子拆解', type: 'internal', desc: '剥离修饰词，提取核心事实/约束/目标，按八维分组编号（A=本质、B=约束、C=能力...）' },
+      { n: 3, title: '拆解结果互撕', type: 'internal', desc: '至少 3 回合内部审查：有没有漏拆？分组准不准？依赖关系标对了吗？' },
+      { n: 4, title: '核心洞见提炼', type: 'internal', desc: '回答三个问题：卡在哪？该追什么终点？最轻下一步是什么？（不超过5句）' },
+      { n: 5, title: '交付校验', type: 'internal', desc: '逐条核对：每个语义单元都拆了？编号连续？标注完整？老板能看懂？' },
+      { n: 6, title: '输出终稿', type: 'user', desc: '输出拆解清单 + 当前瓶颈 + 推荐终点 + 下一步行动建议。' },
+      { n: 7, title: '下游衔接', type: 'user', desc: '根据推荐终点，衔接到对应技能。',
+        branch: [
+          { cond: '答案', target: '→ 答案澄清师' },
+          { cond: '判断', target: '→ 调研判断师' },
+          { cond: '方法', target: '→ 方法提炼师' },
+          { cond: '教材', target: '→ 教材编写师' },
+          { cond: '工具', target: '→ 造工具总控' }
+        ]
+      }
+    ]
+  },
+
+  '答案澄清师': {
+    group: '答案与判断', color: 'var(--c-answer)', icon: '&#128172;',
+    trigger: '先给答案',
+    desc: '已经说清的问题，直接给出清楚、简洁的答案',
+    tldr: '输入：已说清的问题 → 输出：答案卡（答案 + 解释 + 边界 + 下一步）',
+    protocols: ['R','F','Ans','E','D','A','W'],
+    roles: { exec: '写作主笔（答案主笔）', audit: '完整性审查官 + 事实核查官', comm: '业务翻译官' },
+    steps: [
+      { n: 1, title: '锁定问题', type: 'user', desc: '确认你最想弄明白的是什么。先把题目说准，再给答案。' },
+      { n: 2, title: '边界门禁', type: 'internal', desc: '检查这是不是答案范畴。',
+        branch: [
+          { cond: '题目没说清', target: '→ 问题拆解师' },
+          { cond: '实质是对比/诊断', target: '→ 调研判断师' },
+          { cond: '实质是固化流程', target: '→ 方法提炼师' },
+          { cond: '实质是沉淀教材', target: '→ 教材编写师' },
+          { cond: '确认是答案', target: '→ 继续' }
+        ]
+      },
+      { n: 3, title: '轻量核对', type: 'internal', desc: '必要时做最小量事实核对。如果演变成大调研，转给调研判断师。' },
+      { n: 4, title: '产出答案卡', type: 'internal', desc: '固定结构：一句话答案 + 简明解释 + 边界/例外 + 下一步' },
+      { n: 5, title: '输出终稿', type: 'user', desc: '先给一句话答案，再补解释。能短就不拉长。' }
+    ]
+  },
+
+  '调研判断师': {
+    group: '答案与判断', color: 'var(--c-judgment)', icon: '&#128202;',
+    trigger: '做个判断',
+    desc: '需要对比、诊断、选型时，用信息和证据给出判断',
+    tldr: '输入：已说清的判断题 → 输出：判断报告（推荐 + 依据 + 风险）',
+    protocols: ['R','F','E','J','D','A','W'],
+    roles: { exec: '写作主笔（调研主笔）', audit: '反方审查官 + 事实核查官', comm: '业务翻译官' },
+    steps: [
+      { n: 0, title: '检查上游输入', type: 'internal', desc: '如果有拆解清单，预填问题和范围；如果题目没说清，退回拆解。',
+        branch: [
+          { cond: '题目没说清', target: '→ 问题拆解师' },
+          { cond: '有拆解清单', target: '→ 预填后跳到 Step 3' },
+          { cond: '正常', target: '→ 从 Step 1 开始' }
+        ]
+      },
+      { n: 1, title: '明确调研问题', type: 'user', desc: '你现在具体要判断什么？用一句最直白的话说。' },
+      { n: 2, title: '确认判断范围', type: 'user', desc: '识别判断类型（对比/调研/选型/诊断/数据分析），确认维度。' },
+      { n: 3, title: '信息收集', type: 'user', desc: '先告知收集方向，确认后开始。搜不到的信息坦诚告知并标注"未验证"。' },
+      { n: 4, title: '分析框架确认', type: 'user', desc: '展示分析维度，确认后进入内部交叉检查（至少3轮）。' },
+      { n: 5, title: '产出报告交叉检查', type: 'internal', desc: '至少3轮内部互撕：结论有没有偏颇？不利证据考虑了吗？能看懂吗？' },
+      { n: 6, title: '交付校验', type: 'internal', desc: '逐条核对：问题是否回答完整？维度统一？结论有据？无专业黑话？' },
+      { n: 7, title: '输出终稿', type: 'user', desc: '先给一句话结论，再提供完整判断报告（对比表+发现+风险+推荐）。' }
+    ]
+  },
+
+  '方法提炼师': {
+    group: '沉淀能力', color: 'var(--c-method)', icon: '&#128220;',
+    trigger: '提炼方法',
+    desc: '把经验、结论固化成可重复执行的 SOP / 规则 / 流程',
+    tldr: '输入：明确的意图和经验 → 输出：方法文档',
+    protocols: ['R','F','Met','D','A','W'],
+    roles: { exec: '写作主笔（方法主笔）', audit: '可执行性审查官', comm: '业务翻译官' },
+    steps: [
+      { n: 0, title: '入口门禁', type: 'internal', desc: '检查前置条件。',
+        branch: [
+          { cond: '题目未成形', target: '→ 问题拆解师' },
+          { cond: '核心结论待判断', target: '→ 调研判断师' },
+          { cond: '实质是课本/培训资料', target: '→ 教材编写师' }
+        ]
+      },
+      { n: 1, title: '锁定使用场景', type: 'user', desc: '这套方法给谁用？什么场景？希望做到什么结果？' },
+      { n: 2, title: '锁定方法类型', type: 'user', desc: '确认是 SOP 操作步骤 / 判断规则 / AI 执行规则 / 业务流程。' },
+      { n: 3, title: '收束执行骨架', type: 'internal', desc: '固定四块：触发条件 + 执行步骤 + 边界与例外 + 验收口径' },
+      { n: 4, title: '向用户确认骨架', type: 'user', desc: '展示四块结构，确认方向。' },
+      { n: 5, title: '起草方法文档', type: 'internal', desc: '写成可执行方法文档。' },
+      { n: 6, title: '场景回放校验', type: 'internal', desc: '至少2个场景回放，确认照着做不会卡住。' },
+      { n: 7, title: '输出终稿', type: 'user', desc: '交付可重复执行的方法文档。' }
+    ]
+  },
+
+  '教材编写师': {
+    group: '沉淀能力', color: 'var(--c-textbook)', icon: '&#128218;',
+    trigger: '编写教材',
+    desc: '把想法、经验整理成可理解、可教学、可传承的教材',
+    tldr: '输入：明确的想法和体系 → 输出：教材文档',
+    protocols: ['R','F','Txt','D','A','W'],
+    roles: { exec: '写作主笔（教材主笔）', audit: '教学审查 + 结构审查（内部）', comm: '业务翻译官' },
+    steps: [
+      { n: 0, title: '入口门禁', type: 'internal', desc: '检查前置条件。',
+        branch: [
+          { cond: '题目未成形', target: '→ 问题拆解师' },
+          { cond: '关键事实未定', target: '→ 调研判断师' },
+          { cond: '实质是 SOP/规则', target: '→ 方法提炼师' }
+        ]
+      },
+      { n: 1, title: '锁定读者与学习结果', type: 'user', desc: '写给谁看？看完后应该学会什么？' },
+      { n: 2, title: '锁定教材形态', type: 'user', desc: '确认是新人教材 / 训练资料 / 经验整理 / 课本式沉淀。' },
+      { n: 3, title: '设计章节骨架', type: 'internal', desc: '默认：背景目标 → 核心原理 → 具体做法 → 案例和常见坑' },
+      { n: 4, title: '向用户确认骨架', type: 'user', desc: '展示章节结构，确认方向。' },
+      { n: 5, title: '起草教材文档', type: 'internal', desc: '写成可教学的教材文档。' },
+      { n: 6, title: '教学可读性校验', type: 'internal', desc: '站在"完全没接触过的人"视角读一遍。' },
+      { n: 7, title: '输出终稿', type: 'user', desc: '交付可理解、可教学、可传承的教材文档。' }
+    ]
+  },
+
+  // --- 自动化 ---
+  '循环定时任务总控': {
+    group: '自动化能力', color: 'var(--c-automation)', icon: '&#128336;',
+    trigger: '安排自动任务',
+    desc: '自动化任务的唯一入口 — 先判型再选平台再派发',
+    tldr: '输入：想自动跑的任务 → 输出：任务规格卡 + 推荐方案 + 可运行草稿',
+    protocols: ['R','F','E','J','Met','D','T','A','W'],
+    roles: { exec: '路由调度员（自动化总控）', audit: '逻辑审查官', comm: '业务翻译官' },
+    steps: [
+      { n: 0, title: '入口分诊', type: 'internal', desc: '判断是不是测试循环师的地盘。',
+        branch: [
+          { cond: '要做代码项目测试修复循环', target: '→ 测试循环师' },
+          { cond: '是自动化任务', target: '→ 继续' }
+        ]
+      },
+      { n: 1, title: '判定任务形态', type: 'user', desc: '判定是循环任务（目标驱动直到退出）/ 定时任务（时间触发单次）/ 组合任务（两者结合）。' },
+      { n: 2, title: '补齐规格', type: 'user', desc: '补齐11个必填字段：目标、触发方式、输入输出、停止条件、防重策略等。' },
+      { n: 3, title: '平台选型', type: 'internal', desc: '从 Codex Automations / Claude /loop / cron+CI 等候选中选1条主推荐。' },
+      { n: 4, title: '派发下游', type: 'internal', desc: '按判定结果派给对应设计师。',
+        branch: [
+          { cond: '核心是"什么时候触发"', target: '→ 定时任务师' },
+          { cond: '核心是"什么时候停"', target: '→ 循环任务师' },
+          { cond: '两者都重要', target: '→ 组合任务师' }
+        ]
+      },
+      { n: 5, title: '收束交付', type: 'user', desc: '汇总下游结果：任务规格卡 + 主推荐方案 + 备选对比 + 可运行草稿。' }
+    ]
+  },
+
+  '循环任务师': {
+    group: '自动化能力', color: 'var(--c-automation)', icon: '&#128260;',
+    trigger: '安排循环任务',
+    desc: '围绕同一目标反复推进，直到退出条件成立',
+    tldr: '输入：循环任务规格 → 输出：循环方案 + prompt/命令草稿',
+    protocols: ['R','F','E','J','Met','D','A','W'],
+    roles: { exec: '设计主笔', audit: '逻辑审查官', comm: '业务翻译官' },
+    steps: [
+      { n: 1, title: '接收总控派发', type: 'internal', desc: '读取任务规格卡和约束。' },
+      { n: 2, title: '设计循环方案', type: 'internal', desc: '定义循环体、退出条件、状态追踪方式。' },
+      { n: 3, title: '产出草稿', type: 'internal', desc: '输出可运行的 prompt/命令草稿 + 风险清单。' },
+      { n: 4, title: '回传总控', type: 'internal', desc: '将方案回传给循环定时任务总控收束。' }
+    ]
+  },
+
+  '定时任务师': {
+    group: '自动化能力', color: 'var(--c-automation)', icon: '&#9200;',
+    trigger: '安排定时任务',
+    desc: '按时间或节奏触发一次运行的定时任务',
+    tldr: '输入：定时任务规格 → 输出：定时方案 + prompt/命令草稿',
+    protocols: ['R','F','E','J','Met','D','A','W'],
+    roles: { exec: '设计主笔', audit: '逻辑审查官', comm: '业务翻译官' },
+    steps: [
+      { n: 1, title: '接收总控派发', type: 'internal', desc: '读取任务规格卡和约束。' },
+      { n: 2, title: '设计定时方案', type: 'internal', desc: '定义触发时间、执行内容、单次边界。' },
+      { n: 3, title: '产出草稿', type: 'internal', desc: '输出可运行的 prompt/命令草稿 + 风险清单。' },
+      { n: 4, title: '回传总控', type: 'internal', desc: '将方案回传给循环定时任务总控收束。' }
+    ]
+  },
+
+  '组合任务师': {
+    group: '自动化能力', color: 'var(--c-automation)', icon: '&#128296;',
+    trigger: '安排组合任务',
+    desc: '按时间触发 + 单次运行内部有限循环的组合任务',
+    tldr: '输入：组合任务规格 → 输出：组合方案 + prompt/命令草稿',
+    protocols: ['R','F','E','J','Met','D','A','W'],
+    roles: { exec: '设计主笔', audit: '逻辑审查官', comm: '业务翻译官' },
+    steps: [
+      { n: 1, title: '接收总控派发', type: 'internal', desc: '读取任务规格卡和约束。' },
+      { n: 2, title: '设计组合方案', type: 'internal', desc: '定义外层定时触发 + 内层循环体 + 退出条件。' },
+      { n: 3, title: '产出草稿', type: 'internal', desc: '输出可运行的 prompt/命令草稿 + 风险清单。' },
+      { n: 4, title: '回传总控', type: 'internal', desc: '将方案回传给循环定时任务总控收束。' }
+    ]
+  },
+
+  // --- 造工具 ---
+  '造工具总控': {
+    group: '造工具', color: 'var(--c-tool)', icon: '&#128736;',
+    trigger: '造工具',
+    desc: '造工具的唯一入口 — 接活、出计划、分配、验收',
+    tldr: '输入：工具/系统需求 → 输出：完整上线的工具',
+    protocols: ['R','F','J','D','T','A','W'],
+    roles: { exec: '路由调度员（造工具总控）', audit: '总控自检 + 下游各自审查', comm: '技术翻译官' },
+    steps: [
+      { n: 0, title: '接活', type: 'user', desc: '检查进度文件/上游文档。复述理解，确认对齐。',
+        branch: [
+          { cond: '有进度文件', target: '→ 汇报进展，继续上次' },
+          { cond: '有教材/方法文档', target: '→ 提取需求要点' },
+          { cond: '有拆解清单', target: '→ 提取 A 组 + B 组' },
+          { cond: '全新任务', target: '→ 听你说想做什么' }
+        ]
+      },
+      { n: 1, title: '出执行计划', type: 'user', desc: '拆解为4个阶段，每阶段标明任务、产出、验收标准。内部自查后展示给你确认。' },
+      { n: 2, title: '① 搞清楚要做什么', type: 'user', desc: '派需求规划师执行。产出 project_context.md。验收后进入下一阶段。' },
+      { n: 3, title: '② 画出来长什么样', type: 'user', desc: '派产品设计师执行。产出蓝图 + 风格册 + 静态稿 + 交互地图。' },
+      { n: 4, title: '③ 写代码', type: 'user', desc: '派全栈编码师执行。产出可运行的代码。' },
+      { n: 5, title: '④ 放到网上能用', type: 'user', desc: '派部署上线师执行。产出线上可访问的产品。' }
+    ]
+  },
+
+  '需求规划师': {
+    group: '造工具', color: 'var(--c-tool)', icon: '&#128203;',
+    trigger: '提炼需求',
+    desc: '把业务问题转化为工具需求',
+    tldr: '输入：业务痛点 → 输出：project_context.md',
+    protocols: ['R','F','J','D','A','W'],
+    roles: { exec: '设计主笔', audit: '完整性审查官 + 逻辑审查官', comm: '技术翻译官' },
+    steps: [
+      { n: 1, title: '理解业务问题', type: 'user', desc: '确认用户痛点和核心诉求。' },
+      { n: 2, title: '收束需求', type: 'internal', desc: '整理功能边界、用户场景、验收标准。' },
+      { n: 3, title: '互撕审查', type: 'internal', desc: '至少3轮：需求完整吗？有没有互相矛盾？' },
+      { n: 4, title: '输出 project_context.md', type: 'user', desc: '交付需求文档，等总控验收。' }
+    ]
+  },
+
+  '产品设计师': {
+    group: '造工具', color: 'var(--c-tool)', icon: '&#127912;',
+    trigger: '画原型',
+    desc: '3阶段设计：蓝图 → 高保真稿 → 交互原型',
+    tldr: '输入：project_context.md → 输出：蓝图 + 风格册 + 静态稿 + 交互地图',
+    protocols: ['R','F','J','D','A','W'],
+    roles: { exec: '设计主笔', audit: '完整性审查官', comm: '技术翻译官' },
+    steps: [
+      { n: 1, title: '布局蓝图', type: 'internal', desc: '基于需求文档设计页面结构。' },
+      { n: 2, title: '风格册 + 高保真稿', type: 'internal', desc: '确定视觉风格，产出静态设计稿。' },
+      { n: 3, title: '交互地图', type: 'internal', desc: '标注页面间跳转和操作动线。' },
+      { n: 4, title: '交付设计产物', type: 'user', desc: '交付全套设计资产，等总控验收。' }
+    ]
+  },
+
+  '全栈编码师': {
+    group: '造工具', color: 'var(--c-tool)', icon: '&#128187;',
+    trigger: '写代码',
+    desc: '5阶段实现：技术选型 → 架构 → 前端 → 后端 → AI集成',
+    tldr: '输入：设计产物 → 输出：可运行的代码',
+    protocols: ['R','F','J','D','T','A','W'],
+    roles: { exec: '工程主笔', audit: '工程审查官', comm: '技术翻译官' },
+    steps: [
+      { n: 'A', title: '技术选型 + 项目骨架', type: 'internal', desc: '选定技术栈，搭建项目结构，产出 infra_spec.md。' },
+      { n: 'B', title: '代码架构设计', type: 'internal', desc: '产出 code_blueprint.md。' },
+      { n: 'C', title: '前端实现', type: 'internal', desc: '按设计稿还原页面。' },
+      { n: 'D', title: '后端实现', type: 'internal', desc: '实现业务逻辑和数据层。' },
+      { n: 'E', title: '联调与交付', type: 'user', desc: '前后端联调，交付可运行代码，等总控验收。' }
+    ]
+  },
+
+  '部署上线师': {
+    group: '造工具', color: 'var(--c-tool)', icon: '&#128640;',
+    trigger: '部署上线',
+    desc: '3阶段部署：设计方案 → 执行部署 → 验收测试',
+    tldr: '输入：可运行代码 → 输出：线上可访问的产品',
+    protocols: ['R','F','J','D','T','A','W'],
+    roles: { exec: '工程主笔', audit: '工程审查官', comm: '技术翻译官' },
+    steps: [
+      { n: 1, title: '设计部署方案', type: 'internal', desc: '选择部署平台和方式。' },
+      { n: 2, title: '执行部署', type: 'internal', desc: '实际部署到线上环境。' },
+      { n: 3, title: '验收测试', type: 'user', desc: '确认线上可访问、功能正常。等总控验收。' }
+    ]
+  },
+
+  '代码维护师': {
+    group: '造工具', color: 'var(--c-tool)', icon: '&#128295;',
+    trigger: '维护代码',
+    desc: '后续修 bug、重构、性能优化、补测试',
+    tldr: '输入：代码 + 问题描述 → 输出：修复后的代码',
+    protocols: ['R','F','J','D','T','A','W'],
+    roles: { exec: '工程主笔', audit: '工程审查官', comm: '技术翻译官' },
+    steps: [
+      { n: 1, title: '判断维护类型', type: 'user', desc: '确认是修 bug / 重构 / 性能优化 / 补测试。' },
+      { n: 2, title: '定位问题', type: 'internal', desc: '读代码，找到问题根因。' },
+      { n: 3, title: '修复实现', type: 'internal', desc: '在 worktree 隔离环境中修复。改完即检。' },
+      { n: 4, title: '交付验收', type: 'user', desc: '交付修复后的代码，确认问题已解决。' }
+    ]
+  },
+
+  // --- 造技能 ---
+  'Skill编译器': {
+    group: '造技能', color: 'var(--c-meta)', icon: '&#9881;',
+    trigger: '编写SKILL',
+    desc: '造新技能，输出符合标准的 SKILL.md',
+    tldr: '输入：技能需求描述 → 输出：完整的 SKILL.md',
+    protocols: ['R','F','E','J','D','A','W'],
+    roles: { exec: '写作主笔', audit: '完整性审查官 + 逻辑审查官 + 可执行性审查官', comm: '业务翻译官' },
+    steps: [
+      { n: 1, title: '环境检查', type: 'internal', desc: '确认当前仓库结构和现有技能清单。' },
+      { n: 2, title: '确定目标', type: 'user', desc: '确认要新建还是修改技能，明确技能定位。' },
+      { n: 3, title: '摄入描述', type: 'user', desc: '收集用户对技能的完整描述和期望。' },
+      { n: 4, title: '结构起草', type: 'internal', desc: '按标准结构起草 SKILL.md 骨架。' },
+      { n: 5, title: '内容细化', type: 'internal', desc: '填充 Workflow、Rules 等具体内容。' },
+      { n: 6, title: '自验证', type: 'internal', desc: '3人专家互撕审查，逐条校验。' },
+      { n: 7, title: '汇报', type: 'user', desc: '展示成果，确认无误。' },
+      { n: 8, title: '输出终稿', type: 'user', desc: '交付 SKILL.md 并同步更新召唤书和 CHANGELOG。' }
+    ]
+  },
+
+  // --- 质量 ---
+  '测试循环师': {
+    group: '质量保障', color: 'var(--c-quality)', icon: '&#128027;',
+    trigger: '全面体检',
+    desc: '对已有代码项目全面体检，螺旋迭代直到缺陷归零',
+    tldr: '输入：已有代码项目 → 输出：测试报告 + 修复代码 + 架构诊断',
+    protocols: ['R','D','T','A','W'],
+    roles: { exec: '工程主笔（测试主笔）+ Planner + Reviewer + PM + Fixer', audit: '工程审查官 + Verifier', comm: '技术翻译官' },
+    steps: [
+      { n: 0, title: '项目摸底', type: 'user', desc: '读项目文档和代码结构，告知大概情况。' },
+      { n: 1, title: '测试规划', type: 'internal', desc: 'Planner 读项目全貌，动态输出测试计划和 Agent 分工（不用预设清单）。' },
+      { n: 2, title: '代码审查', type: 'internal', desc: 'N 个 Reviewer 并行按分工审查代码，输出分级问题清单。' },
+      { n: 3, title: '产品审查', type: 'internal', desc: 'PM 以用户视角审查信息结构、操作动线、体验（与代码审查并行）。' },
+      { n: 4, title: '综合报告', type: 'internal', desc: '汇总代码+产品审查结果，产出 TEST-REPORT。' },
+      { n: 5, title: '架构诊断', type: 'internal', desc: 'Architect 追溯 bug 的架构根因，输出重构方向。' },
+      { n: 6, title: '修复重构', type: 'internal', desc: 'N 个 Fixer 并行在 worktree 隔离环境中修复。改完即检。' },
+      { n: 7, title: '回归验证', type: 'internal', desc: 'Verifier 做类型检查+业务复验。P0未归零则回 Step 1 下一轮迭代。' }
+    ]
+  },
+
+  // --- 兜底 ---
+  '通用任务引擎': {
+    group: '万能兜底', color: 'var(--c-fallback)', icon: '&#128295;',
+    trigger: '执行通用任务',
+    desc: '上面都不合适时的万能引擎',
+    tldr: '输入：任意任务描述 → 输出：动态交付物',
+    protocols: ['R','F','J','D','T','A','W'],
+    roles: { exec: '路由调度员（通用主控）', audit: '完整性审查官', comm: '业务翻译官' },
+    steps: [
+      { n: 0, title: '分流', type: 'internal', desc: '判断任务复杂度。',
+        branch: [
+          { cond: '简单单步任务', target: '→ 快速通道（确认后直接做）' },
+          { cond: '多步骤/有模糊', target: '→ 进入需求对齐' }
+        ]
+      },
+      { n: 1, title: '需求对齐', type: 'user', desc: '七维度提案式探索（目标/边界/文档/约束/成功标志/素材/偏好），产出需求对齐卡。' },
+      { n: 2, title: '规划', type: 'user', desc: '拆解子任务列表，展示给你确认。' },
+      { n: 3, title: '执行', type: 'internal', desc: '循环执行子任务，可派 SubAgent。关键节点汇报进度。最大5轮迭代。' },
+      { n: 4, title: '检查', type: 'internal', desc: '对照需求对齐卡逐项验收。有缺口则回执行补。' },
+      { n: 5, title: '交付', type: 'user', desc: '整理最终输出，交付给你。' }
+    ]
+  }
+};
+
+const PROTOCOLS = {
+  'R':   { name: '角色协议',     abbr: 'R',   desc: '身份、底线、角色库索引' },
+  'C':   { name: '总转化协议',   abbr: 'C',   desc: '输入如何转成答案、判断、方法、教材、工具' },
+  'F':   { name: '成题协议',     abbr: 'F',   desc: '题目有没有说清、缺口如何补、何时先拆' },
+  'Ans': { name: '答案协议',     abbr: 'Ans', desc: '解释、澄清、认知补全' },
+  'E':   { name: '证据协议',     abbr: 'E',   desc: '信息检索、来源分级、交叉验证' },
+  'J':   { name: '判断协议',     abbr: 'J',   desc: '对比、诊断、取舍、单一推荐' },
+  'Met': { name: '方法协议',     abbr: 'Met', desc: 'SOP、规则、流程、AI执行规则' },
+  'Txt': { name: '教材协议',     abbr: 'Txt', desc: '课本、训练资料、系统化经验文档' },
+  'D':   { name: '执行闭环协议', abbr: 'D',   desc: '推进、汇报、验收、复盘' },
+  'T':   { name: '工具链协议',   abbr: 'T',   desc: '后台助手分派、进度文件、技能调度' },
+  'A':   { name: '通用审查协议', abbr: 'A',   desc: '交叉检查、全员确认、引用证据' },
+  'W':   { name: '流程执行协议', abbr: 'W',   desc: '步骤顺序、不可跳步、不可合并' }
+};
+
+const ROLES = {
+  exec: [
+    { name: '写作主笔', desc: '起草文字类产出物（答案、报告、方法、教材、技能定义）' },
+    { name: '设计主笔', desc: '起草设计类产出物（需求文档、产品规格、自动化方案）' },
+    { name: '工程主笔', desc: '代码实现、部署、维护、测试' },
+    { name: '路由调度员', desc: '判断方向、分发任务、收集结果、汇报给你' }
+  ],
+  audit: [
+    { name: '完整性审查官', desc: '查漏 — 需求覆盖全了吗？有没有缺维度？' },
+    { name: '逻辑审查官', desc: '查矛盾 — 步骤连贯吗？规则互相打架吗？' },
+    { name: '事实核查官', desc: '查真假 — 数据来源靠谱吗？有没有过时信息？' },
+    { name: '反方审查官', desc: '找漏洞 — 结论有偏颇吗？换个角度还成立吗？' },
+    { name: '可执行性审查官', desc: '查能用 — 照着做能做出来吗？会不会卡住？' },
+    { name: '工程审查官', desc: '查代码 — 架构合理吗？代码质量行吗？安全吗？' }
+  ],
+  comm: [
+    { name: '业务翻译官', desc: '把非技术内容翻成大白话' },
+    { name: '技术翻译官', desc: '把技术内容翻成大白话（部署→放到网上，Bug→毛病...）' }
+  ]
+};
+
+// Skill groups config
+const GROUPS = [
+  { id: '转化能力', color: 'var(--c-router)', skills: ['总转化器', '问题拆解师'] },
+  { id: '答案与判断', color: 'var(--c-judgment)', skills: ['答案澄清师', '调研判断师'] },
+  { id: '沉淀能力', color: 'var(--c-method)', skills: ['方法提炼师', '教材编写师'] },
+  { id: '自动化能力', color: 'var(--c-automation)', skills: ['循环定时任务总控', '循环任务师', '定时任务师', '组合任务师'] },
+  { id: '造工具', color: 'var(--c-tool)', skills: ['造工具总控', '需求规划师', '产品设计师', '全栈编码师', '部署上线师', '代码维护师'] },
+  { id: '造技能', color: 'var(--c-meta)', skills: ['Skill编译器'] },
+  { id: '质量保障', color: 'var(--c-quality)', skills: ['测试循环师'] },
+  { id: '万能兜底', color: 'var(--c-fallback)', skills: ['通用任务引擎'] }
+];
+
+// =========================================
+// RENDER FUNCTIONS
+// =========================================
+
+function renderSkillCard(name) {
+  const s = SKILLS[name];
+  if (!s) return '';
+
+  const stepsHtml = s.steps.map(step => {
+    const dotClass = step.type === 'user' ? 'user' : 'internal';
+    const tagClass = step.type === 'user' ? 'user-tag' : 'internal-tag';
+    const tagText = step.type === 'user' ? '面向你' : '内部';
+
+    let branchHtml = '';
+    if (step.branch) {
+      branchHtml = `<div class="wf-step-branch" style="--card-color:${s.color}">
+        ${step.branch.map(b => `<div class="branch-line"><span class="branch-condition">${b.cond}</span> <span class="branch-target">${b.target}</span></div>`).join('')}
+      </div>`;
+    }
+
+    return `<div class="wf-step">
+      <div class="wf-step-line">
+        <div class="wf-step-dot ${dotClass}" style="background:${step.type === 'user' ? s.color : ''}">${step.n}</div>
+        <div class="wf-step-connector"></div>
+      </div>
+      <div class="wf-step-content">
+        <div class="wf-step-title">${step.title} <span class="wf-step-tag ${tagClass}">${tagText}</span></div>
+        <div class="wf-step-desc">${step.desc}</div>
+        ${branchHtml}
+      </div>
+    </div>`;
+  }).join('');
+
+  const protocolBadges = (s.protocols || []).map(p => {
+    const proto = PROTOCOLS[p];
+    return proto ? `<span class="badge protocol-badge">${proto.abbr} ${proto.name}<span class="tooltip">${proto.desc}</span></span>` : '';
+  }).join('');
+
+  const roleHtml = s.roles ? `
+    <div class="badge-group" style="margin-top:4px">
+      <span class="badge role-exec">${s.roles.exec}<span class="tooltip">执行角色</span></span>
+      <span class="badge role-audit">${s.roles.audit}<span class="tooltip">审查角色</span></span>
+      <span class="badge role-comm">${s.roles.comm}<span class="tooltip">沟通角色</span></span>
+    </div>` : '';
+
+  return `<div class="skill-card" style="--card-color:${s.color}" id="skill-${name}" data-name="${name}" data-group="${s.group}">
+    <div class="skill-header" onclick="toggleSkill('${name}')">
+      <div class="skill-header-left">
+        <div class="skill-icon" style="background:${s.color}">${s.icon}</div>
+        <div class="skill-info">
+          <div class="skill-name">${name}</div>
+          <div class="skill-subtitle">${s.desc}</div>
+        </div>
+      </div>
+      <span class="skill-trigger">${s.trigger}</span>
+      <span class="expand-icon">&#9660;</span>
+    </div>
+    <div class="skill-detail">
+      <div class="skill-detail-inner">
+        <div class="detail-section">
+          <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;padding:8px 12px;background:#f9f9f9;border-radius:6px">${s.tldr}</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title">执行流程（${s.steps.length} 步）</div>
+          <div class="workflow-steps">${stepsHtml}</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title">遵守的协议</div>
+          <div class="badge-group">${protocolBadges}</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title">角色分工</div>
+          ${roleHtml}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderGroups() {
+  const container = document.getElementById('skillGroups');
+  let html = '';
+
+  GROUPS.forEach(g => {
+    const pipeline = g.id === '造工具' ? `
+      <div class="pipeline">
+        <div class="pipeline-node" onclick="scrollToSkill('需求规划师')">① 需求规划师</div>
+        <div class="pipeline-arrow">&#8594;</div>
+        <div class="pipeline-node" onclick="scrollToSkill('产品设计师')">② 产品设计师</div>
+        <div class="pipeline-arrow">&#8594;</div>
+        <div class="pipeline-node" onclick="scrollToSkill('全栈编码师')">③ 全栈编码师</div>
+        <div class="pipeline-arrow">&#8594;</div>
+        <div class="pipeline-node" onclick="scrollToSkill('部署上线师')">④ 部署上线师</div>
+      </div>` : '';
+
+    const automationPipeline = g.id === '自动化能力' ? `
+      <div class="pipeline" style="border-left:3px solid var(--c-automation)">
+        <div class="pipeline-node" style="border-color:var(--c-automation)" onclick="scrollToSkill('循环任务师')">循环任务师</div>
+        <div class="pipeline-arrow" style="color:var(--c-automation)">|</div>
+        <div class="pipeline-node" style="border-color:var(--c-automation)" onclick="scrollToSkill('定时任务师')">定时任务师</div>
+        <div class="pipeline-arrow" style="color:var(--c-automation)">|</div>
+        <div class="pipeline-node" style="border-color:var(--c-automation)" onclick="scrollToSkill('组合任务师')">组合任务师</div>
+      </div>` : '';
+
+    html += `<div class="skill-group" data-group="${g.id}">
+      <div class="skill-group-title"><div class="skill-group-dot" style="background:${g.color}"></div>${g.id}</div>
+      ${pipeline}${automationPipeline}
+      ${g.skills.map(s => renderSkillCard(s)).join('')}
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function renderProtocolMatrix() {
+  const container = document.getElementById('protocolMatrix');
+  const protoKeys = Object.keys(PROTOCOLS);
+  const skillNames = Object.keys(SKILLS);
+
+  let thead = '<tr><th>技能</th>' + protoKeys.map(k => `<th title="${PROTOCOLS[k].desc}">${PROTOCOLS[k].abbr}</th>`).join('') + '</tr>';
+
+  let tbody = skillNames.map(name => {
+    const s = SKILLS[name];
+    const cells = protoKeys.map(k => {
+      const has = (s.protocols || []).includes(k);
+      return `<td class="${has ? 'cell-y' : 'cell-n'}">${has ? 'Y' : '-'}</td>`;
+    }).join('');
+    return `<tr><td>${name}</td>${cells}</tr>`;
+  }).join('');
+
+  container.innerHTML = `<div class="collapsible" id="matrix-collapsible">
+    <div class="collapsible-header" onclick="toggleCollapsible('matrix-collapsible')">
+      <span>点击展开完整矩阵（19 技能 × 12 协议）</span>
+      <span class="expand-icon">&#9660;</span>
+    </div>
+    <div class="collapsible-body">
+      <div class="matrix-container">
+        <table class="matrix-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderRoles() {
+  const container = document.getElementById('rolesList');
+  let html = '';
+
+  const sections = [
+    { title: '执行角色（4个）', items: ROLES.exec, badgeClass: 'role-exec', desc: '负责产出最终交付物' },
+    { title: '审查角色（6个）', items: ROLES.audit, badgeClass: 'role-audit', desc: '负责质量把关' },
+    { title: '沟通角色（2个）', items: ROLES.comm, badgeClass: 'role-comm', desc: '负责翻译成大白话' }
+  ];
+
+  sections.forEach(sec => {
+    html += `<div class="collapsible" id="roles-${sec.badgeClass}">
+      <div class="collapsible-header" onclick="toggleCollapsible('roles-${sec.badgeClass}')">
+        <span>${sec.title} — ${sec.desc}</span>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="collapsible-body">
+        <div style="padding:12px">
+          ${sec.items.map(r => `<div style="display:flex;gap:10px;align-items:baseline;margin-bottom:8px">
+            <span class="badge ${sec.badgeClass}" style="flex-shrink:0">${r.name}</span>
+            <span style="font-size:13px;color:var(--text-secondary)">${r.desc}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+// =========================================
+// INTERACTION
+// =========================================
+
+function toggleSkill(name) {
+  const card = document.getElementById('skill-' + name);
+  if (!card) return;
+  const wasExpanded = card.classList.contains('expanded');
+  card.classList.toggle('expanded');
+
+  if (!wasExpanded) {
+    setTimeout(() => {
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+  }
+}
+
+function toggleCollapsible(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function scrollToSkill(name) {
+  const card = document.getElementById('skill-' + name);
+  if (card) {
+    if (!card.classList.contains('expanded')) {
+      card.classList.add('expanded');
+    }
+    setTimeout(() => {
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+}
+
+function filterSkills(query) {
+  const q = query.toLowerCase().trim();
+  const groups = document.querySelectorAll('.skill-group');
+
+  groups.forEach(group => {
+    const cards = group.querySelectorAll('.skill-card');
+    let anyVisible = false;
+
+    cards.forEach(card => {
+      const name = card.dataset.name.toLowerCase();
+      const skill = SKILLS[card.dataset.name];
+      const searchText = (name + ' ' + skill.desc + ' ' + skill.trigger + ' ' + skill.group + ' ' + skill.tldr).toLowerCase();
+
+      if (!q || searchText.includes(q)) {
+        card.classList.remove('hidden');
+        anyVisible = true;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    group.classList.toggle('hidden', !anyVisible && q);
+  });
+}
+
+// Sticky breadcrumb update
+window.addEventListener('scroll', () => {
+  const sections = [
+    { id: 'section-flow', label: '系统总流程' },
+    { id: 'section-groups', label: '技能分组' },
+    { id: 'section-protocols', label: '协议矩阵' },
+    { id: 'section-roles', label: '角色库' }
+  ];
+
+  const breadcrumb = document.getElementById('breadcrumb');
+  let current = '系统总览';
+
+  for (const sec of sections) {
+    const el = document.getElementById(sec.id);
+    if (el && el.getBoundingClientRect().top <= 100) {
+      current = sec.label;
+    }
+  }
+
+  breadcrumb.innerHTML = `<span onclick="scrollToSection('top')">系统总览</span>` +
+    (current !== '系统总览' ? `<span class="sep">›</span><span class="active">${current}</span>` : '');
+});
+
+// =========================================
+// INIT
+// =========================================
+renderGroups();
+renderProtocolMatrix();
+renderRoles();
+</script>
+</body>
+</html>

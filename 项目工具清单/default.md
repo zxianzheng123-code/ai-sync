@@ -27,6 +27,7 @@
 | --- | --- | --- |
 | curl | 通用 HTTP 请求 | `curl --version` |
 | npx | Node 包临时执行器 | `npx --version` |
+| netlify-cli | 静态站点一键部署（系统全景图等） | `netlify --version` |
 
 ## 禁用表
 

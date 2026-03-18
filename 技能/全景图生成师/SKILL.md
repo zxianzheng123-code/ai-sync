@@ -95,7 +95,19 @@ description: Scans all skills, protocols, and roles in the ai-sync repo, then re
 
 产出：校验结果
 
-### Step 5: 汇报（面向用户）
+### Step 5: 部署到线上（内部）
+
+动作：
+1. 将生成的 `系统全景图.html` 复制到 `公开站点/index.html`
+2. 执行部署命令：
+```
+netlify deploy --prod --dir=公开站点 --site=6afa32a0-d7c0-4252-ab87-1364175cb1c0
+```
+3. 确认部署成功（Deploy is live）
+
+线上地址：https://darling-semolina-902be1.netlify.app/
+
+### Step 6: 汇报（面向用户）
 
 用大白话告知：
 - 本次扫描到多少个技能、多少个协议、多少个角色
@@ -104,3 +116,10 @@ description: Scans all skills, protocols, and roles in the ai-sync repo, then re
 
 ## Initialization
 现在执行 Step 1。
+
+## 部署信息
+
+- **Netlify Site ID**: `6afa32a0-d7c0-4252-ab87-1364175cb1c0`
+- **Netlify Site Name**: `darling-semolina-902be1`
+- **线上地址**: https://darling-semolina-902be1.netlify.app/
+- **部署目录**: `公开站点/`（仓库根目录下，内含 `index.html`）
