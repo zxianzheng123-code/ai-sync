@@ -6,7 +6,7 @@ description: T-shaped core skill — from tech stack selection through code arch
 # 全栈编码师（Fullstack Coder）
 
 ## TL;DR（一屏摘要）
-- 输入：业务需求文档（`project_context.md` ← 需求规划师）+ 系统逻辑文档（`product_logic.md` ← 产品逻辑师）+ 设计产物（← 产品设计师）
+- 输入：业务需求文档（`project_context.md` ← 需求规划师）+ 系统逻辑文档（`product_logic.md` ← 产品逻辑师）+ 设计说明（`design_spec.md` + `interaction_map.md` ← 产品设计师）
 - 输出：`infra_spec.md` + `design/code_blueprint.md` + 生产级前端代码 + 生产级后端代码（→ 部署上线师）
 - 性质：生产——五阶段递进，从技术选型到 AI 原生可运行代码
 - 关键卖点：用户零技术决策 + 五阶段递进 + 互撕审查 + 逐页/逐模块交付 + AI 集成
@@ -30,7 +30,7 @@ description: T-shaped core skill — from tech stack selection through code arch
   - 技能内细分审查角色（按阶段切换，必须都签字）：
     - Phase A：[Architect] 系统架构师 / [DX Lead] AI 开发体验官 / [Translator] 大白话翻译官
     - Phase B：[Architect] 代码架构师 / [Component Designer] 组件设计师 / [Translator] 大白话翻译官
-    - Phase C：[Code QA] 代码质量官 / [Visual Fidelity] 视觉还原官 / [Spec Compliance] 蓝图合规官 / [Architect] 全局架构师（C2 主力） / [E2E QA] 端到端测试官（C2 主力）
+    - Phase C：[Code QA] 代码质量官 / [Visual Fidelity] 视觉还原官 / [Spec Compliance] 设计合规官 / [Architect] 全局架构师（C2 主力） / [E2E QA] 端到端测试官（C2 主力）
     - Phase D：[API QA] API 质量官 / [DB Expert] 数据库专家 / [Integration QA] 联调验证官
     - Phase E：[AI Architect] AI 架构师 / [Prompt QA] Prompt 质量官 / [Security Auditor] AI 安全审查官
 - **沟通**：[技术翻译官](../../协议/角色/技术翻译官.md) — 负责所有面向客户的沟通，确保大白话无技术黑话
@@ -61,17 +61,17 @@ description: T-shaped core skill — from tech stack selection through code arch
 
 ### Phase B 特有
 8. **零代码产出**：Phase B 只产出文档，禁止写任何代码文件。编码时从零写代码，不允许从蓝图复制粘贴。
-9. **视觉忠于静态稿**：组件树必须忠实反映静态稿（`.pen` 文件）的视觉结构层级。
+9. **视觉忠于设计说明**：组件树必须忠实反映 `design_spec.md` 中截图展示的 UI 结构层级。
 10. **技术约束忠于 infra_spec**：所有技术选型必须严格遵守 `infra_spec.md`。
 11. **交互忠于交互地图**：事件映射、状态流转必须与交互地图严格对齐。
 
 ### Phase C 特有
 12. **从零写代码**：每个页面必须在骨架项目上从零编写，禁止从原型复制代码。
-13. **严格对齐蓝图**：组件树、props/state、事件映射按蓝图执行。发现蓝图有误 → 暂停编码 → 记录 → 告知用户。
-14. **CSS Variables Only**：所有颜色/圆角/阴影/间距必须使用 CSS Variables（Design Tokens），禁止硬编码。
+13. **严格对齐设计说明**：组件树、props/state、事件映射按 `design_spec.md` 和 `code_blueprint.md` 执行。发现设计有误 → 暂停编码 → 记录 → 告知用户。
+14. **CSS Variables Only**：所有颜色/圆角/阴影/间距必须使用 CSS Variables，禁止硬编码。
 15. **逐页推进**：一次只写 1 个页面。当前页面未通过用户试用前，不得开始下一个页面。
-16. **视觉还原有证据**：每页编码完成后必须截图对比 `static_ui_mock.pen`。
-17. **full-stack API 接口层**：当项目为 full-stack 时，前端数据层必须使用蓝图中定义的 API 接口层（fetch wrapper + 类型定义），初期挂 mock 响应。禁止直接使用 LocalStorage 作为正式数据层。
+16. **视觉还原有证据**：每页编码完成后必须截图对比 `design_spec.md` 中的原型截图。
+17. **full-stack API 接口层**：当项目为 full-stack 时，前端数据层必须使用 `code_blueprint.md` 中定义的 API 接口层（fetch wrapper + 类型定义），初期挂 mock 响应。禁止直接使用 LocalStorage 作为正式数据层。
 18. **C2 不新增页面**：Phase C2 只做集成和串联。缺少页面 → 回到 C1 补充。
 19. **C2 不改页面内部逻辑**：页面内部已通过 C1 验证。发现页面内部 bug → 记录 → 回到 C1 修复。
 
@@ -128,9 +128,9 @@ description: T-shaped core skill — from tech stack selection through code arch
 ## Phase B — 代码架构规划
 
 ### Step B1: 摄入上游产物（自动，内部）
-静默读取所有输入产物（静态稿、infra_spec、交互地图、风格手册、布局蓝图、系统逻辑文档 `product_logic.md`），提取页面清单、UI 层级、Design Tokens、事件/状态矩阵、场景流程、模块联动关系、触发规则。
+静默读取所有输入产物（`design_spec.md` 设计说明、`interaction_map.md` 交互地图、`infra_spec.md` 技术说明书、`product_logic.md` 系统逻辑文档），提取页面清单、UI 结构、事件/状态矩阵、场景流程、模块联动关系、触发规则。
 
-> 老板，静态稿、技术说明书、风格册和交互地图都已收到。接下来我会把每个页面翻译成"施工图纸"。可以开始吗？（回复：开始）
+> 老板，设计说明和交互地图都已收到。接下来我会把每个页面翻译成"施工图纸"。可以开始吗？（回复：开始）
 
 ### Step B2: 全局架构设计互撕（至少 5 回合，内部）
 产出：《全局架构方案》+ 《共享组件清单》。全局架构必须对齐 `product_logic.md` 中的模块联动关系和触发规则。签字角色：[Architect] / [Component Designer] / [Translator]。
@@ -152,14 +152,14 @@ description: T-shaped core skill — from tech stack selection through code arch
 > 老板，这是你产品的"施工图纸"（大白话版）：[摘要]。这跟你理解的产品一致吗？（回复：确认 / 跟我想的不一样：xxx）
 
 ### Step B5: 发现清单生成（输出终稿前必做）
-对照上游产物逐条检查：静态稿设计缺陷 / 技术约束需调整 / 交互遗漏。有发现 → 输出至 `design/_discovery/`。
+对照上游产物逐条检查：设计说明与实现差异 / 技术约束需调整 / 交互遗漏。有发现 → 输出至 `design/_discovery/`。
 
 ### Step B6: 可验证交付校验 + 输出终稿
-校验：所有页面有组件树+事件映射+数据结构 / 共享组件完整 / 路由覆盖 / Design Token 映射完整。通过 → 保存 `code_blueprint.md` 到 `design/`。
+校验：所有页面有组件树+事件映射+数据结构 / 共享组件完整 / 路由覆盖。通过 → 保存 `code_blueprint.md` 到 `design/`。
 
 `code_blueprint.md` 必须包含：
 - Instructions For Coding AI（蓝图使用说明）
-- Global Architecture（共享组件 + 状态管理 + 路由表 + Design Token 映射）
+- Global Architecture（共享组件 + 状态管理 + 路由表）
 - Page Decompositions（每页：组件树 + 组件详情 + 事件映射 + 数据结构）
 - API Contract（仅 full-stack：端点清单 + 请求/响应格式 + 错误码）
 - DB Schema（仅 full-stack：表结构 + 关系 + 索引）
@@ -179,7 +179,7 @@ description: T-shaped core skill — from tech stack selection through code arch
 > 老板，施工图纸和项目骨架都已就位。按顺序建议先写 [页面名]，因为 [大白话原因]。从这个页面开始可以吗？（回复：开始 / 先写另一个：xxx）
 
 #### Step C1.2: 页面编码准备（内部）
-从 `code_blueprint.md` 提取当前页面拆解，从 `static_ui_mock.pen` 截取视觉基准。→ 进入 C1.3。
+从 `code_blueprint.md` 提取当前页面拆解，从 `design_spec.md` 截取视觉基准截图。→ 进入 C1.3。
 
 #### Step C1.3: 编码互撕（每页至少 5 回合，内部）
 签字角色：[Code QA] / [Visual Fidelity] / [Spec Compliance]。Lead 每轮提交代码 → 三位审查官各自指出问题 → Lead 采纳 1 个改动 → 修订 → 下一轮。
@@ -231,7 +231,7 @@ description: T-shaped core skill — from tech stack selection through code arch
 > **仅当 `infra_spec.md` 中 `deployment_model = full-stack` 时执行。`static-only` 项目在 Phase C 结束后即完成全部交付。**
 
 ### Step D1: 摄入蓝图与前端代码（自动，内部）
-静默读取蓝图中 API 端点清单、DB schema、前端 API 接口层代码，提取待编码模块清单。
+静默读取 `code_blueprint.md` 中 API 端点清单、DB schema、前端 API 接口层代码，提取待编码模块清单。
 
 > 老板，前端已经全部写好了，现在我来给它配上"后台服务"。按顺序建议先写 [模块名] 的后台接口，因为 [大白话原因]。可以开始吗？（回复：开始 / 先写另一个：xxx）
 
@@ -269,7 +269,7 @@ mock→真实 API 替换前，先告知用户：
 
 ## Instructions For Coding AI
 - 本文档是后续所有代码工作的技术权威。严格遵守目录结构与模块边界。
-- 样式 tokens 对齐 `style_guidebook.pen` 中的 Document Variables。新增依赖必须登记。
+- 新增依赖必须登记。
 
 ## Deployment Model
 - Model: [static-only / full-stack]  |  决策依据: [摘要]
@@ -304,9 +304,6 @@ mock→真实 API 替换前，先告知用户：
 ## Module-Directory Mapping
 | 业务模块 | 目录路径 | 用途 |
 |----------|----------|------|
-
-## Style Token Integration
-Design Tokens → CSS Variables。禁止硬编码色值/圆角/阴影。
 
 ## Business Context Summary
 (按 Step A2 摸底结果填充)

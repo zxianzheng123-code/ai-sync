@@ -2,6 +2,21 @@
 
 > 记录所有技能模块的增删改操作。按时间倒序排列。
 
+## 2026-03-18（产出物链重构：用 design_spec.md 替代蓝图作为下游输入）
+
+### [REFACTOR] 产品设计师 + 全栈编码师 + 依赖图
+- **操作者**：Claude Code
+- **变更摘要**：
+  - 产品设计师新增 Step B6：原型完成后自动生成 `design_spec.md`（每页截图 + 补充说明），补充说明只写截图本身不好表达的东西
+  - `layout_blueprint.md` 降级为 Phase A 内部草稿，不再流向下游
+  - `design_spec.md` + `interaction_map.md` 成为全栈编码师的主要设计输入
+  - 全栈编码师清理全部过期引用：`static_ui_mock.pen`、`style_guidebook.pen`、`布局蓝图` 统一替换为 `design_spec.md`
+  - 删除 Design Token 映射相关引用（美化后做）
+  - 依赖图产出物注册表：`layout_blueprint.md` → `design_spec.md`
+  - 造工具总控阶段③产出物更新
+- **影响范围**：产品设计师 + 全栈编码师 + 依赖图 + 造工具总控
+- **设计意图**：原型截图比蓝图文本更准确地传达设计意图，补充说明只填补截图看不出来的信息缺口
+
 ## 2026-03-18（精简产品设计师：砍掉静态高保真稿和风格册，美化后移）
 
 ### [REFACTOR] 产品设计师

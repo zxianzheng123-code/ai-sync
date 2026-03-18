@@ -8,15 +8,16 @@ description: Two-phase design skill — Phase A (quick layout sketch), Phase B (
 ## TL;DR（一屏摘要）
 - 输入：业务需求文档（`project_context.md` ← 需求规划师）+ 系统逻辑文档（`product_logic.md` ← 产品逻辑师）+ 设计意图描述
 - 输出：**按需裁剪**，在 Step 0 分诊中与客户确认执行哪些阶段——
-  - Phase A → `design/layout_blueprint.md`（布局蓝图，轻量快速）
-  - Phase B → 可点击原型（throwaway）+ `design/interaction_map.md`（交互地图）← **主战场**
+  - Phase A → `design/layout_blueprint.md`（布局蓝图，轻量快速，内部草稿）
+  - Phase B → 可点击原型（throwaway）+ `design/design_spec.md`（设计说明）+ `design/interaction_map.md`（交互地图）← **主战场**
 - 性质：参考——所有产物均为设计参考物，原型代码不进生产
 - 关键卖点：产品经理思维 + 准生产级原型 + 生产级 Mock + 对抗式审查
 - 注意：**不做美化**。视觉风格、配色、字体等美术工作放到代码完成后单独做
 - 核心理念：**蓝图是起跑线，原型才是终点线**。蓝图快速定方向，原型中用产品经理思维打磨到准生产级
 
 ## 术语约定（全篇统一）
-- `layout_blueprint.md` = 布局蓝图
+- `layout_blueprint.md` = 布局蓝图（Phase A 内部草稿，不流向下游）
+- `design_spec.md` = 设计说明（原型截图 + 补充说明，下游编码主输入）
 - `interaction_map.md` = 交互地图
 
 ## 角色设定
@@ -152,8 +153,6 @@ description: Two-phase design skill — Phase A (quick layout sketch), Phase B (
 - **响应式考量**：至少在目标设备尺寸上看起来像真产品
 - **不套皮肤**：用系统默认字体、中性灰色调、无品牌元素——但除此之外，体验应该跟最终产品一样
 
-**蓝图偏离记录**：如果原型中的设计偏离了蓝图，必须记录：哪里改了 / 为什么改 / 改成了什么。这些记录最终会回写到蓝图或作为发现清单输出。
-
 重点是交互流转和功能验证，用户试玩时应该感觉"这就是产品，只是还没上色"。
 
 ### Step B5: 用户体验试玩（面向用户）
@@ -162,7 +161,20 @@ description: Two-phase design skill — Phase A (quick layout sketch), Phase B (
 分诊回退：交互流转→B3 / 数据问题→B2 / 微调→B4。
 通过→下一页或全部完成进入 B6。
 
-### Step B6: 发现清单 + 交付校验
+### Step B6: 生成设计说明文档（内部）
+对每个页面的每个关键状态截图，存入 `design/screenshots/`。
+生成 `design/design_spec.md`：
+
+- 每页一节：截图 + 补充说明
+- **补充说明只写截图本身不好表达的东西**：
+  - 交互意图（为什么这样设计，用户预期的操作路径）
+  - 状态触发条件（什么条件下从 A 状态变成 B 状态）
+  - 动效需求（哪些交互有动态效果，效果目标是什么）
+  - 跨页联动（这个页面的操作会影响哪个页面的什么）
+  - 边界情况（截图没覆盖到的极端场景如何处理）
+- 截图已经直观展示的内容（布局、元素位置、间距等）不用重复描述
+
+### Step B7: 发现清单 + 交付校验
 汇总技术发现，分类为：冲突项/扩展项/无影响项。
 即使全为"无影响项"也须显式声明。
 
@@ -171,25 +183,23 @@ description: Two-phase design skill — Phase A (quick layout sketch), Phase B (
 - [ ] 交互地图覆盖所有可交互元素？
 - [ ] 发现清单已显式声明？
 - [ ] Mock 数据对标生产（字段完整、数据真实、量级足够、边界覆盖、跨页一致）？
-- [ ] 蓝图偏离记录已整理（如有偏离）？
+- [ ] design_spec.md 每页有截图 + 补充说明？
 
-### Step B7: 输出终稿
+### Step B8: 输出终稿
 - 可点击原型（throwaway，存入 `design/prototype/`）
+- `design/design_spec.md`（截图 + 设计说明）← 下游编码主输入
 - `design/interaction_map.md`
-- 如原型偏离蓝图 → 回写更新 `design/layout_blueprint.md`，保持蓝图与原型一致
 
-> 交互体验版全部完成！所有页面验证通过。这个体验版的使命已完成，后续正式代码从干净骨架从零开始。
+> 交互体验版全部完成！所有页面验证通过。设计说明文档已生成，后续编码师会参照截图和说明从干净骨架从零写代码。
 
 ---
 
-## layout_blueprint.md Template
+## layout_blueprint.md Template（Phase A 内部草稿，不流向下游）
 ```markdown
-# Layout Blueprint
+# Layout Blueprint（内部草稿）
 
-## Instructions For Coding AI
-1. 本文档只定义业务布局与信息层级，不定义视觉风格。
-2. 页面结构必须 1:1 还原"三段式空间布局"，不要新增未规划按钮或层级。
-3. 视觉美化在代码完成后单独进行，本阶段不涉及配色、字体等。
+> **注意**：本文档是 Phase A 的快速启动草图，仅供 Phase B 原型构建参考。
+> 下游编码师不直接读取本文档，而是读取 `design_spec.md`（原型截图+设计说明）。
 
 ## 1. Core Pages
 ### Page: [页面名]
@@ -225,6 +235,33 @@ description: Two-phase design skill — Phase A (quick layout sketch), Phase B (
 - Priority: [P0/P1/P2]
 - State Link: [关联状态]
 - Reduce Motion: [需要/不需要 + 说明]
+```
+
+## design_spec.md Template（下游编码主输入）
+```markdown
+# Design Spec（设计说明）
+
+## Instructions For Coding AI
+1. 本文档是编码的主要设计参考，配合 interaction_map.md 使用。
+2. 每个页面有截图 + 补充说明。截图展示了准生产级的 UI 结构和布局。
+3. 补充说明只包含截图无法直观表达的信息（交互意图、状态触发、跨页联动等）。
+4. 原型代码禁止复制，必须从干净骨架从零编码。
+5. 视觉美化在代码完成后单独做，本阶段用系统默认样式。
+
+## Page: [页面名]
+
+### Screenshots
+- Default: ![](screenshots/[页面名]-default.png)
+- Empty: ![](screenshots/[页面名]-empty.png)
+- Loading: ![](screenshots/[页面名]-loading.png)
+- Error: ![](screenshots/[页面名]-error.png)
+
+### 补充说明（截图看不出来的东西）
+- **交互意图**: [为什么这样设计，用户预期的操作路径]
+- **状态触发**: [什么条件下从 A 状态变成 B 状态]
+- **动效需求**: [哪些交互有动态效果，效果目标]
+- **跨页联动**: [这个页面的操作会影响哪个页面的什么]
+- **边界情况**: [截图没覆盖到的极端场景如何处理]
 ```
 
 ## Initialization
