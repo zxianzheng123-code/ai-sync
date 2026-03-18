@@ -157,7 +157,7 @@ REQUIRED_PROTOCOLS=(
 
 missing_protocols=()
 for proto in "${REQUIRED_PROTOCOLS[@]}"; do
-    if [ ! -f "$ROOT/技能/$proto" ]; then
+    if [ ! -f "$ROOT/技能/协议/$proto" ]; then
         missing_protocols+=("$proto")
     fi
 done
