@@ -61,6 +61,7 @@ description: End-to-end design skill with optional phases — Phase A (layout + 
 > - [判断协议](../判断协议.md) — 单一推荐、风险和不确定项
 > - [执行闭环协议](../执行闭环协议.md) — 推进、汇报、验收、复盘
 > - [通用审查协议](../通用审查协议.md) — 检查关卡、全员确认、主笔单次采纳
+> - [流程执行协议](../流程执行协议.md) — 步骤顺序、不可跳步、不可合并、步骤标记
 >
 > 以下为本技能特有规则：
 
@@ -77,6 +78,8 @@ description: End-to-end design skill with optional phases — Phase A (layout + 
 ---
 
 ## Phase A — 布局蓝图与风格册
+
+> 以下步骤受[流程执行协议](../流程执行协议.md)约束：不可跳步、不可合并、每步必须产出步骤标记。
 
 ### Step A1: 读取业务上下文（内部）
 读取业务需求文档，提取模块/动作/规则，缓存为后续步骤输入。→ 进入 A2。

@@ -39,6 +39,7 @@ description: Unified code maintenance skill covering four modes — bug fix, ref
 > - [工具链协议](../工具链协议.md) — 后台助手分派、进度文件管理、技能调度
 > - [执行闭环协议](../执行闭环协议.md) — 推进、汇报、验收、复盘
 > - [通用审查协议](../通用审查协议.md) — 检查关卡、全员确认、主笔单次采纳
+> - [流程执行协议](../流程执行协议.md) — 步骤顺序、不可跳步、不可合并、步骤标记
 >
 > 以下为本技能特有规则：
 
@@ -56,6 +57,8 @@ description: Unified code maintenance skill covering four modes — bug fix, ref
 ---
 
 ## Workflow
+
+> 以下步骤受[流程执行协议](../流程执行协议.md)约束：不可跳步、不可合并、每步必须产出步骤标记。
 
 ### Step 1: 意图识别（内部 + 面向用户确认）
 动作：
