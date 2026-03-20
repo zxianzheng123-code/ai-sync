@@ -2,13 +2,6 @@
 SKILL_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 REPO_ROOT="$(cd "$SKILL_ROOT/../.." && pwd)"
 
-echo "===== 工作人员：部署运维 ====="
-cat "$REPO_ROOT/技能/人设库/部署运维/人设.md"
-echo ""
-echo "--- 专业知识 ---"
-cat "$REPO_ROOT/技能/人设库/部署运维/专业知识/"*.md 2>/dev/null
-echo ""
-
 echo "===== 工作人员：全栈开发 ====="
 cat "$REPO_ROOT/技能/人设库/全栈开发/人设.md"
 echo ""

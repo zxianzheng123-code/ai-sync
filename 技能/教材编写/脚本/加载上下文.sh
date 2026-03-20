@@ -9,18 +9,11 @@ echo "--- 专业知识 ---"
 cat "$REPO_ROOT/技能/人设库/写作主笔/专业知识/"*.md 2>/dev/null
 echo ""
 
-echo "===== 工作人员：完整性审查 ====="
-cat "$REPO_ROOT/技能/人设库/完整性审查/人设.md"
+echo "===== 工作人员：审查官 ====="
+cat "$REPO_ROOT/技能/人设库/审查官/人设.md"
 echo ""
 echo "--- 专业知识 ---"
-cat "$REPO_ROOT/技能/人设库/完整性审查/专业知识/"*.md 2>/dev/null
-echo ""
-
-echo "===== 工作人员：逻辑审查 ====="
-cat "$REPO_ROOT/技能/人设库/逻辑审查/人设.md"
-echo ""
-echo "--- 专业知识 ---"
-cat "$REPO_ROOT/技能/人设库/逻辑审查/专业知识/"*.md 2>/dev/null
+cat "$REPO_ROOT/技能/人设库/审查官/专业知识/"*.md 2>/dev/null
 echo ""
 
 echo "===== 作业指引 ====="

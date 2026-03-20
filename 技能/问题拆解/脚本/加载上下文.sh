@@ -2,18 +2,18 @@
 SKILL_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 REPO_ROOT="$(cd "$SKILL_ROOT/../.." && pwd)"
 
-echo "===== 工作人员：需求分析员 ====="
-cat "$REPO_ROOT/技能/人设库/需求分析员/人设.md"
+echo "===== 工作人员：产品 ====="
+cat "$REPO_ROOT/技能/人设库/产品/人设.md"
 echo ""
 echo "--- 专业知识 ---"
-cat "$REPO_ROOT/技能/人设库/需求分析员/专业知识/"*.md 2>/dev/null
+cat "$REPO_ROOT/技能/人设库/产品/专业知识/"*.md 2>/dev/null
 echo ""
 
-echo "===== 工作人员：逻辑审查 ====="
-cat "$REPO_ROOT/技能/人设库/逻辑审查/人设.md"
+echo "===== 工作人员：审查官 ====="
+cat "$REPO_ROOT/技能/人设库/审查官/人设.md"
 echo ""
 echo "--- 专业知识 ---"
-cat "$REPO_ROOT/技能/人设库/逻辑审查/专业知识/"*.md 2>/dev/null
+cat "$REPO_ROOT/技能/人设库/审查官/专业知识/"*.md 2>/dev/null
 echo ""
 
 echo "===== 作业指引 ====="
