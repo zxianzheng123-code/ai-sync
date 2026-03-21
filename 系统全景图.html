@@ -774,7 +774,7 @@ header p {
 
 <header>
   <h1>AI 工具库 · 系统全景图</h1>
-  <p>点击任意节点可钻取查看详细执行流程。从全局流程 → 技能分组 → 单个技能的每一步 → 底层协议和角色。</p>
+  <p>点击任意节点可钻取查看详细执行流程。从全局流程 → 技能分组 → 单个技能的每一步 → 底层规范和人设。</p>
 </header>
 
 <div class="breadcrumb" id="breadcrumb">
@@ -782,7 +782,7 @@ header p {
 </div>
 
 <div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:var(--c-router)"></div>路由</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c-router)"></div>入口</div>
   <div class="legend-item"><div class="legend-dot" style="background:var(--c-decompose)"></div>拆解</div>
   <div class="legend-item"><div class="legend-dot" style="background:var(--c-answer)"></div>答案</div>
   <div class="legend-item"><div class="legend-dot" style="background:var(--c-judgment)"></div>判断</div>
@@ -800,7 +800,7 @@ header p {
   <!-- Search -->
   <div class="search-box">
     <span class="search-icon">&#128269;</span>
-    <input type="text" id="searchInput" placeholder="搜索技能、协议或角色..." oninput="filterSkills(this.value)">
+    <input type="text" id="searchInput" placeholder="搜索技能、规范或人设..." oninput="filterSkills(this.value)">
   </div>
 
   <!-- LEVEL 1: Main Flow -->
@@ -815,10 +815,10 @@ header p {
 
       <div class="arrow-down"><div class="arrow-line"></div><div class="arrow-head"></div></div>
 
-      <div class="flow-node" style="--node-color:var(--c-router)" onclick="scrollToSection('section-groups')">
-        <div class="node-title">总转化器</div>
-        <div class="node-desc">唯一默认入口 — 先判断方向，再往下走</div>
-        <div class="node-badge">暗号：开始转化</div>
+      <div class="flow-node" style="--node-color:var(--c-router)" onclick="scrollToSkill('客服工作')">
+        <div class="node-title">客服工作</div>
+        <div class="node-desc">唯一入口 — 接待、成题、路由到正确工作流</div>
+        <div class="node-badge">暗号：客服</div>
       </div>
 
       <div class="arrow-down">
@@ -828,7 +828,7 @@ header p {
       </div>
 
       <div class="decision-node">
-        没说清 → 问题拆解师（先帮你理清楚）→ 拆完后回来重新判断
+        没说清 → 问题拆解（先帮你理清楚）→ 拆完后回来重新判断
       </div>
 
       <div class="arrow-down">
@@ -839,31 +839,31 @@ header p {
 
       <div class="branch-container">
         <div class="branch-item">
-          <div class="flow-node" style="--node-color:var(--c-answer)" onclick="scrollToSkill('答案澄清师')">
+          <div class="flow-node" style="--node-color:var(--c-answer)" onclick="scrollToSkill('答案澄清')">
             <div class="node-title">答案</div>
             <div class="node-desc">帮你搞懂一件事</div>
           </div>
         </div>
         <div class="branch-item">
-          <div class="flow-node" style="--node-color:var(--c-judgment)" onclick="scrollToSkill('调研判断师')">
+          <div class="flow-node" style="--node-color:var(--c-judgment)" onclick="scrollToSkill('调研判断')">
             <div class="node-title">判断</div>
             <div class="node-desc">帮你做一个决定</div>
           </div>
         </div>
         <div class="branch-item">
-          <div class="flow-node" style="--node-color:var(--c-method)" onclick="scrollToSkill('方法提炼师')">
+          <div class="flow-node" style="--node-color:var(--c-method)" onclick="scrollToSkill('方法提炼')">
             <div class="node-title">方法</div>
             <div class="node-desc">帮你固化一套流程</div>
           </div>
         </div>
         <div class="branch-item">
-          <div class="flow-node" style="--node-color:var(--c-textbook)" onclick="scrollToSkill('教材编写师')">
+          <div class="flow-node" style="--node-color:var(--c-textbook)" onclick="scrollToSkill('教材编写')">
             <div class="node-title">教材</div>
             <div class="node-desc">帮你整理成可教的</div>
           </div>
         </div>
         <div class="branch-item">
-          <div class="flow-node" style="--node-color:var(--c-tool)" onclick="scrollToSkill('造工具总控')">
+          <div class="flow-node" style="--node-color:var(--c-tool)" onclick="scrollToSkill('造工具')">
             <div class="node-title">工具</div>
             <div class="node-desc">帮你做成能用的系统</div>
           </div>
@@ -899,14 +899,14 @@ header p {
 
   <!-- LEVEL 4: Protocol Matrix -->
   <div class="section" id="section-protocols">
-    <div class="section-title" style="border-left-color:var(--c-protocol)">Level 4 · 协议引用矩阵</div>
-    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">每个技能遵守哪些协议。点击协议名查看说明。</p>
+    <div class="section-title" style="border-left-color:var(--c-protocol)">Level 4 · 规范引用矩阵</div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">每个技能遵守哪些规范。来自 AGENTS.md 步骤执行规范和 SubAgent 分派规范。</p>
     <div id="protocolMatrix"></div>
   </div>
 
   <!-- LEVEL 5: Roles -->
   <div class="section" id="section-roles">
-    <div class="section-title" style="border-left-color:var(--c-role-exec)">Level 5 · 角色库</div>
+    <div class="section-title" style="border-left-color:var(--c-role-exec)">Level 5 · 人设库</div>
     <div id="rolesList"></div>
   </div>
 
@@ -918,484 +918,512 @@ header p {
 // =========================================
 
 const SKILLS = {
-  // --- 转化能力 ---
-  '总转化器': {
-    group: '转化能力', color: 'var(--c-router)', icon: '&#128256;',
-    trigger: '开始转化',
-    desc: '默认入口 — 先判断方向，再往下走',
-    tldr: '输入：任何需求 → 输出：方向判断 + 下游路由',
-    protocols: ['R','C','F','D','A','W'],
-    roles: { exec: '路由调度员（转化主笔）', audit: '方向检查 + 清晰度检查（内部）', comm: '业务翻译官' },
+  // --- 用户入口 ---
+  '客服工作': {
+    group: '用户入口', color: 'var(--c-router)', icon: '&#128256;',
+    trigger: '客服',
+    desc: '唯一入口 — 接待、成题、路由到正确工作流',
+    tldr: '输入：任何需求 → 输出：成题后路由到下游技能',
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '客户经理（Master Agent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 1, title: '接住原始输入', type: 'user', desc: '你把这件事直接说出来就行。我先帮你分方向。' },
-      { n: 2, title: '判断题目是否说清', type: 'internal', desc: '检查输入是否混乱、是否有多个目标混在一起。',
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载人设、作业指引、输出模板。' },
+      { n: 1, title: '接待', type: 'user', desc: '接住用户的原始输入，不管说得多乱都先接住。' },
+      { n: 2, title: '成题', type: 'internal', desc: '判断题目是否说清，缺口如何补。',
         branch: [
-          { cond: '输入混乱 / 多目标', target: '→ 问题拆解师' },
-          { cond: '说清了', target: '→ 进入 Step 3' }
+          { cond: '输入混乱 / 多目标', target: '→ 问题拆解' },
+          { cond: '说清了', target: '→ 进入路由' }
         ]
       },
-      { n: 3, title: '判断该先拿到哪类成果', type: 'internal', desc: '按总转化协议顺序：解释→答案 / 对比→判断 / 固化→方法 / 教学→教材 / 系统→工具' },
-      { n: 4, title: '向用户确认方向', type: 'user', desc: '我准备先把这件事转成 [成果类型]。这个方向你认同吗？' },
-      { n: 5, title: '执行或路由', type: 'internal', desc: '按确认的方向转给对应技能。',
+      { n: 3, title: '路由', type: 'internal', desc: '判断该先拿到哪类成果，路由到对应技能。',
         branch: [
-          { cond: '答案', target: '→ 答案澄清师' },
-          { cond: '判断', target: '→ 调研判断师' },
-          { cond: '方法', target: '→ 方法提炼师' },
-          { cond: '教材', target: '→ 教材编写师' },
-          { cond: '工具', target: '→ 造工具总控' }
+          { cond: '答案', target: '→ 答案澄清' },
+          { cond: '判断', target: '→ 调研判断' },
+          { cond: '方法', target: '→ 方法提炼' },
+          { cond: '教材', target: '→ 教材编写' },
+          { cond: '工具', target: '→ 造工具' },
+          { cond: '自动化', target: '→ 循环定时任务' }
         ]
       },
-      { n: 6, title: '交付口径', type: 'user', desc: '告知你已按什么方向继续，以及为什么选这个方向。' }
+      { n: 4, title: '分发或计划', type: 'user', desc: 'Master Agent 把成题结果和路由方向告知用户确认。' },
+      { n: 5, title: '反馈记录', type: 'internal', desc: '记录用户反馈到客户反馈报告。' }
     ]
   },
 
-  '问题拆解师': {
+  // --- 转化能力 ---
+  '问题拆解': {
     group: '转化能力', color: 'var(--c-decompose)', icon: '&#128270;',
     trigger: '先拆问题',
-    desc: '题目还乱时，先帮你拆清楚再往下走',
+    desc: '题目还乱时，先拆清楚瓶颈和去向',
     tldr: '输入：说不清的混乱想法 → 输出：拆解清单 + 瓶颈 + 推荐终点',
-    protocols: ['R','C','F','D','A','W'],
-    roles: { exec: '写作主笔（拆题主笔）', audit: '完整性审查官 + 逻辑审查官', comm: '业务翻译官' },
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '产品（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 1, title: '获取输入', type: 'user', desc: '你先把这件事说出来就行，理不顺也没关系。' },
-      { n: 2, title: '原子拆解', type: 'internal', desc: '剥离修饰词，提取核心事实/约束/目标，按八维分组编号（A=本质、B=约束、C=能力...）' },
-      { n: 3, title: '拆解结果互撕', type: 'internal', desc: '至少 3 回合内部审查：有没有漏拆？分组准不准？依赖关系标对了吗？' },
-      { n: 4, title: '核心洞见提炼', type: 'internal', desc: '回答三个问题：卡在哪？该追什么终点？最轻下一步是什么？（不超过5句）' },
-      { n: 5, title: '交付校验', type: 'internal', desc: '逐条核对：每个语义单元都拆了？编号连续？标注完整？老板能看懂？' },
-      { n: 6, title: '输出终稿', type: 'user', desc: '输出拆解清单 + 当前瓶颈 + 推荐终点 + 下一步行动建议。' },
-      { n: 7, title: '下游衔接', type: 'user', desc: '根据推荐终点，衔接到对应技能。',
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载产品人设和专业知识。' },
+      { n: 1, title: '意图梳理', type: 'user', desc: '你先把这件事说出来就行，理不顺也没关系。' },
+      { n: 2, title: '问题拆分', type: 'internal', desc: '剥离修饰词，提取核心事实/约束/目标，按维度分组编号。' },
+      { n: 3, title: '审查', type: 'internal', desc: '内部审查：有没有漏拆？分组准不准？依赖关系标对了吗？' },
+      { n: 4, title: '锁定主题', type: 'user', desc: '输出拆解清单 + 瓶颈 + 推荐终点 + 下一步行动建议。',
         branch: [
-          { cond: '答案', target: '→ 答案澄清师' },
-          { cond: '判断', target: '→ 调研判断师' },
-          { cond: '方法', target: '→ 方法提炼师' },
-          { cond: '教材', target: '→ 教材编写师' },
-          { cond: '工具', target: '→ 造工具总控' }
+          { cond: '答案', target: '→ 答案澄清' },
+          { cond: '判断', target: '→ 调研判断' },
+          { cond: '方法', target: '→ 方法提炼' },
+          { cond: '教材', target: '→ 教材编写' },
+          { cond: '工具', target: '→ 造工具' }
         ]
-      }
+      },
+      { n: 5, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 6, title: '交付审核', type: 'user', desc: 'Master Agent 输出成品，等用户确认。' }
     ]
   },
 
-  '答案澄清师': {
+  // --- 答案与判断 ---
+  '答案澄清': {
     group: '答案与判断', color: 'var(--c-answer)', icon: '&#128172;',
     trigger: '先给答案',
-    desc: '已经说清的问题，直接给出清楚、简洁的答案',
-    tldr: '输入：已说清的问题 → 输出：答案卡（答案 + 解释 + 边界 + 下一步）',
-    protocols: ['R','F','Ans','E','D','A','W'],
-    roles: { exec: '写作主笔（答案主笔）', audit: '完整性审查官 + 事实核查官', comm: '业务翻译官' },
+    desc: '已说清的问题，直接给出清楚简洁的答案',
+    tldr: '输入：已说清的问题 → 输出：答案（答案 + 解释 + 边界 + 下一步）',
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '写作（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 1, title: '锁定问题', type: 'user', desc: '确认你最想弄明白的是什么。先把题目说准，再给答案。' },
-      { n: 2, title: '边界门禁', type: 'internal', desc: '检查这是不是答案范畴。',
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载写作人设和专业知识。' },
+      { n: 1, title: '问题确认', type: 'user', desc: '确认你最想弄明白的是什么。',
         branch: [
-          { cond: '题目没说清', target: '→ 问题拆解师' },
-          { cond: '实质是对比/诊断', target: '→ 调研判断师' },
-          { cond: '实质是固化流程', target: '→ 方法提炼师' },
-          { cond: '实质是沉淀教材', target: '→ 教材编写师' },
+          { cond: '题目没说清', target: '→ 问题拆解' },
+          { cond: '实质是对比/诊断', target: '→ 调研判断' },
+          { cond: '实质是固化流程', target: '→ 方法提炼' },
           { cond: '确认是答案', target: '→ 继续' }
         ]
       },
-      { n: 3, title: '轻量核对', type: 'internal', desc: '必要时做最小量事实核对。如果演变成大调研，转给调研判断师。' },
-      { n: 4, title: '产出答案卡', type: 'internal', desc: '固定结构：一句话答案 + 简明解释 + 边界/例外 + 下一步' },
-      { n: 5, title: '输出终稿', type: 'user', desc: '先给一句话答案，再补解释。能短就不拉长。' }
+      { n: 2, title: '答案起草', type: 'internal', desc: '固定结构：一句话答案 + 简明解释 + 边界/例外 + 下一步。' },
+      { n: 3, title: '审查', type: 'internal', desc: '内部审查：答案准确吗？解释清楚吗？老板看得懂吗？' },
+      { n: 4, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 5, title: '交付审核', type: 'user', desc: '先给一句话答案，再补解释。能短就不拉长。' }
     ]
   },
 
-  '调研判断师': {
+  '调研判断': {
     group: '答案与判断', color: 'var(--c-judgment)', icon: '&#128202;',
     trigger: '做个判断',
-    desc: '需要对比、诊断、选型时，用信息和证据给出判断',
+    desc: '需要对比、诊断、选型时，用证据给出判断',
     tldr: '输入：已说清的判断题 → 输出：判断报告（推荐 + 依据 + 风险）',
-    protocols: ['R','F','E','J','D','A','W'],
-    roles: { exec: '写作主笔（调研主笔）', audit: '反方审查官 + 事实核查官', comm: '业务翻译官' },
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '写作（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 0, title: '检查上游输入', type: 'internal', desc: '如果有拆解清单，预填问题和范围；如果题目没说清，退回拆解。',
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载写作人设和专业知识。' },
+      { n: 1, title: '检索策略', type: 'user', desc: '确认调研问题和判断范围。',
         branch: [
-          { cond: '题目没说清', target: '→ 问题拆解师' },
-          { cond: '有拆解清单', target: '→ 预填后跳到 Step 3' },
-          { cond: '正常', target: '→ 从 Step 1 开始' }
+          { cond: '题目没说清', target: '→ 问题拆解' },
+          { cond: '正常', target: '→ 继续' }
         ]
       },
-      { n: 1, title: '明确调研问题', type: 'user', desc: '你现在具体要判断什么？用一句最直白的话说。' },
-      { n: 2, title: '确认判断范围', type: 'user', desc: '识别判断类型（对比/调研/选型/诊断/数据分析），确认维度。' },
-      { n: 3, title: '信息收集', type: 'user', desc: '先告知收集方向，确认后开始。搜不到的信息坦诚告知并标注"未验证"。' },
-      { n: 4, title: '分析框架确认', type: 'user', desc: '展示分析维度，确认后进入内部交叉检查（至少3轮）。' },
-      { n: 5, title: '产出报告交叉检查', type: 'internal', desc: '至少3轮内部互撕：结论有没有偏颇？不利证据考虑了吗？能看懂吗？' },
-      { n: 6, title: '交付校验', type: 'internal', desc: '逐条核对：问题是否回答完整？维度统一？结论有据？无专业黑话？' },
-      { n: 7, title: '输出终稿', type: 'user', desc: '先给一句话结论，再提供完整判断报告（对比表+发现+风险+推荐）。' }
+      { n: 2, title: '证据收集', type: 'user', desc: '先告知收集方向，确认后开始。搜不到的坦诚告知。' },
+      { n: 3, title: '交叉验证', type: 'internal', desc: '至少3轮内部交叉检查：结论有没有偏颇？不利证据考虑了吗？' },
+      { n: 4, title: '判断推理', type: 'internal', desc: '产出判断报告：对比表 + 发现 + 风险 + 推荐。' },
+      { n: 5, title: '审查', type: 'internal', desc: '内部审查：问题回答完整？维度统一？结论有据？' },
+      { n: 6, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 7, title: '交付审核', type: 'user', desc: '先给一句话结论，再提供完整判断报告。' }
     ]
   },
 
-  '方法提炼师': {
+  // --- 沉淀能力 ---
+  '方法提炼': {
     group: '沉淀能力', color: 'var(--c-method)', icon: '&#128220;',
     trigger: '提炼方法',
-    desc: '把经验、结论固化成可重复执行的 SOP / 规则 / 流程',
+    desc: '把经验固化成可重复执行的 SOP / 规则 / 流程',
     tldr: '输入：明确的意图和经验 → 输出：方法文档',
-    protocols: ['R','F','Met','D','A','W'],
-    roles: { exec: '写作主笔（方法主笔）', audit: '可执行性审查官', comm: '业务翻译官' },
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '写作（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 0, title: '入口门禁', type: 'internal', desc: '检查前置条件。',
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载写作人设和专业知识。' },
+      { n: 1, title: '场景确认', type: 'user', desc: '这套方法给谁用？什么场景？希望做到什么结果？',
         branch: [
-          { cond: '题目未成形', target: '→ 问题拆解师' },
-          { cond: '核心结论待判断', target: '→ 调研判断师' },
-          { cond: '实质是课本/培训资料', target: '→ 教材编写师' }
+          { cond: '题目未成形', target: '→ 问题拆解' },
+          { cond: '核心结论待判断', target: '→ 调研判断' },
+          { cond: '实质是课本/培训资料', target: '→ 教材编写' }
         ]
       },
-      { n: 1, title: '锁定使用场景', type: 'user', desc: '这套方法给谁用？什么场景？希望做到什么结果？' },
-      { n: 2, title: '锁定方法类型', type: 'user', desc: '确认是 SOP 操作步骤 / 判断规则 / AI 执行规则 / 业务流程。' },
-      { n: 3, title: '收束执行骨架', type: 'internal', desc: '固定四块：触发条件 + 执行步骤 + 边界与例外 + 验收口径' },
-      { n: 4, title: '向用户确认骨架', type: 'user', desc: '展示四块结构，确认方向。' },
-      { n: 5, title: '起草方法文档', type: 'internal', desc: '写成可执行方法文档。' },
-      { n: 6, title: '场景回放校验', type: 'internal', desc: '至少2个场景回放，确认照着做不会卡住。' },
-      { n: 7, title: '输出终稿', type: 'user', desc: '交付可重复执行的方法文档。' }
+      { n: 2, title: '方法起草', type: 'internal', desc: '固定四块：触发条件 + 执行步骤 + 边界与例外 + 验收口径。' },
+      { n: 3, title: '审查', type: 'internal', desc: '场景回放校验：至少2个场景，照着做不会卡住。' },
+      { n: 4, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 5, title: '交付审核', type: 'user', desc: '交付可重复执行的方法文档。' }
     ]
   },
 
-  '教材编写师': {
+  '教材编写': {
     group: '沉淀能力', color: 'var(--c-textbook)', icon: '&#128218;',
     trigger: '编写教材',
-    desc: '把想法、经验整理成可理解、可教学、可传承的教材',
+    desc: '把想法、经验整理成可教学、可传承的教材',
     tldr: '输入：明确的想法和体系 → 输出：教材文档',
-    protocols: ['R','F','Txt','D','A','W'],
-    roles: { exec: '写作主笔（教材主笔）', audit: '教学审查 + 结构审查（内部）', comm: '业务翻译官' },
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '写作（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 0, title: '入口门禁', type: 'internal', desc: '检查前置条件。',
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载写作人设和专业知识。' },
+      { n: 1, title: '教材规划', type: 'user', desc: '写给谁看？看完后应该学会什么？',
         branch: [
-          { cond: '题目未成形', target: '→ 问题拆解师' },
-          { cond: '关键事实未定', target: '→ 调研判断师' },
-          { cond: '实质是 SOP/规则', target: '→ 方法提炼师' }
+          { cond: '题目未成形', target: '→ 问题拆解' },
+          { cond: '关键事实未定', target: '→ 调研判断' },
+          { cond: '实质是 SOP/规则', target: '→ 方法提炼' }
         ]
       },
-      { n: 1, title: '锁定读者与学习结果', type: 'user', desc: '写给谁看？看完后应该学会什么？' },
-      { n: 2, title: '锁定教材形态', type: 'user', desc: '确认是新人教材 / 训练资料 / 经验整理 / 课本式沉淀。' },
-      { n: 3, title: '设计章节骨架', type: 'internal', desc: '默认：背景目标 → 核心原理 → 具体做法 → 案例和常见坑' },
-      { n: 4, title: '向用户确认骨架', type: 'user', desc: '展示章节结构，确认方向。' },
-      { n: 5, title: '起草教材文档', type: 'internal', desc: '写成可教学的教材文档。' },
-      { n: 6, title: '教学可读性校验', type: 'internal', desc: '站在"完全没接触过的人"视角读一遍。' },
-      { n: 7, title: '输出终稿', type: 'user', desc: '交付可理解、可教学、可传承的教材文档。' }
+      { n: 2, title: '内容起草', type: 'internal', desc: '默认：背景目标 → 核心原理 → 具体做法 → 案例和常见坑。' },
+      { n: 3, title: '审查', type: 'internal', desc: '站在"完全没接触过的人"视角读一遍，确认教学可读性。' },
+      { n: 4, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 5, title: '交付审核', type: 'user', desc: '交付可理解、可教学、可传承的教材文档。' }
     ]
   },
 
-  // --- 自动化 ---
-  '循环定时任务总控': {
+  // --- 自动化能力 ---
+  '循环定时任务': {
     group: '自动化能力', color: 'var(--c-automation)', icon: '&#128336;',
     trigger: '安排自动任务',
     desc: '自动化任务的唯一入口 — 先判型再选平台再派发',
     tldr: '输入：想自动跑的任务 → 输出：任务规格卡 + 推荐方案 + 可运行草稿',
-    protocols: ['R','F','E','J','Met','D','T','A','W'],
-    roles: { exec: '路由调度员（自动化总控）', audit: '逻辑审查官', comm: '业务翻译官' },
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '客户经理（Master Agent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 0, title: '入口分诊', type: 'internal', desc: '判断是不是测试循环师的地盘。',
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载人设和作业指引。' },
+      { n: 1, title: '任务分析', type: 'user', desc: '判定是循环任务 / 定时任务 / 组合任务。' },
+      { n: 2, title: '路由', type: 'internal', desc: '按判定结果派给对应下游技能。',
         branch: [
-          { cond: '要做代码项目测试修复循环', target: '→ 测试循环师' },
-          { cond: '是自动化任务', target: '→ 继续' }
+          { cond: '核心是"什么时候触发"', target: '→ 定时任务' },
+          { cond: '核心是"什么时候停"', target: '→ 循环任务' },
+          { cond: '两者都重要', target: '→ 组合任务' }
         ]
       },
-      { n: 1, title: '判定任务形态', type: 'user', desc: '判定是循环任务（目标驱动直到退出）/ 定时任务（时间触发单次）/ 组合任务（两者结合）。' },
-      { n: 2, title: '补齐规格', type: 'user', desc: '补齐11个必填字段：目标、触发方式、输入输出、停止条件、防重策略等。' },
-      { n: 3, title: '平台选型', type: 'internal', desc: '从 Codex Automations / Claude /loop / cron+CI 等候选中选1条主推荐。' },
-      { n: 4, title: '派发下游', type: 'internal', desc: '按判定结果派给对应设计师。',
-        branch: [
-          { cond: '核心是"什么时候触发"', target: '→ 定时任务师' },
-          { cond: '核心是"什么时候停"', target: '→ 循环任务师' },
-          { cond: '两者都重要', target: '→ 组合任务师' }
-        ]
-      },
-      { n: 5, title: '收束交付', type: 'user', desc: '汇总下游结果：任务规格卡 + 主推荐方案 + 备选对比 + 可运行草稿。' }
+      { n: 3, title: '分发', type: 'internal', desc: 'Master Agent 派发任务给对应 SubAgent 执行。' },
+      { n: 4, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 5, title: '交付审核', type: 'user', desc: '汇总下游结果：任务规格卡 + 推荐方案 + 可运行草稿。' }
     ]
   },
 
-  '循环任务师': {
+  '循环任务': {
     group: '自动化能力', color: 'var(--c-automation)', icon: '&#128260;',
     trigger: '安排循环任务',
     desc: '围绕同一目标反复推进，直到退出条件成立',
     tldr: '输入：循环任务规格 → 输出：循环方案 + prompt/命令草稿',
-    protocols: ['R','F','E','J','Met','D','A','W'],
-    roles: { exec: '设计主笔', audit: '逻辑审查官', comm: '业务翻译官' },
+    protocols: ['P','WF','SA'],
+    roles: { exec: '工程（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 1, title: '接收总控派发', type: 'internal', desc: '读取任务规格卡和约束。' },
-      { n: 2, title: '设计循环方案', type: 'internal', desc: '定义循环体、退出条件、状态追踪方式。' },
-      { n: 3, title: '产出草稿', type: 'internal', desc: '输出可运行的 prompt/命令草稿 + 风险清单。' },
-      { n: 4, title: '回传总控', type: 'internal', desc: '将方案回传给循环定时任务总控收束。' }
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载工程人设和专业知识。' },
+      { n: 1, title: '确认循环属性', type: 'internal', desc: '读取任务规格卡，确认循环体和约束。' },
+      { n: 2, title: '选择循环机制', type: 'internal', desc: '定义循环体、退出条件、状态追踪方式。' },
+      { n: 3, title: '产出规格卡和草稿', type: 'internal', desc: '输出可运行的 prompt/命令草稿 + 风险清单。' },
+      { n: 4, title: '风险审查', type: 'internal', desc: '审查风险点，确认方案可行。' },
+      { n: 5, title: '验证', type: 'internal', desc: '执行验证脚本。' },
+      { n: 6, title: '交付审核', type: 'user', desc: '回传总控收束。' }
     ]
   },
 
-  '定时任务师': {
+  '定时任务': {
     group: '自动化能力', color: 'var(--c-automation)', icon: '&#9200;',
     trigger: '安排定时任务',
     desc: '按时间或节奏触发一次运行的定时任务',
     tldr: '输入：定时任务规格 → 输出：定时方案 + prompt/命令草稿',
-    protocols: ['R','F','E','J','Met','D','A','W'],
-    roles: { exec: '设计主笔', audit: '逻辑审查官', comm: '业务翻译官' },
+    protocols: ['P','WF','SA'],
+    roles: { exec: '工程（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 1, title: '接收总控派发', type: 'internal', desc: '读取任务规格卡和约束。' },
-      { n: 2, title: '设计定时方案', type: 'internal', desc: '定义触发时间、执行内容、单次边界。' },
-      { n: 3, title: '产出草稿', type: 'internal', desc: '输出可运行的 prompt/命令草稿 + 风险清单。' },
-      { n: 4, title: '回传总控', type: 'internal', desc: '将方案回传给循环定时任务总控收束。' }
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载工程人设和专业知识。' },
+      { n: 1, title: '锁定触发节奏', type: 'internal', desc: '读取任务规格卡，确认触发时间和约束。' },
+      { n: 2, title: '选择平台', type: 'internal', desc: '定义触发时间、执行内容、单次边界。' },
+      { n: 3, title: '产出规格卡和草稿', type: 'internal', desc: '输出可运行的 prompt/命令草稿 + 风险清单。' },
+      { n: 4, title: '风险审查', type: 'internal', desc: '审查风险点，确认方案可行。' },
+      { n: 5, title: '验证', type: 'internal', desc: '执行验证脚本。' },
+      { n: 6, title: '交付审核', type: 'user', desc: '回传总控收束。' }
     ]
   },
 
-  '组合任务师': {
+  '组合任务': {
     group: '自动化能力', color: 'var(--c-automation)', icon: '&#128296;',
     trigger: '安排组合任务',
     desc: '按时间触发 + 单次运行内部有限循环的组合任务',
     tldr: '输入：组合任务规格 → 输出：组合方案 + prompt/命令草稿',
-    protocols: ['R','F','E','J','Met','D','A','W'],
-    roles: { exec: '设计主笔', audit: '逻辑审查官', comm: '业务翻译官' },
+    protocols: ['P','WF','SA'],
+    roles: { exec: '工程（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 1, title: '接收总控派发', type: 'internal', desc: '读取任务规格卡和约束。' },
-      { n: 2, title: '设计组合方案', type: 'internal', desc: '定义外层定时触发 + 内层循环体 + 退出条件。' },
-      { n: 3, title: '产出草稿', type: 'internal', desc: '输出可运行的 prompt/命令草稿 + 风险清单。' },
-      { n: 4, title: '回传总控', type: 'internal', desc: '将方案回传给循环定时任务总控收束。' }
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载工程人设和专业知识。' },
+      { n: 1, title: '确认双层结构', type: 'internal', desc: '读取任务规格卡，确认外层定时+内层循环结构。' },
+      { n: 2, title: '选择组合平台', type: 'internal', desc: '定义外层定时触发 + 内层循环体 + 退出条件。' },
+      { n: 3, title: '产出规格卡和草稿', type: 'internal', desc: '输出可运行的 prompt/命令草稿 + 风险清单。' },
+      { n: 4, title: '风险审查', type: 'internal', desc: '审查风险点，确认方案可行。' },
+      { n: 5, title: '验证', type: 'internal', desc: '执行验证脚本。' },
+      { n: 6, title: '交付审核', type: 'user', desc: '回传总控收束。' }
     ]
   },
 
   // --- 造工具 ---
-  '造工具总控': {
+  '造工具': {
     group: '造工具', color: 'var(--c-tool)', icon: '&#128736;',
     trigger: '造工具',
-    desc: '造工具的唯一入口 — 接活、出计划、分配、验收',
+    desc: '造工具的唯一入口 — 接活、出计划、逐阶段调度',
     tldr: '输入：工具/系统需求 → 输出：完整上线的工具',
-    protocols: ['R','F','J','D','T','A','W'],
-    roles: { exec: '路由调度员（造工具总控）', audit: '总控自检 + 下游各自审查', comm: '技术翻译官' },
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '客户经理（Master Agent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 0, title: '接活', type: 'user', desc: '检查进度文件/上游文档。复述理解，确认对齐。',
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载人设和作业指引。' },
+      { n: 1, title: '接活', type: 'user', desc: '检查进度文件/上游文档，复述理解，确认对齐。',
         branch: [
-          { cond: '有进度文件', target: '→ 汇报进展，继续上次' },
-          { cond: '有教材/方法文档', target: '→ 提取需求要点' },
-          { cond: '有拆解清单', target: '→ 提取 A 组 + B 组' },
+          { cond: '有进度文件', target: '→ 继续上次' },
+          { cond: '有上游文档', target: '→ 提取需求要点' },
           { cond: '全新任务', target: '→ 听你说想做什么' }
         ]
       },
-      { n: 1, title: '出执行计划', type: 'user', desc: '拆解为4个阶段，每阶段标明任务、产出、验收标准。内部自查后展示给你确认。' },
-      { n: 2, title: '① 搞清楚要做什么', type: 'user', desc: '派需求规划师执行。产出 project_context.md。验收后进入下一阶段。' },
-      { n: 3, title: '② 画出来长什么样', type: 'user', desc: '派产品设计师执行。产出蓝图 + 风格册 + 静态稿 + 交互地图。' },
-      { n: 4, title: '③ 写代码', type: 'user', desc: '派全栈编码师执行。产出可运行的代码。' },
-      { n: 5, title: '④ 放到网上能用', type: 'user', desc: '派部署上线师执行。产出线上可访问的产品。' }
+      { n: 2, title: '出执行计划', type: 'user', desc: '拆解为5个阶段，每阶段标明任务、产出、验收标准。' },
+      { n: 3, title: '逐阶段调度执行', type: 'user', desc: '按顺序调度下游技能：需求规划→产品逻辑→产品设计→全栈编码→部署上线。',
+        branch: [
+          { cond: '① 搞清楚要做什么', target: '→ 需求规划' },
+          { cond: '② 理清怎么跑通', target: '→ 产品逻辑' },
+          { cond: '③ 画出来长什么样', target: '→ 产品设计' },
+          { cond: '④ 写代码', target: '→ 全栈编码' },
+          { cond: '⑤ 放到网上能用', target: '→ 部署上线' }
+        ]
+      },
+      { n: 4, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 5, title: '交付审核', type: 'user', desc: 'Master Agent 输出成品，等用户确认。' },
+      { n: 6, title: '后续维护', type: 'internal', desc: '如需维护，转给代码维护。' }
     ]
   },
 
-  '需求规划师': {
+  '需求规划': {
     group: '造工具', color: 'var(--c-tool)', icon: '&#128203;',
-    trigger: '提炼需求',
-    desc: '把业务问题转化为工具需求',
+    trigger: '需求规划',
+    desc: '造工具阶段① — 搞清楚要做什么',
     tldr: '输入：业务痛点 → 输出：project_context.md',
-    protocols: ['R','F','J','D','A','W'],
-    roles: { exec: '设计主笔', audit: '完整性审查官 + 逻辑审查官', comm: '技术翻译官' },
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '产品（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 1, title: '理解业务问题', type: 'user', desc: '确认用户痛点和核心诉求。' },
-      { n: 2, title: '收束需求', type: 'internal', desc: '整理功能边界、用户场景、验收标准。' },
-      { n: 3, title: '互撕审查', type: 'internal', desc: '至少3轮：需求完整吗？有没有互相矛盾？' },
-      { n: 4, title: '输出 project_context.md', type: 'user', desc: '交付需求文档，等总控验收。' }
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载产品人设和专业知识。' },
+      { n: 1, title: '需求访谈', type: 'user', desc: '确认用户痛点和核心诉求。' },
+      { n: 2, title: '需求整理', type: 'internal', desc: '整理功能边界、用户场景、验收标准。' },
+      { n: 3, title: '功能拆解', type: 'internal', desc: '拆解功能模块和优先级。' },
+      { n: 4, title: '可行性评估', type: 'internal', desc: '评估技术可行性和资源需求。' },
+      { n: 5, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 6, title: '交付审核', type: 'user', desc: '交付 project_context.md，等总控验收。' }
     ]
   },
 
-  '产品逻辑师': {
+  '产品逻辑': {
     group: '造工具', color: 'var(--c-tool)', icon: '&#129513;',
-    trigger: '理清逻辑',
-    desc: '从模块清单推导系统运转逻辑，理清怎么跑通',
+    trigger: '产品逻辑',
+    desc: '造工具阶段② — 理清怎么跑通',
     tldr: '输入：project_context.md → 输出：product_logic.md（场景+联动+触发规则）',
-    protocols: ['R','F','J','D','A','W'],
-    roles: { exec: '设计主笔（产品逻辑师）', audit: '逻辑审查官 + 完整性审查官', comm: '业务翻译官' },
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '产品（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 0, title: '检查上游输入', type: 'internal', desc: '读取 design/project_context.md，提取模块清单。无文件则终止。' },
-      { n: 1, title: '确认模块清单', type: 'user', desc: '列出所有功能模块，确认是否还是你要的。' },
-      { n: 2, title: '找出主场景', type: 'user', desc: '你平时最常做的一件事是什么？从这个场景开始理清整个系统。' },
-      { n: 3, title: '逐步走通主场景', type: 'user', desc: '围绕主场景逐步追问：做完这一步之后呢？在哪个模块操作？出了问题怎么办？' },
-      { n: 4, title: '补充其他场景', type: 'user', desc: '主场景走通后，补充其他常见场景，直到所有模块都已覆盖。' },
-      { n: 5, title: '梳理模块联动关系', type: 'user', desc: '模块A完成某操作→自动触发模块B的某反应。逐条确认。' },
-      { n: 6, title: '梳理触发规则', type: 'user', desc: '哪些事情需要自动提醒或自动触发？逐条确认条件+动作+通知谁。' },
-      { n: 7, title: '三专家终审互撕', type: 'internal', desc: '至少5回合互撕：流程连贯吗？模块全覆盖吗？联动有断头路吗？' },
-      { n: 8, title: '可验证交付校验', type: 'internal', desc: '检查场景闭环、模块覆盖、联动无断点、触发规则明确。' },
-      { n: 9, title: '输出终稿', type: 'user', desc: '交付 product_logic.md：N个场景、M条联动、K条触发规则。' }
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载产品人设和专业知识。' },
+      { n: 1, title: '用户流程梳理', type: 'user', desc: '从主场景开始，逐步走通整个系统。' },
+      { n: 2, title: '页面结构设计', type: 'user', desc: '补充其他场景，梳理模块联动关系。' },
+      { n: 3, title: '交互逻辑定义', type: 'user', desc: '梳理触发规则：条件+动作+通知谁。' },
+      { n: 4, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 5, title: '交付审核', type: 'user', desc: '交付 product_logic.md，等总控验收。' }
     ]
   },
 
-  '产品设计师': {
+  '产品设计': {
     group: '造工具', color: 'var(--c-tool)', icon: '&#127912;',
-    trigger: '画原型',
-    desc: '3阶段设计：蓝图 → 高保真稿 → 交互原型',
-    tldr: '输入：project_context.md → 输出：蓝图 + 风格册 + 静态稿 + 交互地图',
-    protocols: ['R','F','J','D','A','W'],
-    roles: { exec: '设计主笔', audit: '完整性审查官', comm: '技术翻译官' },
+    trigger: '产品设计',
+    desc: '造工具阶段③ — 画出来长什么样',
+    tldr: '输入：product_logic.md → 输出：蓝图 + 风格册 + 静态稿 + 交互地图',
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '产品 + 写作（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 1, title: '布局蓝图', type: 'internal', desc: '基于需求文档设计页面结构。' },
-      { n: 2, title: '风格册 + 高保真稿', type: 'internal', desc: '确定视觉风格，产出静态设计稿。' },
-      { n: 3, title: '交互地图', type: 'internal', desc: '标注页面间跳转和操作动线。' },
-      { n: 4, title: '交付设计产物', type: 'user', desc: '交付全套设计资产，等总控验收。' }
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载产品和写作人设。' },
+      { n: 1, title: '设计规范', type: 'internal', desc: '确定视觉风格和设计规范。' },
+      { n: 2, title: '页面设计', type: 'internal', desc: '基于产品逻辑设计页面结构和布局。' },
+      { n: 3, title: '交互细节', type: 'internal', desc: '标注页面间跳转和操作动线。' },
+      { n: 4, title: '审查', type: 'internal', desc: '内部审查设计完整性。' },
+      { n: 5, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 6, title: '交付审核', type: 'user', desc: '交付全套设计资产，等总控验收。' }
     ]
   },
 
-  '全栈编码师': {
+  '全栈编码': {
     group: '造工具', color: 'var(--c-tool)', icon: '&#128187;',
-    trigger: '写代码',
-    desc: '5阶段实现：技术选型 → 架构 → 前端 → 后端 → AI集成',
+    trigger: '全栈编码',
+    desc: '造工具阶段④ — 写代码实现',
     tldr: '输入：设计产物 → 输出：可运行的代码',
-    protocols: ['R','F','J','D','T','A','W'],
-    roles: { exec: '工程主笔', audit: '工程审查官', comm: '技术翻译官' },
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '工程（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 'A', title: '技术选型 + 项目骨架', type: 'internal', desc: '选定技术栈，搭建项目结构，产出 infra_spec.md。' },
-      { n: 'B', title: '代码架构设计', type: 'internal', desc: '产出 code_blueprint.md。' },
-      { n: 'C', title: '前端实现', type: 'internal', desc: '按设计稿还原页面。' },
-      { n: 'D', title: '后端实现', type: 'internal', desc: '实现业务逻辑和数据层。' },
-      { n: 'E', title: '联调与交付', type: 'user', desc: '前后端联调，交付可运行代码，等总控验收。' }
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载工程人设和专业知识。' },
+      { n: 1, title: '技术方案', type: 'internal', desc: '选定技术栈，搭建项目结构。' },
+      { n: 2, title: '编码实现', type: 'internal', desc: '按设计稿还原页面，实现业务逻辑。' },
+      { n: 3, title: '审查', type: 'internal', desc: '代码审查：架构合理？代码质量行？安全？' },
+      { n: 4, title: '测试', type: 'internal', desc: '前后端联调，运行测试。' },
+      { n: 5, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 6, title: '交付审核', type: 'user', desc: '交付可运行代码，等总控验收。' }
     ]
   },
 
-  '部署上线师': {
+  '部署上线': {
     group: '造工具', color: 'var(--c-tool)', icon: '&#128640;',
     trigger: '部署上线',
-    desc: '3阶段部署：设计方案 → 执行部署 → 验收测试',
+    desc: '造工具阶段⑤ — 放到网上能用',
     tldr: '输入：可运行代码 → 输出：线上可访问的产品',
-    protocols: ['R','F','J','D','T','A','W'],
-    roles: { exec: '工程主笔', audit: '工程审查官', comm: '技术翻译官' },
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '工程（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 1, title: '设计部署方案', type: 'internal', desc: '选择部署平台和方式。' },
-      { n: 2, title: '执行部署', type: 'internal', desc: '实际部署到线上环境。' },
-      { n: 3, title: '验收测试', type: 'user', desc: '确认线上可访问、功能正常。等总控验收。' }
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载工程人设和专业知识。' },
+      { n: 1, title: '环境准备', type: 'internal', desc: '选择部署平台，准备环境配置。' },
+      { n: 2, title: '部署执行', type: 'internal', desc: '实际部署到线上环境。' },
+      { n: 3, title: '冒烟测试', type: 'internal', desc: '确认线上可访问、核心功能正常。' },
+      { n: 4, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 5, title: '交付审核', type: 'user', desc: '确认线上可用，等总控验收。' }
     ]
   },
 
-  '代码维护师': {
+  '代码维护': {
     group: '造工具', color: 'var(--c-tool)', icon: '&#128295;',
     trigger: '维护代码',
-    desc: '后续修 bug、重构、性能优化、补测试',
+    desc: '后续修 bug、加功能、做优化',
     tldr: '输入：代码 + 问题描述 → 输出：修复后的代码',
-    protocols: ['R','F','J','D','T','A','W'],
-    roles: { exec: '工程主笔', audit: '工程审查官', comm: '技术翻译官' },
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '工程（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 1, title: '判断维护类型', type: 'user', desc: '确认是修 bug / 重构 / 性能优化 / 补测试。' },
-      { n: 2, title: '定位问题', type: 'internal', desc: '读代码，找到问题根因。' },
-      { n: 3, title: '修复实现', type: 'internal', desc: '在 worktree 隔离环境中修复。改完即检。' },
-      { n: 4, title: '交付验收', type: 'user', desc: '交付修复后的代码，确认问题已解决。' }
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载工程人设和专业知识。' },
+      { n: 1, title: '问题定位', type: 'user', desc: '确认是修 bug / 重构 / 性能优化 / 补测试。' },
+      { n: 2, title: '方案确认', type: 'internal', desc: '读代码，找到问题根因，确认修复方案。' },
+      { n: 3, title: '修改实现', type: 'internal', desc: '在 worktree 隔离环境中修复。改完即检。' },
+      { n: 4, title: '审查', type: 'internal', desc: '代码审查确认修复质量。' },
+      { n: 5, title: '测试', type: 'internal', desc: '运行测试确认问题已解决、无回归。' },
+      { n: 6, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 7, title: '交付审核', type: 'user', desc: '交付修复后的代码，确认问题已解决。' }
     ]
   },
 
   // --- 造技能 ---
-  'Skill编译器': {
+  'Skill编译': {
     group: '造技能', color: 'var(--c-meta)', icon: '&#9881;',
     trigger: '编写SKILL',
-    desc: '造新技能，输出符合标准的 SKILL.md',
-    tldr: '输入：技能需求描述 → 输出：完整的 SKILL.md',
-    protocols: ['R','F','E','J','D','A','W'],
-    roles: { exec: '写作主笔', audit: '完整性审查官 + 逻辑审查官 + 可执行性审查官', comm: '业务翻译官' },
+    desc: '造新技能或修改现有技能结构',
+    tldr: '输入：技能需求描述 → 输出：完整的 SKILL.md + 配套文件',
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '产品 + 写作（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 1, title: '环境检查', type: 'internal', desc: '确认当前仓库结构和现有技能清单。' },
-      { n: 2, title: '确定目标', type: 'user', desc: '确认要新建还是修改技能，明确技能定位。' },
-      { n: 3, title: '摄入描述', type: 'user', desc: '收集用户对技能的完整描述和期望。' },
-      { n: 4, title: '结构起草', type: 'internal', desc: '按标准结构起草 SKILL.md 骨架。' },
-      { n: 5, title: '内容细化', type: 'internal', desc: '填充 Workflow、Rules 等具体内容。' },
-      { n: 6, title: '自验证', type: 'internal', desc: '3人专家互撕审查，逐条校验。' },
-      { n: 7, title: '汇报', type: 'user', desc: '展示成果，确认无误。' },
-      { n: 8, title: '输出终稿', type: 'user', desc: '交付 SKILL.md 并同步更新召唤书和 CHANGELOG。' }
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载产品和写作人设。' },
+      { n: 1, title: '技能需求分析', type: 'user', desc: '确认要新建还是修改技能，明确技能定位。' },
+      { n: 2, title: '工作流设计', type: 'internal', desc: '设计 Workflow 步骤、角色分工、输入输出。' },
+      { n: 3, title: 'SKILL.md编写', type: 'internal', desc: '按标准结构起草 SKILL.md。' },
+      { n: 4, title: '配套文件创建', type: 'internal', desc: '创建加载上下文.sh、作业指引、验证脚本等。' },
+      { n: 5, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 6, title: '交付审核', type: 'user', desc: '交付 SKILL.md 并同步更新召唤书和 CHANGELOG。' }
     ]
   },
 
-  '全景图生成师': {
+  '全景图生成': {
     group: '造技能', color: 'var(--c-meta)', icon: '&#127758;',
     trigger: '更新全景图',
     desc: '扫描仓库现状，重新生成系统全景图 HTML',
     tldr: '输入：用户说"更新全景图" → 输出：重新生成的系统全景图.html',
-    protocols: ['R','D','A','W'],
-    roles: { exec: '工程主笔（全景图主笔）', audit: '完整性审查官', comm: '技术翻译官' },
+    protocols: ['P','WF','SA'],
+    roles: { exec: '产品（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 1, title: '扫描仓库现状', type: 'internal', desc: '扫描所有技能、协议、角色文件，提取分组信息。' },
-      { n: 2, title: '提取数据', type: 'internal', desc: '从每个文件提取结构化字段（描述、暗号、协议、角色、步骤）。' },
-      { n: 3, title: '生成 HTML', type: 'internal', desc: '用提取的数据更新 SKILLS/PROTOCOLS/ROLES/GROUPS，保留 CSS 和渲染函数不变。' },
-      { n: 4, title: '校验', type: 'internal', desc: '对比扫描数和生成数，确认一致；检查 GROUPS 引用的技能都存在。' },
-      { n: 5, title: '部署到线上', type: 'internal', desc: '复制到公开站点/index.html，执行 netlify deploy。' },
-      { n: 6, title: '汇报', type: 'user', desc: '告知扫描到多少技能/协议/角色，相比上一版有什么变化。' }
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载产品人设。' },
+      { n: 1, title: '数据收集', type: 'internal', desc: '扫描所有技能、人设库文件，提取分组信息。' },
+      { n: 2, title: '结构分析', type: 'internal', desc: '从每个文件提取结构化数据。' },
+      { n: 3, title: '全景图生成', type: 'internal', desc: '用数据更新 SKILLS/PROTOCOLS/ROLES/GROUPS，保留 CSS 不变。' },
+      { n: 4, title: '验证', type: 'internal', desc: '对比扫描数和生成数，确认一致。' },
+      { n: 5, title: '交付审核', type: 'user', desc: '告知扫描到的技能/角色数量及相比上一版的变化。' }
     ]
   },
 
-  // --- 质量 ---
-  '测试循环师': {
+  // --- 质量保障 ---
+  '测试循环': {
     group: '质量保障', color: 'var(--c-quality)', icon: '&#128027;',
     trigger: '全面体检',
     desc: '对已有代码项目全面体检，螺旋迭代直到缺陷归零',
     tldr: '输入：已有代码项目 → 输出：测试报告 + 修复代码 + 架构诊断',
-    protocols: ['R','D','T','A','W'],
-    roles: { exec: '工程主笔（测试主笔）+ Planner + Reviewer + PM + Fixer', audit: '工程审查官 + Verifier', comm: '技术翻译官' },
+    protocols: ['P','WF','SA'],
+    roles: { exec: '工程（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 0, title: '项目摸底', type: 'user', desc: '读项目文档和代码结构，告知大概情况。' },
-      { n: 1, title: '测试规划', type: 'internal', desc: 'Planner 读项目全貌，动态输出测试计划和 Agent 分工（不用预设清单）。' },
-      { n: 2, title: '代码审查', type: 'internal', desc: 'N 个 Reviewer 并行按分工审查代码，输出分级问题清单。' },
-      { n: 3, title: '产品审查', type: 'internal', desc: 'PM 以用户视角审查信息结构、操作动线、体验（与代码审查并行）。' },
-      { n: 4, title: '综合报告', type: 'internal', desc: '汇总代码+产品审查结果，产出 TEST-REPORT。' },
-      { n: 5, title: '架构诊断', type: 'internal', desc: 'Architect 追溯 bug 的架构根因，输出重构方向。' },
-      { n: 6, title: '修复重构', type: 'internal', desc: 'N 个 Fixer 并行在 worktree 隔离环境中修复。改完即检。' },
-      { n: 7, title: '回归验证', type: 'internal', desc: 'Verifier 做类型检查+业务复验。P0未归零则回 Step 1 下一轮迭代。' }
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载工程人设和专业知识。' },
+      { n: 1, title: '项目摸底', type: 'user', desc: '读项目文档和代码结构，告知大概情况。' },
+      { n: 2, title: '测试规划', type: 'internal', desc: '动态输出测试计划和 Agent 分工。' },
+      { n: 3, title: '代码审查+产品审查', type: 'internal', desc: '多 Reviewer 并行审查代码，PM 审查产品体验。' },
+      { n: 4, title: '综合报告+架构诊断', type: 'internal', desc: '汇总审查结果，追溯架构根因。' },
+      { n: 5, title: '修复重构', type: 'internal', desc: '多 Fixer 并行在 worktree 中修复。改完即检。' },
+      { n: 6, title: '回归验证', type: 'internal', desc: '类型检查+业务复验。P0未归零则回 Step 2 下一轮。' },
+      { n: 7, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 8, title: '交付审核', type: 'user', desc: 'Master Agent 输出测试报告和修复代码。' }
     ]
   },
 
-  // --- 兜底 ---
-  '通用任务引擎': {
+  'Codex对等审查': {
+    group: '质量保障', color: 'var(--c-quality)', icon: '&#128065;',
+    trigger: 'Codex审查',
+    desc: '让 Codex (GPT-5.4) 对 Claude 方案做独立审查',
+    tldr: '输入：待审查的方案/代码 → 输出：对等审查报告 + 最终确认',
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '产品（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
+    steps: [
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载产品人设和专业知识。' },
+      { n: 1, title: '确认审查对象', type: 'user', desc: 'Master Agent 确认要审查什么内容。' },
+      { n: 2, title: '发送Codex首轮审查', type: 'internal', desc: '将方案/代码发送给 Codex 做独立审查。' },
+      { n: 3, title: '对等讨论', type: 'internal', desc: 'Claude 和 Codex 进行多轮对等讨论。' },
+      { n: 4, title: '整合并提交最终确认', type: 'user', desc: '整合双方意见，提交最终审查报告。' },
+      { n: 5, title: '验证', type: 'internal', desc: '执行验证脚本，逐项检查交付自查清单。' },
+      { n: 6, title: '交付审核', type: 'user', desc: 'Master Agent 输出对等审查报告。' }
+    ]
+  },
+
+  // --- 万能兜底 ---
+  '通用任务': {
     group: '万能兜底', color: 'var(--c-fallback)', icon: '&#128295;',
     trigger: '执行通用任务',
     desc: '上面都不合适时的万能引擎',
     tldr: '输入：任意任务描述 → 输出：动态交付物',
-    protocols: ['R','F','J','D','T','A','W'],
-    roles: { exec: '路由调度员（通用主控）', audit: '完整性审查官', comm: '业务翻译官' },
+    protocols: ['P','WF','SA','UC'],
+    roles: { exec: '动态选取（SubAgent）', audit: 'Master Agent 验收', comm: '客户经理统一转达' },
     steps: [
-      { n: 0, title: '分流', type: 'internal', desc: '判断任务复杂度。',
+      { n: 0, title: '加载上下文', type: 'internal', desc: 'Master Agent 加载相关人设。' },
+      { n: 1, title: '任务分析', type: 'internal', desc: '判断任务复杂度。',
         branch: [
           { cond: '简单单步任务', target: '→ 快速通道（确认后直接做）' },
           { cond: '多步骤/有模糊', target: '→ 进入需求对齐' }
         ]
       },
-      { n: 1, title: '需求对齐', type: 'user', desc: '七维度提案式探索（目标/边界/文档/约束/成功标志/素材/偏好），产出需求对齐卡。' },
-      { n: 2, title: '规划', type: 'user', desc: '拆解子任务列表，展示给你确认。' },
-      { n: 3, title: '执行', type: 'internal', desc: '循环执行子任务，可派 SubAgent。关键节点汇报进度。最大5轮迭代。' },
-      { n: 4, title: '检查', type: 'internal', desc: '对照需求对齐卡逐项验收。有缺口则回执行补。' },
-      { n: 5, title: '交付', type: 'user', desc: '整理最终输出，交付给你。' }
+      { n: 2, title: '临时编排', type: 'user', desc: '拆解子任务列表，展示给你确认。' },
+      { n: 3, title: '执行', type: 'internal', desc: '循环执行子任务，可派 SubAgent。关键节点汇报进度。' },
+      { n: 4, title: '验证', type: 'internal', desc: '对照需求逐项验收。有缺口则回执行补。' },
+      { n: 5, title: '交付审核', type: 'user', desc: '整理最终输出，交付给你。' }
     ]
   }
 };
 
 const PROTOCOLS = {
-  'R':   { name: '角色协议',     abbr: 'R',   desc: '身份、底线、角色库索引' },
-  'C':   { name: '总转化协议',   abbr: 'C',   desc: '输入如何转成答案、判断、方法、教材、工具' },
-  'F':   { name: '成题协议',     abbr: 'F',   desc: '题目有没有说清、缺口如何补、何时先拆' },
-  'Ans': { name: '答案协议',     abbr: 'Ans', desc: '解释、澄清、认知补全' },
-  'E':   { name: '证据协议',     abbr: 'E',   desc: '信息检索、来源分级、交叉验证' },
-  'J':   { name: '判断协议',     abbr: 'J',   desc: '对比、诊断、取舍、单一推荐' },
-  'Met': { name: '方法协议',     abbr: 'Met', desc: 'SOP、规则、流程、AI执行规则' },
-  'Txt': { name: '教材协议',     abbr: 'Txt', desc: '课本、训练资料、系统化经验文档' },
-  'D':   { name: '执行闭环协议', abbr: 'D',   desc: '推进、汇报、验收、复盘' },
-  'T':   { name: '工具链协议',   abbr: 'T',   desc: '后台助手分派、进度文件、技能调度' },
-  'A':   { name: '通用审查协议', abbr: 'A',   desc: '交叉检查、全员确认、引用证据' },
-  'W':   { name: '流程执行协议', abbr: 'W',   desc: '步骤顺序、不可跳步、不可合并' }
+  'P':   { name: '人设底线',       abbr: 'P',   desc: '每个工作人员遵守人设库中定义的身份、能力和底线' },
+  'WF':  { name: '步骤执行规范',   abbr: 'WF',  desc: '步骤不可跳过/合并/省略，产出不可缺，不达标退回' },
+  'SA':  { name: 'SubAgent规范',  abbr: 'SA',  desc: '显式启动SubAgent，传入人设+专业知识+目标+成功标准' },
+  'UC':  { name: '用户确认',       abbr: 'UC',  desc: '标注"等用户确认"的步骤必须等用户回复，不可替代' }
 };
 
 const ROLES = {
   exec: [
-    { name: '写作主笔', desc: '起草文字类产出物（答案、报告、方法、教材、技能定义）' },
-    { name: '设计主笔', desc: '起草设计类产出物（需求文档、产品规格、自动化方案）' },
-    { name: '工程主笔', desc: '代码实现、部署、维护、测试' },
-    { name: '路由调度员', desc: '判断方向、分发任务、收集结果、汇报给你' }
+    { name: '客户经理', desc: 'Master Agent — 接待用户、理解意图、路由任务、调度团队、把关交付' },
+    { name: '产品', desc: '从用户模糊想法到可执行蓝图 — 需求挖掘、规划排期、视觉交互设计' },
+    { name: '工程', desc: '把设计变成可运行的系统 — 技术架构、编码实现、测试验证、部署运维' },
+    { name: '写作', desc: '一切文字类产出和知识资产管理 — 写文案、管文档、做翻译' }
   ],
   audit: [
-    { name: '完整性审查官', desc: '查漏 — 需求覆盖全了吗？有没有缺维度？' },
-    { name: '逻辑审查官', desc: '查矛盾 — 步骤连贯吗？规则互相打架吗？' },
-    { name: '事实核查官', desc: '查真假 — 数据来源靠谱吗？有没有过时信息？' },
-    { name: '反方审查官', desc: '找漏洞 — 结论有偏颇吗？换个角度还成立吗？' },
-    { name: '可执行性审查官', desc: '查能用 — 照着做能做出来吗？会不会卡住？' },
-    { name: '工程审查官', desc: '查代码 — 架构合理吗？代码质量行吗？安全吗？' }
+    { name: 'Master Agent 验收', desc: '对照成功标准检查 SubAgent 产出，不通过退回重做' },
+    { name: '共享审查知识', desc: '审查标准集中在 技能/共享知识/ 目录，所有人设按需引用' }
   ],
   comm: [
-    { name: '业务翻译官', desc: '把非技术内容翻成大白话' },
-    { name: '技术翻译官', desc: '把技术内容翻成大白话（部署→放到网上，Bug→毛病...）' }
+    { name: 'Master Agent 统一转达', desc: 'SubAgent 不直接面向用户对话，所有沟通由客户经理统一转达' }
   ]
 };
 
 // Skill groups config
 const GROUPS = [
-  { id: '转化能力', color: 'var(--c-router)', skills: ['总转化器', '问题拆解师'] },
-  { id: '答案与判断', color: 'var(--c-judgment)', skills: ['答案澄清师', '调研判断师'] },
-  { id: '沉淀能力', color: 'var(--c-method)', skills: ['方法提炼师', '教材编写师'] },
-  { id: '自动化能力', color: 'var(--c-automation)', skills: ['循环定时任务总控', '循环任务师', '定时任务师', '组合任务师'] },
-  { id: '造工具', color: 'var(--c-tool)', skills: ['造工具总控', '需求规划师', '产品逻辑师', '产品设计师', '全栈编码师', '部署上线师', '代码维护师'] },
-  { id: '造技能', color: 'var(--c-meta)', skills: ['Skill编译器', '全景图生成师'] },
-  { id: '质量保障', color: 'var(--c-quality)', skills: ['测试循环师'] },
-  { id: '万能兜底', color: 'var(--c-fallback)', skills: ['通用任务引擎'] }
+  { id: '用户入口', color: 'var(--c-router)', skills: ['客服工作'] },
+  { id: '转化能力', color: 'var(--c-decompose)', skills: ['问题拆解'] },
+  { id: '答案与判断', color: 'var(--c-judgment)', skills: ['答案澄清', '调研判断'] },
+  { id: '沉淀能力', color: 'var(--c-method)', skills: ['方法提炼', '教材编写'] },
+  { id: '自动化能力', color: 'var(--c-automation)', skills: ['循环定时任务', '循环任务', '定时任务', '组合任务'] },
+  { id: '造工具', color: 'var(--c-tool)', skills: ['造工具', '需求规划', '产品逻辑', '产品设计', '全栈编码', '部署上线', '代码维护'] },
+  { id: '造技能', color: 'var(--c-meta)', skills: ['Skill编译', '全景图生成'] },
+  { id: '质量保障', color: 'var(--c-quality)', skills: ['测试循环', 'Codex对等审查'] },
+  { id: '万能兜底', color: 'var(--c-fallback)', skills: ['通用任务'] }
 ];
 
 // =========================================
@@ -1465,7 +1493,7 @@ function renderSkillCard(name) {
           <div class="workflow-steps">${stepsHtml}</div>
         </div>
         <div class="detail-section">
-          <div class="detail-section-title">遵守的协议</div>
+          <div class="detail-section-title">遵守的规范</div>
           <div class="badge-group">${protocolBadges}</div>
         </div>
         <div class="detail-section">
@@ -1484,22 +1512,24 @@ function renderGroups() {
   GROUPS.forEach(g => {
     const pipeline = g.id === '造工具' ? `
       <div class="pipeline">
-        <div class="pipeline-node" onclick="scrollToSkill('需求规划师')">① 需求规划师</div>
+        <div class="pipeline-node" onclick="scrollToSkill('需求规划')">① 需求规划</div>
         <div class="pipeline-arrow">&#8594;</div>
-        <div class="pipeline-node" onclick="scrollToSkill('产品设计师')">② 产品设计师</div>
+        <div class="pipeline-node" onclick="scrollToSkill('产品逻辑')">② 产品逻辑</div>
         <div class="pipeline-arrow">&#8594;</div>
-        <div class="pipeline-node" onclick="scrollToSkill('全栈编码师')">③ 全栈编码师</div>
+        <div class="pipeline-node" onclick="scrollToSkill('产品设计')">③ 产品设计</div>
         <div class="pipeline-arrow">&#8594;</div>
-        <div class="pipeline-node" onclick="scrollToSkill('部署上线师')">④ 部署上线师</div>
+        <div class="pipeline-node" onclick="scrollToSkill('全栈编码')">④ 全栈编码</div>
+        <div class="pipeline-arrow">&#8594;</div>
+        <div class="pipeline-node" onclick="scrollToSkill('部署上线')">⑤ 部署上线</div>
       </div>` : '';
 
     const automationPipeline = g.id === '自动化能力' ? `
       <div class="pipeline" style="border-left:3px solid var(--c-automation)">
-        <div class="pipeline-node" style="border-color:var(--c-automation)" onclick="scrollToSkill('循环任务师')">循环任务师</div>
+        <div class="pipeline-node" style="border-color:var(--c-automation)" onclick="scrollToSkill('循环任务')">循环任务</div>
         <div class="pipeline-arrow" style="color:var(--c-automation)">|</div>
-        <div class="pipeline-node" style="border-color:var(--c-automation)" onclick="scrollToSkill('定时任务师')">定时任务师</div>
+        <div class="pipeline-node" style="border-color:var(--c-automation)" onclick="scrollToSkill('定时任务')">定时任务</div>
         <div class="pipeline-arrow" style="color:var(--c-automation)">|</div>
-        <div class="pipeline-node" style="border-color:var(--c-automation)" onclick="scrollToSkill('组合任务师')">组合任务师</div>
+        <div class="pipeline-node" style="border-color:var(--c-automation)" onclick="scrollToSkill('组合任务')">组合任务</div>
       </div>` : '';
 
     html += `<div class="skill-group" data-group="${g.id}">
@@ -1530,7 +1560,7 @@ function renderProtocolMatrix() {
 
   container.innerHTML = `<div class="collapsible" id="matrix-collapsible">
     <div class="collapsible-header" onclick="toggleCollapsible('matrix-collapsible')">
-      <span>点击展开完整矩阵（19 技能 × 12 协议）</span>
+      <span>点击展开完整矩阵（22 技能 × 4 规范）</span>
       <span class="expand-icon">&#9660;</span>
     </div>
     <div class="collapsible-body">
@@ -1546,9 +1576,9 @@ function renderRoles() {
   let html = '';
 
   const sections = [
-    { title: '执行角色（4个）', items: ROLES.exec, badgeClass: 'role-exec', desc: '负责产出最终交付物' },
-    { title: '审查角色（6个）', items: ROLES.audit, badgeClass: 'role-audit', desc: '负责质量把关' },
-    { title: '沟通角色（2个）', items: ROLES.comm, badgeClass: 'role-comm', desc: '负责翻译成大白话' }
+    { title: '工作人员（4个人设）', items: ROLES.exec, badgeClass: 'role-exec', desc: '人设库中的可复用工作人员' },
+    { title: '验收机制（2项）', items: ROLES.audit, badgeClass: 'role-audit', desc: '质量把关方式' },
+    { title: '沟通机制（1项）', items: ROLES.comm, badgeClass: 'role-comm', desc: '用户对话通道' }
   ];
 
   sections.forEach(sec => {
@@ -1640,8 +1670,8 @@ window.addEventListener('scroll', () => {
   const sections = [
     { id: 'section-flow', label: '系统总流程' },
     { id: 'section-groups', label: '技能分组' },
-    { id: 'section-protocols', label: '协议矩阵' },
-    { id: 'section-roles', label: '角色库' }
+    { id: 'section-protocols', label: '规范矩阵' },
+    { id: 'section-roles', label: '人设库' }
   ];
 
   const breadcrumb = document.getElementById('breadcrumb');
