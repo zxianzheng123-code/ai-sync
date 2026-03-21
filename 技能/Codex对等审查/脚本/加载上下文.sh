@@ -10,10 +10,10 @@ echo "=== 加载 Codex对等审查 技能上下文 ==="
 cat "$SKILL_ROOT/SKILL.md"
 
 # 2. 工作人员人设
-cat "$REPO_ROOT/技能/人设库/审查官/人设.md"
+cat "$REPO_ROOT/技能/人设库/工程/人设.md"
 
-# 3. 审查官专业知识
-cat "$REPO_ROOT/技能/人设库/审查官/专业知识/"*.md 2>/dev/null
+# 3. 共享审查知识
+cat "$REPO_ROOT/技能/共享知识/审查/"*.md 2>/dev/null
 
 # 4. 交付自查清单
 if [ -f "$SKILL_ROOT/作业指引/交付自查清单.md" ]; then

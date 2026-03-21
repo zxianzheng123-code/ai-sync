@@ -426,39 +426,31 @@ else
     FAIL=$((FAIL + 1))
 fi
 
-# ── 检查 9：角色库文件存在性 ────────────────────────
+# ── 检查 9：人设库文件存在性 ────────────────────────
 echo ""
-echo "=== 检查 9：角色库文件存在性 ==="
+echo "=== 检查 9：人设库文件存在性 ==="
 
-ROLE_FILES=(
-    "角色/写作主笔.md"
-    "角色/设计主笔.md"
-    "角色/工程主笔.md"
-    "角色/路由调度员.md"
-    "角色/完整性审查官.md"
-    "角色/逻辑审查官.md"
-    "角色/事实核查官.md"
-    "角色/反方审查官.md"
-    "角色/可执行性审查官.md"
-    "角色/工程审查官.md"
-    "角色/业务翻译官.md"
-    "角色/技术翻译官.md"
+PERSONA_FILES=(
+    "客户经理/人设.md"
+    "产品/人设.md"
+    "工程/人设.md"
+    "写作/人设.md"
 )
 
-missing_role=()
-for rp in "${ROLE_FILES[@]}"; do
-    if [ ! -f "$ROOT/协议/$rp" ]; then
-        missing_role+=("$rp")
+missing_persona=()
+for pp in "${PERSONA_FILES[@]}"; do
+    if [ ! -f "$ROOT/技能/人设库/$pp" ]; then
+        missing_persona+=("$pp")
     fi
 done
 
-if [ ${#missing_role[@]} -eq 0 ]; then
-    green "✅ 角色库：${#ROLE_FILES[@]} 个角色文件全部存在"
+if [ ${#missing_persona[@]} -eq 0 ]; then
+    green "✅ 人设库：${#PERSONA_FILES[@]} 个人设文件全部存在"
     PASS=$((PASS + 1))
 else
-    red "❌ 角色库：以下角色文件缺失："
-    for r in "${missing_role[@]}"; do
-        red "   - 技能/$r"
+    red "❌ 人设库：以下人设文件缺失："
+    for p in "${missing_persona[@]}"; do
+        red "   - 技能/人设库/$p"
     done
     FAIL=$((FAIL + 1))
 fi
