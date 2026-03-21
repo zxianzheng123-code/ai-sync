@@ -9,11 +9,8 @@ echo "--- 专业知识 ---"
 cat "$REPO_ROOT/技能/人设库/产品/专业知识/"*.md 2>/dev/null
 echo ""
 
-echo "===== 工作人员：审查官 ====="
-cat "$REPO_ROOT/技能/人设库/审查官/人设.md"
-echo ""
-echo "--- 专业知识 ---"
-cat "$REPO_ROOT/技能/人设库/审查官/专业知识/"*.md 2>/dev/null
+echo "===== 共享知识：审查 ====="
+cat "$REPO_ROOT/技能/共享知识/审查/"*.md 2>/dev/null
 echo ""
 
 echo "===== 作业指引 ====="

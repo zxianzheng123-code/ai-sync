@@ -8,9 +8,7 @@ version: 2.0
 Master Agent 负责调度和验收，不亲自干活。每个步骤启动 SubAgent 执行。
 
 ## 工作人员
-- 全栈开发（→ 技能/人设库/全栈开发/人设.md）
-- 审查官（→ 技能/人设库/审查官/人设.md）
-- 测试工程师（→ 技能/人设库/测试工程师/人设.md）
+- 工程（→ 技能/人设库/工程/人设.md）
 
 ## 五阶段概览
 
@@ -28,7 +26,7 @@ Master Agent 负责调度和验收，不亲自干活。每个步骤启动 SubAge
 执行 脚本/加载上下文.sh，强制读取所有引用内容
 
 ### Step 1：技术方案
-- 执行者：全栈开发（SubAgent）
+- 执行者：工程（SubAgent）
 - 目标：完成技术选型、项目搭建和代码架构规划（Phase A + Phase B）
 - 成功标准：项目骨架可运行（dev server启动、浏览器可访问、无lint报错），代码蓝图完整
 - 输入：`design/project_context.md` + `design/product_logic.md` + `design/design_spec.md` + `design/interaction_map.md`
@@ -55,7 +53,7 @@ Master Agent 负责调度和验收，不亲自干活。每个步骤启动 SubAge
   - Phase B 零代码产出：只产出文档
 
 ### Step 2：编码实现
-- 执行者：全栈开发（SubAgent）
+- 执行者：工程（SubAgent）
 - 目标：逐页编码前端 + 全局集成 + 后端编码（Phase C + Phase D）
 - 成功标准：所有页面可正常访问和交互，前后端联调通过（如适用）
 - 输入：Step 1 产出的所有产物
@@ -85,7 +83,7 @@ Master Agent 负责调度和验收，不亲自干活。每个步骤启动 SubAge
   - API Key 绝不硬编码
 
 ### Step 3：审查（工程审查维度）
-- 执行者：审查官（SubAgent）
+- 执行者：工程（SubAgent，审查模式，平台：Codex）
 - 目标：审查代码质量、设计合规性、工程规范
 - 成功标准：代码质量达标，设计还原准确，无工程规范违规
 - 输入：Step 2 编码产物 + 上游设计文档
@@ -97,7 +95,7 @@ Master Agent 负责调度和验收，不亲自干活。每个步骤启动 SubAge
   - 工程规范：目录结构、命名规范、依赖管理
 
 ### Step 4：测试
-- 执行者：测试工程师（SubAgent）
+- 执行者：工程（SubAgent，测试模式）
 - 目标：验证功能完整性和稳定性
 - 成功标准：核心业务流程端到端跑通，无阻断性bug
 - 输入：Step 2 编码产物
