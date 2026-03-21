@@ -1,0 +1,6 @@
+experiment	score	max_score	pass_rate	status	description
+0	27	30	90.0%	baseline	原始技能 — 未做任何修改
+1	26	30	86.7%	discard	模板英文标题换中文 — 未提升，额外丢EVAL4
+2	29	30	96.7%	keep	模板技术术语全部改大白话（代码库→已写好的程序）
+3	30	30	100.0%	keep	无改动验证稳定性 — 满分确认
+4	29	30	96.7%	keep	无改动验证稳定性 — 连续3轮≥95%达标停止

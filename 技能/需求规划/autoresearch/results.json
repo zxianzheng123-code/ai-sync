@@ -1,0 +1,30 @@
+{
+  "skill_name": "需求规划",
+  "status": "complete",
+  "current_experiment": 5,
+  "baseline_score": 92.7,
+  "best_score": 98.3,
+  "experiments": [
+    {"id": 0, "score": 27, "max_score": 30, "pass_rate": 90.0, "status": "baseline", "description": "原始技能（6条评估）— 未做任何修改"},
+    {"id": 1, "score": 26, "max_score": 30, "pass_rate": 86.7, "status": "discard", "description": "模板英文标题换中文 — 未提升"},
+    {"id": 2, "score": 29, "max_score": 30, "pass_rate": 96.7, "status": "keep", "description": "模板技术术语改大白话（代码库→已写好的程序）"},
+    {"id": 3, "score": 30, "max_score": 30, "pass_rate": 100.0, "status": "keep", "description": "稳定性验证 — 满分"},
+    {"id": 4, "score": 29, "max_score": 30, "pass_rate": 96.7, "status": "keep", "description": "稳定性验证 — 连续3轮≥95%停止"},
+    {"id": "B2", "score": 89, "max_score": 96, "pass_rate": 92.7, "status": "baseline", "description": "新基线（12条评估+8场景）— E11通过率37.5%"},
+    {"id": 5, "score": 59, "max_score": 60, "pass_rate": 98.3, "status": "keep", "description": "Step3加排优先级指令 — E11从37.5%→100%"}
+  ],
+  "eval_breakdown": [
+    {"name": "隐含需求挖掘", "pass_count": 13, "total": 13},
+    {"name": "MVP最小化", "pass_count": 13, "total": 13},
+    {"name": "风险识别真实性", "pass_count": 13, "total": 13},
+    {"name": "访谈引导沉默用户", "pass_count": 13, "total": 13},
+    {"name": "交付语言零黑话", "pass_count": 11, "total": 13},
+    {"name": "死规矩可执行", "pass_count": 13, "total": 13},
+    {"name": "不替用户做决策", "pass_count": 13, "total": 13},
+    {"name": "异常场景覆盖", "pass_count": 12, "total": 13},
+    {"name": "交付物可开工", "pass_count": 13, "total": 13},
+    {"name": "访谈不冗余", "pass_count": 13, "total": 13},
+    {"name": "模块排优先级", "pass_count": 8, "total": 13},
+    {"name": "范围克制", "pass_count": 13, "total": 13}
+  ]
+}

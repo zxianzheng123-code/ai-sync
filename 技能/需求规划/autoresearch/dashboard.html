@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>需求规划 — Autoresearch 仪表盘</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fafafa; color: #333; padding: 24px; }
+  h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: #888; font-size: 14px; margin-bottom: 24px; }
+  .status-banner { padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; margin-bottom: 24px; }
+  .status-running { background: #E8F5E9; color: #2E7D32; }
+  .status-complete { background: #E3F2FD; color: #1565C0; }
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .card-label { font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+  .card-value { font-size: 28px; font-weight: 700; margin-top: 4px; }
+  .chart-container { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 32px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 32px; }
+  th { background: #f5f5f5; text-align: left; padding: 10px 14px; font-size: 12px; color: #777; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 10px 14px; border-top: 1px solid #f0f0f0; font-size: 14px; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+  .badge-baseline { background: #BBDEFB; color: #1565C0; }
+  .badge-keep { background: #C8E6C9; color: #2E7D32; }
+  .badge-discard { background: #FFCDD2; color: #C62828; }
+  .eval-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .eval-name { width: 120px; font-size: 13px; flex-shrink: 0; }
+  .eval-track { flex: 1; height: 20px; background: #f0f0f0; border-radius: 10px; overflow: hidden; }
+  .eval-fill { height: 100%; border-radius: 10px; transition: width 0.3s; }
+  .eval-pct { width: 44px; font-size: 13px; text-align: right; flex-shrink: 0; }
+  .section-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<h1>需求规划 — Autoresearch</h1>
+<p class="subtitle">自动化技能优化实验仪表盘</p>
+
+<div id="statusBanner" class="status-banner status-running">正在初始化…</div>
+
+<div class="summary">
+  <div class="card"><div class="card-label">基线分数</div><div class="card-value" id="baselineScore">—</div></div>
+  <div class="card"><div class="card-label">当前最佳</div><div class="card-value" id="bestScore">—</div></div>
+  <div class="card"><div class="card-label">实验轮数</div><div class="card-value" id="totalExps">0</div></div>
+  <div class="card"><div class="card-label">保留率</div><div class="card-value" id="keepRate">—</div></div>
+</div>
+
+<div class="chart-container">
+  <canvas id="scoreChart" height="200"></canvas>
+</div>
+
+<div class="section-title">评估项通过率</div>
+<div id="evalBreakdown" style="background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.06);margin-bottom:32px;"></div>
+
+<div class="section-title">实验记录</div>
+<table>
+  <thead><tr><th>#</th><th>得分</th><th>通过率</th><th>状态</th><th>描述</th></tr></thead>
+  <tbody id="expTable"></tbody>
+</table>
+
+<script>
+let chart = null;
+
+async function load() {
+  try {
+    const r = await fetch('results.json?t=' + Date.now());
+    if (!r.ok) return;
+    const d = await r.json();
+    render(d);
+  } catch(e) {}
+}
+
+function render(d) {
+  // Status
+  const banner = document.getElementById('statusBanner');
+  if (d.status === 'complete') {
+    banner.className = 'status-banner status-complete';
+    banner.textContent = '优化完成';
+  } else {
+    banner.className = 'status-banner status-running';
+    banner.textContent = '正在运行实验 #' + d.current_experiment + '…';
+  }
+
+  // Summary cards
+  document.getElementById('baselineScore').textContent = d.baseline_score > 0 ? d.baseline_score.toFixed(0) + '%' : '—';
+  document.getElementById('bestScore').textContent = d.best_score > 0 ? d.best_score.toFixed(0) + '%' : '—';
+  document.getElementById('totalExps').textContent = d.experiments.length;
+
+  const kept = d.experiments.filter(e => e.status === 'keep').length;
+  const nonBaseline = d.experiments.filter(e => e.status !== 'baseline').length;
+  document.getElementById('keepRate').textContent = nonBaseline > 0 ? Math.round(kept / nonBaseline * 100) + '%' : '—';
+
+  // Chart
+  if (d.experiments.length > 0) {
+    const labels = d.experiments.map(e => '#' + e.id);
+    const data = d.experiments.map(e => e.pass_rate);
+    const colors = d.experiments.map(e => e.status === 'baseline' ? '#64B5F6' : e.status === 'keep' ? '#81C784' : '#E57373');
+
+    if (chart) chart.destroy();
+    chart = new Chart(document.getElementById('scoreChart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: '通过率 %',
+          data,
+          borderColor: '#555',
+          backgroundColor: 'transparent',
+          pointBackgroundColor: colors,
+          pointRadius: 8,
+          pointHoverRadius: 10,
+          tension: 0.2
+        }]
+      },
+      options: {
+        scales: { y: { min: 0, max: 100, ticks: { callback: v => v + '%' } } },
+        plugins: { legend: { display: false } }
+      }
+    });
+  }
+
+  // Eval breakdown
+  const eb = document.getElementById('evalBreakdown');
+  eb.innerHTML = '';
+  (d.eval_breakdown || []).forEach(ev => {
+    const pct = ev.total > 0 ? Math.round(ev.pass_count / ev.total * 100) : 0;
+    const color = pct >= 80 ? '#81C784' : pct >= 50 ? '#FFD54F' : '#E57373';
+    eb.innerHTML += `<div class="eval-bar">
+      <span class="eval-name">${ev.name}</span>
+      <div class="eval-track"><div class="eval-fill" style="width:${pct}%;background:${color}"></div></div>
+      <span class="eval-pct">${ev.pass_count}/${ev.total}</span>
+    </div>`;
+  });
+
+  // Table
+  const tb = document.getElementById('expTable');
+  tb.innerHTML = '';
+  d.experiments.forEach(e => {
+    const cls = e.status === 'baseline' ? 'badge-baseline' : e.status === 'keep' ? 'badge-keep' : 'badge-discard';
+    const label = e.status === 'baseline' ? '基线' : e.status === 'keep' ? '保留' : '丢弃';
+    tb.innerHTML += `<tr>
+      <td>${e.id}</td>
+      <td>${e.score}/${e.max_score}</td>
+      <td>${e.pass_rate.toFixed(1)}%</td>
+      <td><span class="badge ${cls}">${label}</span></td>
+      <td>${e.description}</td>
+    </tr>`;
+  });
+}
+
+load();
+setInterval(load, 10000);
+</script>
+</body>
+</html>
