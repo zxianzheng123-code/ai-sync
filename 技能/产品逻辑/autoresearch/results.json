@@ -1,0 +1,33 @@
+{
+  "skill_name": "产品逻辑",
+  "status": "complete",
+  "total_experiments": 50,
+  "methodology": "split evaluation — 独立生产者+独立评估者",
+  "criteria_versions": 6,
+  "criteria_solved_then_replaced": [
+    "异常路径三要素(v1)", "联动表质量(v1)", "数值精确(v1)",
+    "Instructions忠实原文(v2→v3)", "全角色覆盖(v2)", "联动行数≥模块数(v2)"
+  ],
+  "score_history": {
+    "自评基线(v1)": "100% (虚假)",
+    "拆分基线(v1)": "66.7% (真实)",
+    "最高分(v1)": "80.0% (#29)",
+    "v2基线": "73.3% (#30)",
+    "v3基线": "60.0% (#35)",
+    "v3最高": "66.7% (#38)",
+    "v4最终": "50.0% (#46，含最硬的联动一致性标准)"
+  },
+  "final_eval_breakdown": {
+    "E1_联动与Flow一致": {"passed": 1, "total": 5, "note": "最硬标准 — agents写了Flow里没实现的联动"},
+    "E2_Traceability准确": {"passed": 3, "total": 5},
+    "E3_Flow原子化": {"passed": 2, "total": 5, "note": "系统反应跨模块合并仍顽固"},
+    "E4_Success_End状态值": {"passed": 3, "total": 5},
+    "E5_Trigger不重复": {"passed": 3, "total": 5},
+    "E6_前置可追溯": {"passed": 3, "total": 5}
+  },
+  "persistent_challenges": [
+    "E1(1/5): Module Connections写了Flow里没有的联动行为——这是产品逻辑设计的根本一致性问题",
+    "E3(2/5): 系统反应跨模块合并(设状态+推通知一步完成)——需要更严格的模块边界意识",
+    "E4(3/5): Success End未覆盖场景标题的全部目标——需要更系统的目标分解"
+  ]
+}

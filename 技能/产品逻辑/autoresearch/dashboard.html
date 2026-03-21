@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品逻辑 — 技能优化仪表盘</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f172a;color:#e2e8f0;padding:24px}
+h1{font-size:24px;margin-bottom:4px}
+.subtitle{color:#94a3b8;font-size:14px;margin-bottom:24px}
+.status-bar{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.stat{background:#1e293b;border-radius:12px;padding:16px 24px;min-width:160px}
+.stat-label{font-size:12px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px}
+.stat-value{font-size:28px;font-weight:700;margin-top:4px}
+.stat-value.green{color:#4ade80}
+.stat-value.blue{color:#60a5fa}
+.stat-value.yellow{color:#fbbf24}
+.stat-value.red{color:#f87171}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:#1e293b;border-radius:12px;padding:20px}
+.card h2{font-size:16px;margin-bottom:12px;color:#cbd5e1}
+canvas{width:100%!important;max-height:300px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 12px;background:#334155;color:#94a3b8;font-weight:600}
+td{padding:8px 12px;border-bottom:1px solid #334155}
+tr:hover td{background:#334155}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.badge-keep{background:#166534;color:#4ade80}
+.badge-discard{background:#991b1b;color:#fca5a5}
+.badge-baseline{background:#1e40af;color:#93c5fd}
+.badge-running{background:#854d0e;color:#fde047}
+.eval-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.eval-bar .label{width:120px;font-size:12px;color:#94a3b8;text-align:right;flex-shrink:0}
+.eval-bar .track{flex:1;height:20px;background:#334155;border-radius:4px;overflow:hidden}
+.eval-bar .fill{height:100%;border-radius:4px;transition:width .3s}
+.eval-bar .pct{width:48px;font-size:12px;font-weight:600;text-align:right}
+.status-indicator{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.status-indicator.running{background:#fbbf24;animation:pulse 1.5s infinite}
+.status-indicator.complete{background:#4ade80}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+#status-text{font-size:14px;color:#94a3b8}
+</style>
+</head>
+<body>
+<h1>产品逻辑 — 技能优化仪表盘</h1>
+<p class="subtitle">autoresearch 实验追踪 · 每 10 秒自动刷新</p>
+<div id="status-line" style="margin-bottom:16px">
+  <span class="status-indicator running" id="status-dot"></span>
+  <span id="status-text">正在加载数据…</span>
+</div>
+<div class="status-bar" id="stats"></div>
+<div class="grid">
+  <div class="card"><h2>通过率趋势</h2><canvas id="trendChart"></canvas></div>
+  <div class="card"><h2>评估项通过率</h2><div id="evalBars"></div></div>
+</div>
+<div class="card"><h2>实验记录</h2>
+  <table><thead><tr><th>#</th><th>得分</th><th>满分</th><th>通过率</th><th>状态</th><th>描述</th></tr></thead>
+  <tbody id="expBody"></tbody></table>
+</div>
+
+<script>
+let chart=null;
+async function load(){
+  try{
+    const r=await fetch('results.json?t='+Date.now());
+    const d=await r.json();
+    renderStats(d);renderChart(d);renderEvals(d);renderTable(d);renderStatus(d);
+  }catch(e){document.getElementById('status-text').textContent='等待数据…';}
+}
+function renderStatus(d){
+  const dot=document.getElementById('status-dot');
+  const txt=document.getElementById('status-text');
+  if(d.status==='complete'){
+    dot.className='status-indicator complete';
+    txt.textContent='全部完成 — '+d.experiments.length+' 轮实验';
+  }else{
+    dot.className='status-indicator running';
+    txt.textContent='正在运行实验 #'+d.current_experiment+'…';
+  }
+}
+function renderStats(d){
+  const exps=d.experiments||[];
+  const kept=exps.filter(e=>e.status==='keep').length;
+  const disc=exps.filter(e=>e.status==='discard').length;
+  document.getElementById('stats').innerHTML=`
+    <div class="stat"><div class="stat-label">基线</div><div class="stat-value blue">${d.baseline_score}%</div></div>
+    <div class="stat"><div class="stat-label">当前最佳</div><div class="stat-value green">${d.best_score}%</div></div>
+    <div class="stat"><div class="stat-label">已完成</div><div class="stat-value yellow">${exps.length}</div></div>
+    <div class="stat"><div class="stat-label">保留 / 丢弃</div><div class="stat-value">${kept} <span style="color:#94a3b8">/</span> <span class="red">${disc}</span></div></div>`;
+}
+function renderChart(d){
+  const exps=d.experiments||[];
+  const labels=exps.map(e=>'#'+e.id);
+  const data=exps.map(e=>e.pass_rate);
+  const colors=exps.map(e=>e.status==='baseline'?'#60a5fa':e.status==='keep'?'#4ade80':'#f87171');
+  const ctx=document.getElementById('trendChart').getContext('2d');
+  if(chart)chart.destroy();
+  chart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'通过率 %',data,borderColor:'#60a5fa',backgroundColor:'rgba(96,165,250,0.1)',fill:true,tension:.3,pointBackgroundColor:colors,pointRadius:5}]},
+    options:{responsive:true,scales:{y:{min:0,max:100,ticks:{color:'#94a3b8'},grid:{color:'#334155'}},x:{ticks:{color:'#94a3b8'},grid:{color:'#334155'}}},plugins:{legend:{display:false}}}});
+}
+function renderEvals(d){
+  const el=document.getElementById('evalBars');
+  const criteria=d.eval_criteria||[];
+  const breakdown=d.eval_breakdown||[];
+  let html='';
+  criteria.forEach((c,i)=>{
+    const b=breakdown[i]||{passed:0,total:1};
+    const pct=Math.round(b.passed/b.total*100)||0;
+    const color=pct>=90?'#4ade80':pct>=60?'#fbbf24':'#f87171';
+    html+=`<div class="eval-bar"><div class="label">${c.name}</div><div class="track"><div class="fill" style="width:${pct}%;background:${color}"></div></div><div class="pct" style="color:${color}">${pct}%</div></div>`;
+  });
+  el.innerHTML=html;
+}
+function renderTable(d){
+  const el=document.getElementById('expBody');
+  const exps=d.experiments||[];
+  let html='';
+  exps.slice().reverse().forEach(e=>{
+    const cls=e.status==='baseline'?'badge-baseline':e.status==='keep'?'badge-keep':'badge-discard';
+    const label=e.status==='baseline'?'基线':e.status==='keep'?'保留':'丢弃';
+    html+=`<tr><td>${e.id}</td><td>${e.score}</td><td>${e.max_score}</td><td>${e.pass_rate}%</td><td><span class="badge ${cls}">${label}</span></td><td>${e.description}</td></tr>`;
+  });
+  el.innerHTML=html;
+}
+load();setInterval(load,10000);
+</script>
+</body>
+</html>

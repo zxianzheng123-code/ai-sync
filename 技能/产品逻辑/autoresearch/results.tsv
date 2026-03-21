@@ -1,0 +1,14 @@
+experiment	score	max_score	pass_rate	status	description
+0	30	30	100.0%	baseline	原始技能(自评) — 虚假满分
+1-26	30	30	100.0%	keep	26轮自评优化(自评偏差期)
+split-baseline	20	30	66.7%	baseline	拆分评估真实基线
+27	19	30	63.3%	discard	反模式强化 — 回滚
+28	11	30	36.7%	discard	系统反应单一动作 — 回滚
+29	24	30	80.0%	keep	Exception三要素+数值保真 — v1最高分
+30	22	30	73.3%	baseline	v2标准基线(替换E5/E6)
+35	18	30	60.0%	baseline	v3标准基线(替换E5/E6)+5轮变异
+36	18	30	60.0%	keep	Instructions改为直接摘抄原文 — E1从1/5升至4/5
+37	11	30	36.7%	discard	单agent跑5场景 — 质量暴跌回滚
+38	20	30	66.7%	keep	删除不得违反前缀+前置交叉检查 — E1满分
+42	16	30	53.3%	keep	4轮变异(跨模块拆分+Success End全目标+Trigger不重复+Traceability防混淆)
+46	15	30	50.0%	keep	v4标准(新增联动与Flow一致)+Trigger不为空+联动须在Flow有对应
