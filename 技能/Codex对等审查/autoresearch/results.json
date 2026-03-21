@@ -1,0 +1,18 @@
+{
+  "skill_name": "Codex对等审查",
+  "status": "complete",
+  "current_experiment": 1,
+  "baseline_score": 80.0,
+  "best_score": 100.0,
+  "experiments": [
+    {"id": 0, "score": 20, "max_score": 25, "pass_rate": 80.0, "status": "baseline", "description": "原始技能 — 未做任何修改"},
+    {"id": 1, "score": 25, "max_score": 25, "pass_rate": 100.0, "status": "kept", "description": "Step 3 加入独立判断优先、质疑义务、反模式警告"}
+  ],
+  "eval_breakdown": [
+    {"id": 1, "name": "Codex 实际调用", "history": [100, 100]},
+    {"id": 2, "name": "每轮独立对话", "history": [100, 100]},
+    {"id": 3, "name": "对等讨论质量", "history": [0, 100]},
+    {"id": 4, "name": "变更说明完整", "history": [100, 100]},
+    {"id": 5, "name": "流程完整性", "history": [100, 100]}
+  ]
+}
