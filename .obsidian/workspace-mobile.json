@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "临时资料/Codex与Claude Code最佳使用实践.md",
+                "file": "临时资料/claude-agents-目录结构.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Codex与Claude Code最佳使用实践"
+              "title": "claude-agents-目录结构"
             }
           }
         ]
@@ -145,7 +145,7 @@
         "state": {
           "type": "outline",
           "state": {
-            "file": "临时资料/Codex与Claude Code最佳使用实践.md",
+            "file": "临时资料/claude-agents-目录结构.md",
             "followCursor": false,
             "showSearch": false,
             "searchQuery": ""
@@ -171,6 +171,14 @@
   },
   "active": "1cc9eb5a1f4201f7",
   "lastOpenFiles": [
+    "临时资料/CLOTHING_IMAGE_PLAYBOOK.md",
+    "临时资料/claude-agents-目录结构.md",
+    "临时资料/Claude-Code-Skills最佳实践精华.md",
+    "临时资料/ADK五种Skill设计模式分析.md",
+    "临时资料/项目共享上下文Playbook.md",
+    "临时资料/测试覆盖分析报告.md",
+    "临时资料/GSD核心框架解析.canvas",
+    "临时资料/Codex与Claude Code最佳使用实践.md",
     "Chrome书签整理清单.md",
     "/技能/需求规划/脚本/加载上下文.sh",
     "/技能/问题拆解/脚本/加载上下文.sh",
@@ -183,15 +191,9 @@
     "/技能/测试循环/脚本/加载上下文.sh",
     "/技能/方法提炼/脚本/加载上下文.sh",
     "/临时资料/GSD核心框架解析.canvas",
-    "临时资料/GSD核心框架解析.canvas",
     "/Chrome书签整理清单.md",
     "/AGENTS.md",
     "临时资料/非编程ai开发流程设计/Mock矩阵.md",
-    "临时资料/测试覆盖分析报告.md",
-    "临时资料/CLOTHING_IMAGE_PLAYBOOK.md",
-    "临时资料/PLAYBOOK_AUTHOR_探讨笔记.md",
-    "临时资料/Codex与Claude Code最佳使用实践.md",
-    "临时资料/ADK五种Skill设计模式分析.md",
-    "临时资料/项目共享上下文Playbook.md"
+    "临时资料/PLAYBOOK_AUTHOR_探讨笔记.md"
   ]
 }
