@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "e0c6d272443f16c3",
+        "id": "b35c8e1ff899823c",
         "type": "tabs",
         "children": [
           {
-            "id": "1cc9eb5a1f4201f7",
+            "id": "c22853746b57f703",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -145,7 +145,7 @@
         "state": {
           "type": "outline",
           "state": {
-            "file": "临时资料/claude-agents-目录结构.md",
+            "file": "临时资料/GSD核心框架解析.canvas",
             "followCursor": false,
             "showSearch": false,
             "searchQuery": ""
@@ -169,16 +169,17 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "1cc9eb5a1f4201f7",
+  "active": "c22853746b57f703",
   "lastOpenFiles": [
-    "临时资料/CLOTHING_IMAGE_PLAYBOOK.md",
-    "临时资料/claude-agents-目录结构.md",
+    "临时资料/GSD核心框架解析.canvas",
     "临时资料/Claude-Code-Skills最佳实践精华.md",
+    "临时资料/Codex与Claude Code最佳使用实践.md",
+    "MCP/MCP接入总表.md",
+    "临时资料/claude-agents-目录结构.md",
+    "临时资料/CLOTHING_IMAGE_PLAYBOOK.md",
     "临时资料/ADK五种Skill设计模式分析.md",
     "临时资料/项目共享上下文Playbook.md",
     "临时资料/测试覆盖分析报告.md",
-    "临时资料/GSD核心框架解析.canvas",
-    "临时资料/Codex与Claude Code最佳使用实践.md",
     "Chrome书签整理清单.md",
     "/技能/需求规划/脚本/加载上下文.sh",
     "/技能/问题拆解/脚本/加载上下文.sh",
