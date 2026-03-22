@@ -1,0 +1,197 @@
+{
+  "main": {
+    "id": "c5c5d86d526b7a0f",
+    "type": "split",
+    "children": [
+      {
+        "id": "e0c6d272443f16c3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1cc9eb5a1f4201f7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "临时资料/Codex与Claude Code最佳使用实践.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Codex与Claude Code最佳使用实践"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "4efeeafe288d51e5",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "3fe08f6024ee85d9",
+        "type": "leaf",
+        "state": {
+          "type": "file-explorer",
+          "state": {
+            "sortOrder": "alphabetical",
+            "autoReveal": false
+          },
+          "icon": "lucide-folder-closed",
+          "title": "文件列表"
+        }
+      },
+      {
+        "id": "34845ce49db27f90",
+        "type": "leaf",
+        "state": {
+          "type": "search",
+          "state": {
+            "query": "",
+            "matchingCase": false,
+            "explainSearch": false,
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical"
+          },
+          "icon": "lucide-search",
+          "title": "搜索"
+        }
+      },
+      {
+        "id": "fee0cb56c34ee9ed",
+        "type": "leaf",
+        "state": {
+          "type": "tag",
+          "state": {
+            "sortOrder": "frequency",
+            "useHierarchy": true,
+            "showSearch": false,
+            "searchQuery": ""
+          },
+          "icon": "lucide-tags",
+          "title": "标签"
+        }
+      },
+      {
+        "id": "2d09767b90ebaf38",
+        "type": "leaf",
+        "state": {
+          "type": "all-properties",
+          "state": {
+            "sortOrder": "frequency",
+            "showSearch": false,
+            "searchQuery": ""
+          },
+          "icon": "lucide-archive",
+          "title": "添加笔记属性"
+        }
+      },
+      {
+        "id": "0f80e1699e461be6",
+        "type": "leaf",
+        "state": {
+          "type": "bookmarks",
+          "state": {},
+          "icon": "lucide-bookmark",
+          "title": "书签"
+        }
+      }
+    ],
+    "currentTab": 0
+  },
+  "right": {
+    "id": "15a787418163a2a0",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "368c9a87b923e989",
+        "type": "leaf",
+        "state": {
+          "type": "backlink",
+          "state": {
+            "file": "临时资料/Codex与Claude Code最佳使用实践.md",
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical",
+            "showSearch": false,
+            "searchQuery": "",
+            "backlinkCollapsed": false,
+            "unlinkedCollapsed": true
+          },
+          "icon": "links-coming-in",
+          "title": "反向链接"
+        }
+      },
+      {
+        "id": "1f8994d6299a944d",
+        "type": "leaf",
+        "state": {
+          "type": "outgoing-link",
+          "state": {
+            "file": "临时资料/Codex与Claude Code最佳使用实践.md",
+            "linksCollapsed": false,
+            "unlinkedCollapsed": true
+          },
+          "icon": "links-going-out",
+          "title": "出链"
+        }
+      },
+      {
+        "id": "be00f7c021dc9593",
+        "type": "leaf",
+        "state": {
+          "type": "outline",
+          "state": {
+            "file": "临时资料/Codex与Claude Code最佳使用实践.md",
+            "followCursor": false,
+            "showSearch": false,
+            "searchQuery": ""
+          },
+          "icon": "lucide-list",
+          "title": "大纲"
+        }
+      }
+    ],
+    "currentTab": 2
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false,
+      "obsidian-git:Open Git source control": false
+    }
+  },
+  "active": "1cc9eb5a1f4201f7",
+  "lastOpenFiles": [
+    "Chrome书签整理清单.md",
+    "/技能/需求规划/脚本/加载上下文.sh",
+    "/技能/问题拆解/脚本/加载上下文.sh",
+    "/技能/部署上线/脚本/加载上下文.sh",
+    "/技能/造工具/脚本/加载上下文.sh",
+    "/技能/通用任务/脚本/加载上下文.sh",
+    "/技能/调研判断/脚本/加载上下文.sh",
+    "/技能/组合任务/脚本/加载上下文.sh",
+    "/技能/答案澄清/脚本/加载上下文.sh",
+    "/技能/测试循环/脚本/加载上下文.sh",
+    "/技能/方法提炼/脚本/加载上下文.sh",
+    "/临时资料/GSD核心框架解析.canvas",
+    "临时资料/GSD核心框架解析.canvas",
+    "/Chrome书签整理清单.md",
+    "/AGENTS.md",
+    "临时资料/非编程ai开发流程设计/Mock矩阵.md",
+    "临时资料/测试覆盖分析报告.md",
+    "临时资料/CLOTHING_IMAGE_PLAYBOOK.md",
+    "临时资料/PLAYBOOK_AUTHOR_探讨笔记.md",
+    "临时资料/Codex与Claude Code最佳使用实践.md",
+    "临时资料/ADK五种Skill设计模式分析.md",
+    "临时资料/项目共享上下文Playbook.md"
+  ]
+}
