@@ -1,0 +1,67 @@
+{
+	"nodes":[
+		{"id":"root","type":"text","text":"# GSD 上下文框架详细解\n\n**第一性原理：对抗 Context Rot**\n\nLLM 输出质量随上下文窗口填充而不可避免地衰减。\n\n**解法：每个原子任务在独立干净的上下文窗口中执行，只加载刚好够用的上下文文件。**\n\n上下文不是对话历史，而是**结构化文件**——过程写文件、结论沉淀、新阶段只带结论不带过程。","x":0,"y":-800,"width":600,"height":220,"color":"6"},
+
+		{"id":"two-tier-title","type":"text","text":"# 两层文件体系\n\n| 层级 | 特征 | 生命周期 |\n|------|------|----------|\n| **项目级** | 稳定、全局、始终加载 | 建项目时创建，缓慢演化 |\n| **阶段级** | 动态、局部、用完归档 | 每个 Phase 创建，完成后不再加载 |","x":0,"y":-500,"width":600,"height":180,"color":"4"},
+
+		{"id":"project-level-title","type":"text","text":"# 项目级文件（始终加载）","x":-700,"y":-240,"width":350,"height":50,"color":"4"},
+
+		{"id":"project-md","type":"text","text":"## PROJECT.md\n\n**用途：** 项目愿景，所有决策的北极星\n\n**核心章节：**\n- **What This Is** — 2-3 句话说清产品是什么、给谁用\n- **Core Value** — 唯一最重要的事，取舍时的裁判\n- **Requirements** — 三类：已验证 / 开发中 / 明确排除\n- **Context** — 技术环境、前置工作、已知问题\n- **Constraints** — 硬限制（技术栈、时间、预算）+ 原因\n- **Key Decisions** — 决策表：选择 / 理由 / 结果（✓好 / ⚠️待定 / —未决）\n\n**演化规则：**\n阶段切换和里程碑时更新，需求在三个分类间流动","x":-1050,"y":-160,"width":340,"height":380,"color":"4"},
+
+		{"id":"requirements-md","type":"text","text":"## REQUIREMENTS.md\n\n**用途：** 范围边界，防止需求蔓延\n\n**核心章节：**\n- **v1 Requirements** — 带复选框，格式 `[类目]-[编号]`\n- **v2 Requirements** — 未来特性，无复选框\n- **Out of Scope** — 排除项 + 排除理由\n- **Traceability Matrix** — 每条 v1 需求映射到哪个 Phase\n\n**关键约束：**\n- 需求必须原子化、可测试、面向用户\n- 每条 v1 需求必须映射到唯一 Phase\n- 每个 Phase 完成后更新状态","x":-660,"y":-160,"width":340,"height":380,"color":"4"},
+
+		{"id":"roadmap-md","type":"text","text":"## ROADMAP.md\n\n**用途：** 里程碑进度追踪\n\n**Phase 编号体系：**\n- 整数（1, 2, 3）= 计划里程碑\n- 小数（2.1, 2.2）= 紧急插入\n- 999.x = Backlog 停车场\n\n**每个 Phase 包含：**\n- Goal（用户视角）\n- Dependencies（前置依赖）\n- Requirements（映射的需求 ID）\n- Success Criteria（2-5 个可观察行为）\n- Plans（带复选框的计划列表）\n\n**进度追踪表：**\n| Phase | Plans | Status | Date |\n\n**Status 值：** Not started / In progress / Complete / Deferred\n\n**完成后折叠：** 用 `<details>` 标签收起","x":-270,"y":-160,"width":340,"height":480,"color":"4"},
+
+		{"id":"state-md","type":"text","text":"## STATE.md ★ 最关键\n\n**用途：** 跨会话记忆桥梁，每次新会话首先读取\n\n**核心章节：**\n- **Current Position** — Phase X/Y, Plan A/B, 状态, 进度条\n- **Performance Metrics** — 速度统计、趋势\n- **Accumulated Context** — 近 3-5 条决策、待办引用、阻塞项\n- **Session Continuity** — 上次做到哪、恢复入口\n\n**铁律：不超过 100 行**\n\n只存结论不存过程。解决的阻塞项删掉，外部细节用引用不复制。\n\n**更新时机：** 每个 Plan 完成后、每次会话结束时","x":120,"y":-160,"width":340,"height":380,"color":"4"},
+
+		{"id":"phase-level-title","type":"text","text":"# 阶段级文件（动态生成，用完归档）","x":-700,"y":400,"width":400,"height":50,"color":"5"},
+
+		{"id":"context-md","type":"text","text":"## {N}-CONTEXT.md\n\n**产出阶段：** Discuss Phase\n**用途：** 捕获用户的实现偏好，锁定决策\n\n**六个章节（按实际讨论内容组织）：**\n1. **Phase Boundary** — 本阶段交付什么（锚定 ROADMAP）\n2. **Implementation Decisions** — 具体选择（如「卡片布局，不用时间线」）+ Claude 自由裁量区\n3. **Specific Ideas** — 用户说的「我想要像 X 那样」\n4. **Canonical References**（必填）— 规格文档、ADR 的完整路径\n5. **Existing Code Insights** — 可复用资产、已有模式\n6. **Deferred Ideas** — 不在本阶段但别丢的想法\n\n**原则：内容必须具体可执行，禁止模糊词（「现代」「好用」）**","x":-1050,"y":480,"width":340,"height":440,"color":"5"},
+
+		{"id":"research-md","type":"text","text":"## {N}-RESEARCH.md\n\n**产出阶段：** Plan Phase（由 Phase Researcher 产出）\n**用途：** 领域调研发现，供 Planner 参考\n\n**输入：** 读 CONTEXT.md 中锁定的决策，聚焦调研方向\n\n**内容：**\n- 技术栈调研结果\n- 生态系统发现\n- 方案对比与建议\n- 潜在陷阱\n\n**初始化阶段还有独立调研目录：**\n```\nresearch/\n├── SUMMARY.md\n├── STACK.md\n├── FEATURES.md\n├── ARCHITECTURE.md\n└── PITFALLS.md\n```\n4 个 Researcher 并行产出 → Synthesizer 汇总","x":-660,"y":480,"width":340,"height":440,"color":"5"},
+
+		{"id":"plan-md","type":"text","text":"## {N}-{M}-PLAN.md\n\n**产出阶段：** Plan Phase（由 Planner 产出）\n**用途：** 执行合同，Executor 的唯一输入\n\n**XML 任务结构：**\n```xml\n<task type=\"auto\">\n  <id>task_01</id>\n  <title>具体任务名</title>\n  <read_first>\n    <file>path/to/file.ts</file>\n  </read_first>\n  <action>\n    具体实现指令，带精确值\n  </action>\n  <acceptance_criteria>\n    <criterion>可 grep 验证的条件</criterion>\n  </acceptance_criteria>\n  <dependencies>\n    <task>task_id</task>\n  </dependencies>\n</task>\n```\n\n**按依赖关系分 Wave：**\nWave 1: [A][B][C] 并行\nWave 2: [D][E] 等上游\n\n**验证循环：** Planner → Plan Checker（最多 3 轮）\n检查 8 个质量维度 + 需求覆盖率","x":-270,"y":480,"width":340,"height":560,"color":"5"},
+
+		{"id":"summary-md","type":"text","text":"## {N}-{M}-SUMMARY.md\n\n**产出阶段：** Execute Phase（由 Executor 产出）\n**用途：** 执行结果记录，验收依据\n\n**YAML Frontmatter：**\n```yaml\nphase: 01\nplan: 02\nsubsystem: auth\nkey_files: [created/modified]\nrequirements_completed: [REQ-XX]\nduration_minutes: 15\n```\n\n**正文章节：**\n1. 实质性一句话总结（禁止「阶段完成」这类空话）\n2. Performance — 时长、任务数、文件数\n3. Accomplishments — 2-3 个关键产出\n4. Task Commits — 原子提交列表\n5. Files Created/Modified\n6. Decisions Made\n7. Deviations from Plan\n8. Issues Encountered\n9. Next Phase Readiness","x":120,"y":480,"width":340,"height":480,"color":"5"},
+
+		{"id":"verification-md","type":"text","text":"## {N}-VERIFICATION.md\n\n**产出阶段：** Verify Phase\n**用途：** 目标达成验证（任务完成 ≠ 目标达成）\n\n**三层检查：**\n| 层级 | 检查 | 失败标记 |\n|------|------|----------|\n| Exists | 文件存在 | MISSING |\n| Substantive | 内容非空桩 | STUB |\n| Wired | 被导入和使用 | ORPHANED |\n\n**核心问题：「目标达成需要什么为真？」**\n\n反向推导 → 找支撑产物 → 确认连接\n\n**还有：**\n- `{N}-UAT.md` — 用户验收测试\n- `HUMAN-UAT.md` — 需要人工测试的项","x":510,"y":480,"width":340,"height":380,"color":"5"},
+
+		{"id":"planning-dir","type":"text","text":"# .planning/ 目录全景\n\n```\n.planning/\n├── PROJECT.md          ← 愿景（始终加载）\n├── REQUIREMENTS.md     ← 范围（始终加载）\n├── ROADMAP.md          ← 进度（始终加载）\n├── STATE.md            ← 记忆桥（始终加载，<100行）\n├── config.json         ← 工作流配置\n├── MILESTONES.md       ← 已完成里程碑归档\n├── HANDOFF.json        ← 会话中断时的结构化交接\n├── continue-here.md    ← 会话中断时的人类可读交接\n│\n├── research/           ← 项目级调研（初始化时产出）\n│   ├── STACK.md / FEATURES.md / ARCHITECTURE.md / PITFALLS.md\n│   └── SUMMARY.md\n│\n├── phases/             ← 每个 Phase 一个目录\n│   ├── 01-phase-name/\n│   │   ├── 01-CONTEXT.md\n│   │   ├── 01-RESEARCH.md\n│   │   ├── 01-01-PLAN.md / 01-02-PLAN.md\n│   │   ├── 01-01-SUMMARY.md / 01-02-SUMMARY.md\n│   │   ├── 01-VERIFICATION.md / 01-UAT.md\n│   │   └── DISCUSSION-LOG.md\n│   ├── 02-phase-name/\n│   └── 999.x-backlog/\n│\n├── todos/              ← 想法停车场\n│   ├── pending/        ← 待办\n│   └── done/           ← 已完成\n├── threads/            ← 跨会话持久知识线\n├── seeds/              ← 前瞻性想法（带触发条件）\n└── debug/              ← 调试会话\n    ├── knowledge-base.md\n    └── resolved/\n```","x":-400,"y":1200,"width":520,"height":720,"color":"3"},
+
+		{"id":"context-loading","type":"text","text":"# 谁加载什么（上下文分配表）\n\n**原则：传路径不传内容，每个 Agent 用自己的新鲜窗口读文件**\n\n| Agent 类型 | 加载的文件 |\n|-----------|------------|\n| **Researcher** (4个并行) | PROJECT + REQUIREMENTS + CONTEXT（聚焦调研方向） |\n| **Planner** | PROJECT + REQUIREMENTS + CONTEXT + RESEARCH + ROADMAP |\n| **Plan Checker** | PLAN + CONTEXT + REQUIREMENTS（验证覆盖率） |\n| **Executor** ★ | PLAN + PROJECT + STATE + CONTEXT（全新 200K 窗口） |\n| **Verifier** | ROADMAP + SUMMARY + REQUIREMENTS + VERIFICATION |\n\n**Orchestrator 自身保持 30-40% 窗口利用率**\n不装内容，只做调度和判断\n\n**关键：Executor 拿到的是 PLAN 文件，不是对话历史**","x":200,"y":1200,"width":480,"height":380,"color":"1"},
+
+		{"id":"lifecycle","type":"text","text":"# 文件生命周期\n\n```\nInitialize\n  │  产出：PROJECT + REQUIREMENTS + ROADMAP + STATE + research/\n  ▼\nDiscuss Phase\n  │  产出：{N}-CONTEXT.md（锁定用户偏好）\n  ▼\nPlan Phase\n  │  读：CONTEXT → 产出：{N}-RESEARCH.md\n  │  读：CONTEXT + RESEARCH → 产出：{N}-{M}-PLAN.md\n  │  Plan Checker 验证（最多 3 轮）\n  ▼\nExecute Phase\n  │  每个 PLAN 在全新 200K 窗口执行\n  │  产出：{N}-{M}-SUMMARY.md + 原子 git commit\n  │  更新：STATE.md\n  ▼\nVerify Phase\n  │  产出：{N}-VERIFICATION.md + {N}-UAT.md\n  │  不通过 → 生成修复计划\n  ▼\nShip\n  │  PR + Release\n  │  STATE.md 更新，Phase 目录保留不删\n  ▼\nComplete Milestone\n  │  归档到 MILESTONES.md\n  │  清理截图，Phase 目录永久保留\n```","x":200,"y":1650,"width":440,"height":560,"color":"1"},
+
+		{"id":"archiving","type":"text","text":"# 归档规则\n\n**过程文件 → 归档不加载**\n**结论 → 沉淀到 STATE.md**\n**新阶段 → 只带结论不带过程**\n\n---\n\n**Phase 目录：** 完成后永久保留，但不加载到后续 Phase\n\n**ROADMAP.md：** 完成的 Phase 用 `<details>` 折叠\n\n**Milestone：** 完成时归档到 MILESTONES.md（倒序）\n\n**STATE.md：** 只保留近 3-5 条决策，已解决的阻塞项删掉\n\n**Screenshots：** 里程碑完成时自动删除\n\n**Debug：** 活跃 → debug/，解决后 → debug/resolved/\n\n**Todos：** pending/ → done/","x":-400,"y":2000,"width":440,"height":380,"color":"3"},
+
+		{"id":"auxiliary","type":"text","text":"# 辅助系统\n\n### todos/\n- 文件名：`{date}-{slug}.md`\n- YAML frontmatter：created, title, area, files\n- 正文：Problem + Solution\n- 生命周期：pending/ → done/\n- 设计给「未来的 Claude」能看懂\n\n### threads/\n- 文件名：`{slug}.md`\n- 用途：跨会话持久知识线\n- 跨里程碑存活\n- 适合长期运行的工作\n\n### seeds/\n- 文件名：`SEED-NNN-slug.md`\n- 用途：前瞻性想法 + 触发条件\n- 到里程碑时自动检查是否触发\n- 触发后进入 ROADMAP 或 BACKLOG\n\n### 会话交接\n- `HANDOFF.json` — 机器可读（/gsd:resume-work 用）\n- `continue-here.md` — 人类可读\n- 记录：位置、已完成、剩余、阻塞、下一步","x":-400,"y":2450,"width":440,"height":520,"color":"3"},
+
+		{"id":"size-limits","type":"text","text":"# 尺寸约束\n\n| 对象 | 限制 |\n|------|------|\n| STATE.md | **< 100 行** |\n| Executor 窗口 | **全新 200K token** |\n| Orchestrator 窗口 | **30-40% 利用率** |\n| PLAN.md | 装得进单个 200K 窗口 |\n\n**上下文监控阈值：**\n| 级别 | 剩余 | 动作 |\n|------|------|------|\n| Normal | >35% | 无干预 |\n| WARNING | ≤35% | 收尾当前任务 |\n| CRITICAL | ≤25% | 立即停止，保存状态 |","x":200,"y":2250,"width":400,"height":320,"color":"1"},
+
+		{"id":"core-insight","type":"text","text":"# 核心洞察\n\n**上下文文件不是文档，是 Agent 之间的通信协议。**\n\n1. Researcher 写 RESEARCH.md → Planner 读\n2. Planner 写 PLAN.md → Executor 读\n3. Executor 写 SUMMARY.md → Verifier 读\n4. 所有人写 → STATE.md 沉淀结论\n\n**磁盘是共享内存，文件是消息队列。**\n\n每个 Agent 拿到干净窗口 + 精确文件 = 持续高质量输出。","x":200,"y":2650,"width":440,"height":260,"color":"6"}
+	],
+	"edges":[
+		{"id":"e1","fromNode":"root","fromSide":"bottom","toNode":"two-tier-title","toSide":"top"},
+		{"id":"e2","fromNode":"two-tier-title","fromSide":"left","toNode":"project-level-title","toSide":"top","label":"项目级"},
+		{"id":"e3","fromNode":"two-tier-title","fromSide":"bottom","toNode":"phase-level-title","toSide":"top","label":"阶段级"},
+		{"id":"e4","fromNode":"project-level-title","fromSide":"bottom","toNode":"project-md","toSide":"top"},
+		{"id":"e5","fromNode":"project-level-title","fromSide":"bottom","toNode":"requirements-md","toSide":"top"},
+		{"id":"e6","fromNode":"project-level-title","fromSide":"bottom","toNode":"roadmap-md","toSide":"top"},
+		{"id":"e7","fromNode":"project-level-title","fromSide":"bottom","toNode":"state-md","toSide":"top"},
+		{"id":"e8","fromNode":"phase-level-title","fromSide":"bottom","toNode":"context-md","toSide":"top"},
+		{"id":"e9","fromNode":"phase-level-title","fromSide":"bottom","toNode":"research-md","toSide":"top"},
+		{"id":"e10","fromNode":"phase-level-title","fromSide":"bottom","toNode":"plan-md","toSide":"top"},
+		{"id":"e11","fromNode":"phase-level-title","fromSide":"bottom","toNode":"summary-md","toSide":"top"},
+		{"id":"e12","fromNode":"phase-level-title","fromSide":"bottom","toNode":"verification-md","toSide":"top"},
+		{"id":"e13","fromNode":"context-md","fromSide":"right","toNode":"research-md","toSide":"left","label":"喂入"},
+		{"id":"e14","fromNode":"research-md","fromSide":"right","toNode":"plan-md","toSide":"left","label":"喂入"},
+		{"id":"e15","fromNode":"plan-md","fromSide":"right","toNode":"summary-md","toSide":"left","label":"执行后产出"},
+		{"id":"e16","fromNode":"summary-md","fromSide":"right","toNode":"verification-md","toSide":"left","label":"验收依据"},
+		{"id":"e17","fromNode":"planning-dir","fromSide":"right","toNode":"context-loading","toSide":"left"},
+		{"id":"e18","fromNode":"context-loading","fromSide":"bottom","toNode":"lifecycle","toSide":"top"},
+		{"id":"e19","fromNode":"planning-dir","fromSide":"bottom","toNode":"archiving","toSide":"top"},
+		{"id":"e20","fromNode":"archiving","fromSide":"bottom","toNode":"auxiliary","toSide":"top"},
+		{"id":"e21","fromNode":"lifecycle","fromSide":"bottom","toNode":"size-limits","toSide":"top"},
+		{"id":"e22","fromNode":"size-limits","fromSide":"bottom","toNode":"core-insight","toSide":"top"}
+	]
+}
